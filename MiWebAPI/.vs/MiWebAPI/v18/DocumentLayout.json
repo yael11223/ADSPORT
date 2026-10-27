@@ -1,0 +1,121 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\eliiv\\Downloads\\proyecto_completo\\MiWebAPI\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{AD3A25F5-1168-4F9F-B7EB-778DAB0AF1CD}|MiWebAPI\\MiWebAPI.csproj|c:\\users\\eliiv\\downloads\\proyecto_completo\\miwebapi\\miwebapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AD3A25F5-1168-4F9F-B7EB-778DAB0AF1CD}|MiWebAPI\\MiWebAPI.csproj|solutionrelative:miwebapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AD3A25F5-1168-4F9F-B7EB-778DAB0AF1CD}|MiWebAPI\\ADSportWeb.csproj|c:\\users\\eliiv\\downloads\\proyecto_completo\\miwebapi\\miwebapi\\data\\empleadodata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AD3A25F5-1168-4F9F-B7EB-778DAB0AF1CD}|MiWebAPI\\ADSportWeb.csproj|solutionrelative:miwebapi\\data\\empleadodata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AD3A25F5-1168-4F9F-B7EB-778DAB0AF1CD}|MiWebAPI\\MiWebAPI.csproj|c:\\users\\eliiv\\downloads\\proyecto_completo\\miwebapi\\miwebapi\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AD3A25F5-1168-4F9F-B7EB-778DAB0AF1CD}|MiWebAPI\\MiWebAPI.csproj|solutionrelative:miwebapi\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AD3A25F5-1168-4F9F-B7EB-778DAB0AF1CD}|MiWebAPI\\ADSportWeb.csproj|c:\\users\\eliiv\\downloads\\proyecto_completo\\miwebapi\\miwebapi\\models\\logindto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AD3A25F5-1168-4F9F-B7EB-778DAB0AF1CD}|MiWebAPI\\ADSportWeb.csproj|solutionrelative:miwebapi\\models\\logindto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AD3A25F5-1168-4F9F-B7EB-778DAB0AF1CD}|MiWebAPI\\ADSportWeb.csproj|c:\\users\\eliiv\\downloads\\proyecto_completo\\miwebapi\\miwebapi\\adsportweb.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{AD3A25F5-1168-4F9F-B7EB-778DAB0AF1CD}|MiWebAPI\\ADSportWeb.csproj|solutionrelative:miwebapi\\adsportweb.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AD3A25F5-1168-4F9F-B7EB-778DAB0AF1CD}|MiWebAPI\\MiWebAPI.csproj|c:\\users\\eliiv\\downloads\\proyecto_completo\\miwebapi\\miwebapi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{AD3A25F5-1168-4F9F-B7EB-778DAB0AF1CD}|MiWebAPI\\MiWebAPI.csproj|solutionrelative:miwebapi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 3,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "EmpleadoData.cs",
+              "DocumentMoniker": "C:\\Users\\eliiv\\Downloads\\proyecto_completo\\MiWebAPI\\MiWebAPI\\Data\\EmpleadoData.cs",
+              "RelativeDocumentMoniker": "MiWebAPI\\Data\\EmpleadoData.cs",
+              "ToolTip": "C:\\Users\\eliiv\\Downloads\\proyecto_completo\\MiWebAPI\\MiWebAPI\\Data\\EmpleadoData.cs",
+              "RelativeToolTip": "MiWebAPI\\Data\\EmpleadoData.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAZAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-27T03:25:56.53Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "LoginDTO.cs",
+              "DocumentMoniker": "C:\\Users\\eliiv\\Downloads\\proyecto_completo\\MiWebAPI\\MiWebAPI\\Models\\LoginDTO.cs",
+              "RelativeDocumentMoniker": "MiWebAPI\\Models\\LoginDTO.cs",
+              "ToolTip": "C:\\Users\\eliiv\\Downloads\\proyecto_completo\\MiWebAPI\\MiWebAPI\\Models\\LoginDTO.cs",
+              "RelativeToolTip": "MiWebAPI\\Models\\LoginDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-27T03:22:36.232Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "MiWebAPI.csproj",
+              "DocumentMoniker": "C:\\Users\\eliiv\\Downloads\\proyecto_completo\\MiWebAPI\\MiWebAPI\\ADSportWeb.csproj",
+              "RelativeDocumentMoniker": "MiWebAPI\\ADSportWeb.csproj",
+              "ToolTip": "C:\\Users\\eliiv\\Downloads\\proyecto_completo\\MiWebAPI\\MiWebAPI\\ADSportWeb.csproj",
+              "RelativeToolTip": "MiWebAPI\\ADSportWeb.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-10-27T02:31:47.616Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\eliiv\\Downloads\\proyecto_completo\\MiWebAPI\\MiWebAPI\\Program.cs",
+              "RelativeDocumentMoniker": "MiWebAPI\\Program.cs",
+              "ToolTip": "C:\\Users\\eliiv\\Downloads\\proyecto_completo\\MiWebAPI\\MiWebAPI\\Program.cs",
+              "RelativeToolTip": "MiWebAPI\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-26T22:53:47.205Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "AuthController.cs",
+              "DocumentMoniker": "C:\\Users\\eliiv\\Downloads\\proyecto_completo\\MiWebAPI\\MiWebAPI\\Controllers\\AuthController.cs",
+              "RelativeDocumentMoniker": "MiWebAPI\\Controllers\\AuthController.cs",
+              "ToolTip": "C:\\Users\\eliiv\\Downloads\\proyecto_completo\\MiWebAPI\\MiWebAPI\\Controllers\\AuthController.cs",
+              "RelativeToolTip": "MiWebAPI\\Controllers\\AuthController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-26T22:52:03.981Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\eliiv\\Downloads\\proyecto_completo\\MiWebAPI\\MiWebAPI\\appsettings.json",
+              "RelativeDocumentMoniker": "MiWebAPI\\appsettings.json",
+              "ToolTip": "C:\\Users\\eliiv\\Downloads\\proyecto_completo\\MiWebAPI\\MiWebAPI\\appsettings.json",
+              "RelativeToolTip": "MiWebAPI\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAACsAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-10-26T22:18:07.249Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
