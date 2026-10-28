@@ -3,7 +3,7 @@ using ADSPORT.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-using MiWebAPI.Data;
+
 using MiWebAPI.Models;
 
 namespace ADSPORT.Controllers

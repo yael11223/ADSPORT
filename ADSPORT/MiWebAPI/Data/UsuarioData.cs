@@ -32,6 +32,7 @@ namespace ADSPORT.Data
                         {
                             IdUsuario = Convert.ToInt32(reader["ID_USUARIO"]),
                             IdRol = Convert.ToInt32(reader["ID_ROL"]),
+                            NombreRol = reader["NOMBRE_ROL"].ToString(),
                             Nombre = reader["NOMBRE"].ToString(),
                             ApellidoPaterno = reader["APELLIDO_PATERNO"].ToString(),
                             ApellidoMaterno = reader["APELLIDO_MATERNO"].ToString(),

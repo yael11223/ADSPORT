@@ -1,5 +1,6 @@
-const formulario = document.getElementById("formEmpleado");
-const tabla = document.getElementById("tablaEmpleados");
+
+const formulario = document.getElementById("formEntrenador");
+const tabla = document.getElementById("tablaEntrenadores");
 const filtro = document.getElementById("txtFiltro");
 const mensaje = document.getElementById("mensaje");
 const sinResultados = document.getElementById("sinResultados");
@@ -8,13 +9,14 @@ const btnGuardar = document.getElementById("btnGuardar");
 const btnCancelar = document.getElementById("btnCancelar");
 const btnRecargar = document.getElementById("btnRecargar");
 
-let empleados = [];
+let usuarios = [];
 
-document.addEventListener("DOMContentLoaded", obtenerEmpleados);
+document.addEventListener("DOMContentLoaded", obtenerUsuarios);
 formulario.addEventListener("submit", guardarEmpleado);
 filtro.addEventListener("input", aplicarFiltro);
 btnCancelar.addEventListener("click", limpiarFormulario);
-btnRecargar.addEventListener("click", obtenerEmpleados);
+btnRecargar.addEventListener("click", obtenerUsuarios);
+
 
 async function solicitar(url, opciones = {}) {
   const respuesta = await fetch(url, opciones);
@@ -31,11 +33,11 @@ async function solicitar(url, opciones = {}) {
   return respuesta.json();
 }
 
-async function obtenerEmpleados() {
+async function obtenerUsuarios() {
   cambiarEstadoCarga(true);
 
   try {
-    empleados = await solicitar(API_URL);
+      usuarios = await solicitar(API_URL);
     aplicarFiltro();
   } catch (error) {
     mostrarMensaje(
@@ -48,25 +50,34 @@ async function obtenerEmpleados() {
   }
 }
 
-function mostrarEmpleados(lista) {
-  tabla.innerHTML = "";
-  sinResultados.classList.toggle("d-none", lista.length > 0);
+function mostrarUsuarios(lista) {
+    tabla.innerHTML = "";
+    sinResultados.classList.toggle("d-none", lista.length > 0);
 
-  lista.forEach((empleado) => {
-    const fila = document.createElement("tr");
-    fila.innerHTML = `
-      <td>${escaparHtml(empleado.nombreCompleto)}</td>
-      <td>${escaparHtml(empleado.correo)}</td>
-      <td class="text-end">${formatearMoneda(empleado.sueldo)}</td>
-      <td>${escaparHtml(empleado.fechaContrato)}</td>
+    lista.forEach((usuario) => {
+        const fila = document.createElement("tr");
+
+        const nombreCompleto = [
+            usuario.nombre,
+            usuario.apellidoPaterno,
+            usuario.apellidoMaterno
+        ].filter(Boolean).join(" ");
+
+        fila.innerHTML = `
+      <td>${escaparHtml(nombreCompleto)}</td>
+      <td>${escaparHtml(usuario.correo)}</td>
+      <td>${escaparHtml(usuario.telefono)}</td>
+      <td>${escaparHtml(usuario.nombreRol)}</td>
+      <td>${escaparHtml(usuario.estatus)}</td>
       <td class="text-center acciones">
         <button class="btn btn-sm btn-outline-primary" data-accion="editar"
-                data-id="${empleado.idEmpleado}">Editar</button>
+                data-id="${usuario.idUsuario}">Editar</button>
         <button class="btn btn-sm btn-outline-danger" data-accion="eliminar"
-                data-id="${empleado.idEmpleado}">Eliminar</button>
+                data-id="${usuario.idUsuario}">Eliminar</button>
       </td>`;
-    tabla.appendChild(fila);
-  });
+
+        tabla.appendChild(fila);
+    });
 }
 
 tabla.addEventListener("click", (evento) => {
@@ -175,14 +186,24 @@ function limpiarFormulario() {
   btnCancelar.classList.add("d-none");
 }
 
+
 function aplicarFiltro() {
-  const texto = filtro.value.trim().toLowerCase();
-  const resultados = empleados.filter((empleado) =>
-    (empleado.nombreCompleto ?? "").toLowerCase().includes(texto) ||
-    (empleado.correo ?? "").toLowerCase().includes(texto)
-  );
-  mostrarEmpleados(resultados);
+    const texto = filtro.value.trim().toLowerCase();
+
+    const resultados = usuarios.filter((usuario) => {
+        const nombreCompleto = [
+            usuario.nombre,
+            usuario.apellidoPaterno,
+            usuario.apellidoMaterno
+        ].filter(Boolean).join(" ");
+
+        return nombreCompleto.toLowerCase().includes(texto) ||
+            (usuario.correo ?? "").toLowerCase().includes(texto);
+    });
+
+    mostrarUsuarios(resultados);
 }
+
 
 function cambiarEstadoCarga(cargando) {
   btnRecargar.disabled = cargando;

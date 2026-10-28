@@ -1,65 +1,190 @@
+
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Inicio | Sistema de empleados</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>ADSPORT | Panel de administración</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
-<body>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
-    <div class="container">
-      <a class="navbar-brand fw-semibold" href="index.html">Sistema de empleados</a>
-      <div class="d-flex align-items-center gap-3">
-        <span id="nombreUsuario" class="text-white-50 d-none d-md-inline"></span>
-        <button class="btn btn-outline-light btn-sm" onclick="cerrarSesion()">Cerrar sesión</button>
-      </div>
-    </div>
-  </nav>
-  <header class="home-hero py-5">
-    <div class="container py-4">
-      <div class="row align-items-center g-4">
-        <div class="col-lg-7">
-          <span class="badge text-bg-primary mb-3">API .NET 8 + JavaScript puro</span>
-          <h1 class="display-5 fw-bold">Panel principal</h1>
-          <p class="lead text-secondary mb-4">Administra la información de empleados desde una interfaz construida con HTML, Bootstrap y JavaScript, conectada directamente con la API.</p>
-          <a class="btn btn-primary btn-lg" href="empleados.html">Administrar empleados</a>
+
+<body class="adsport-dashboard">
+
+    <!-- BARRA SUPERIOR -->
+    <nav class="adsport-navbar">
+        <div class="adsport-brand">
+            <div class="adsport-brand-icon">A</div>
+            <div>
+                <span class="adsport-brand-name">ADSPORT</span>
+                <span class="adsport-brand-subtitle">GESTIÓN DE PERSONAL</span>
+            </div>
         </div>
-        <div class="col-lg-5">
-          <div class="card shadow-sm border-0"><div class="card-body p-4">
-            <h2 class="h4">Flujo de la aplicación</h2>
-            <ol class="text-secondary mb-0 ps-3">
-              <li class="mb-2">El formulario captura los datos.</li>
-              <li class="mb-2">JavaScript envía la petición con <code>fetch</code>.</li>
-              <li class="mb-2">La API ejecuta el procedimiento almacenado.</li>
-              <li>La respuesta actualiza la pantalla.</li>
-            </ol>
-          </div></div>
+
+        <div class="navbar-user">
+            <div class="user-avatar">U</div>
+            <div class="user-info">
+                <span class="user-label">Sesión activa</span>
+                <span id="nombreUsuario" class="user-name">Usuario</span>
+            </div>
+            <button type="button"
+                    class="btn-logout"
+                    onclick="cerrarSesion()">
+                <span aria-hidden="true">↪</span>
+                Cerrar sesión
+            </button>
         </div>
-      </div>
-    </div>
-  </header>
-  <main class="container pb-5">
-    <div class="row g-4">
-      <div class="col-md-4"><div class="card h-100 shadow-sm module-card"><div class="card-body p-4">
-        <div class="module-icon">E</div><h2 class="h4">Empleados</h2>
-        <p class="text-secondary">Consulta, registra, actualiza y elimina empleados.</p>
-        <a href="empleados.html" class="btn btn-outline-primary">Abrir módulo</a>
-      </div></div></div>
-      <div class="col-md-4"><div class="card h-100 shadow-sm module-card"><div class="card-body p-4">
-        <div class="module-icon bg-success">API</div><h2 class="h4">Swagger</h2>
-        <p class="text-secondary">Prueba los endpoints de la API directamente.</p>
-        <a href="/swagger" class="btn btn-outline-success">Abrir Swagger</a>
-      </div></div></div>
-      <div class="col-md-4"><div class="card h-100 shadow-sm module-card"><div class="card-body p-4">
-        <div class="module-icon bg-secondary">DB</div><h2 class="h4">Base de datos</h2>
-        <p class="text-secondary">Las operaciones utilizan procedimientos almacenados de SQL Server.</p>
-        <span class="badge text-bg-light border">SQL Server</span>
-      </div></div></div>
-    </div>
-  </main>
-  <script src="js/auth.js"></script>
-  <script>protegerPagina(); mostrarUsuario("nombreUsuario");</script>
+    </nav>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="dashboard-main">
+
+        <!-- BIENVENIDA -->
+        <section class="dashboard-hero">
+
+            <div class="hero-decoration" aria-hidden="true">A</div>
+
+            <div class="hero-content">
+                <div class="dashboard-eyebrow">
+                    <span class="status-dot"></span>
+                    PANEL DE CONTROL
+                </div>
+
+                <h1>
+                    ADMINISTRA<br>
+                    <span>EL TALENTO.</span>
+                </h1>
+
+                <p>
+                    Gestiona la información de tus colaboradores,
+                    consulta los registros y mantén tu operación organizada
+                    desde un solo lugar.
+                </p>
+
+                <a href="empleados.html" class="btn-orange">
+                    <span>Administrar empleados</span>
+                    <span class="button-arrow" aria-hidden="true">→</span>
+                </a>
+            </div>
+
+            <div class="hero-side-info">
+                <span class="hero-side-number">01</span>
+                <span class="hero-side-line"></span>
+                <span class="hero-side-label">GESTIÓN<br>INTELIGENTE</span>
+            </div>
+
+            <div class="hero-bottom-label">
+                ORGANIZACIÓN <span>/</span> CONTROL <span>/</span> RESULTADOS
+            </div>
+        </section>
+
+        <!-- TÍTULO DE MÓDULOS -->
+        <section class="modules-section">
+
+            <div class="section-heading">
+                <div>
+                    <span class="section-eyebrow">CENTRO DE OPERACIONES</span>
+                    <h2>Módulos del sistema<span>.</span></h2>
+                    <p>Selecciona una herramienta para continuar.</p>
+                </div>
+
+                <div class="module-count">
+                    <span>03</span>
+                    <small>MÓDULOS</small>
+                </div>
+            </div>
+
+            <!-- TARJETAS -->
+            <div class="dashboard-modules">
+
+                <!-- EMPLEADOS -->
+                <article class="dashboard-card employee-card">
+                    <div class="card-topline">
+                        <span class="card-number">01 / PERSONAL</span>
+                        <span class="card-icon" aria-hidden="true">♙</span>
+                    </div>
+
+                    <div class="card-symbol employee-symbol">E</div>
+
+                    <h3>Empleados</h3>
+
+                    <p>
+                        Administra los registros del personal,
+                        consulta información y realiza altas,
+                        modificaciones y bajas.
+                    </p>
+
+                    <a href="empleados.html" class="card-link">
+                        Abrir módulo
+                        <span aria-hidden="true">↗</span>
+                    </a>
+                </article>
+
+                <!-- API -->
+                <article class="dashboard-card api-card">
+                    <div class="card-topline">
+                        <span class="card-number">02 / DESARROLLO</span>
+                        <span class="card-icon" aria-hidden="true">&lt;/&gt;</span>
+                    </div>
+
+                    <div class="card-symbol api-symbol">&lt;/&gt;</div>
+
+                    <h3>API y servicios</h3>
+
+                    <p>
+                        Consulta y prueba los endpoints disponibles
+                        mediante la documentación interactiva de Swagger.
+                    </p>
+
+                    <a href="/swagger" class="card-link">
+                        Abrir Swagger
+                        <span aria-hidden="true">↗</span>
+                    </a>
+                </article>
+
+                <!-- BASE DE DATOS -->
+                <article class="dashboard-card database-card">
+                    <div class="card-topline">
+                        <span class="card-number">03 / INFRAESTRUCTURA</span>
+                        <span class="card-icon" aria-hidden="true">▤</span>
+                    </div>
+
+                    <div class="card-symbol database-symbol">DB</div>
+
+                    <h3>Base de datos</h3>
+
+                    <p>
+                        La información se gestiona mediante SQL Server
+                        y procedimientos almacenados.
+                    </p>
+
+                    <div class="database-status">
+                        <span class="status-dot"></span>
+                        SQL SERVER
+                    </div>
+                </article>
+
+            </div>
+        </section>
+
+        <!-- PIE DE PÁGINA -->
+        <footer class="dashboard-footer">
+            <span>ADSPORT <span class="footer-divider">/</span> SISTEMA DE GESTIÓN DE PERSONAL</span>
+            <span>PLATAFORMA ADMINISTRATIVA</span>
+        </footer>
+
+    </main>
+
+    <!-- AUTENTICACIÓN ORIGINAL -->
+    <script src="/js/auth.js"></script>
+    <script>
+        protegerPagina();
+        mostrarUsuario("nombreUsuario");
+    </script>
+
 </body>
 </html>
