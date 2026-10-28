@@ -12,7 +12,7 @@ const btnRecargar = document.getElementById("btnRecargar");
 let usuarios = [];
 
 document.addEventListener("DOMContentLoaded", obtenerUsuarios);
-formulario.addEventListener("submit", guardarEmpleado);
+formulario.addEventListener("submit", guardarUsuario);
 filtro.addEventListener("input", aplicarFiltro);
 btnCancelar.addEventListener("click", limpiarFormulario);
 btnRecargar.addEventListener("click", obtenerUsuarios);
@@ -89,91 +89,131 @@ tabla.addEventListener("click", (evento) => {
   if (boton.dataset.accion === "eliminar") eliminarEmpleado(id);
 });
 
+
 async function cargarEmpleado(id) {
-  try {
-    const empleado = await solicitar(`${API_URL}/${id}`);
+    try {
+        const empleado = await solicitar(`${API_URL}/${id}`);
 
-    document.getElementById("idEmpleado").value = empleado.idEmpleado;
-    document.getElementById("nombreCompleto").value = empleado.nombreCompleto ?? "";
-    document.getElementById("correo").value = empleado.correo ?? "";
-    document.getElementById("sueldo").value = empleado.sueldo ?? 0;
-    document.getElementById("fechaContrato").value = convertirFechaParaInput(empleado.fechaContrato);
+        document.getElementById("idEntrenador").value = empleado.idUsuario;
+        document.getElementById("entrenadorNombre").value = empleado.nombre ?? "";
+        document.getElementById("entrenadorPaterno").value = empleado.apellidoPaterno ?? "";
+        document.getElementById("entrenadorMaterno").value = empleado.apellidoMaterno ?? "";
+        document.getElementById("entrenadorCorreo").value = empleado.correo ?? "";
+        document.getElementById("entrenadorTelefono").value = empleado.telefono ?? "";
+        document.getElementById("entrenadorRol").value = empleado.idRol ?? "";
+        document.getElementById("entrenadorEstatus").value = empleado.estatus ?? "";
+        document.getElementById("entrenadorQR").value = empleado.codigoQr ?? "";
 
-    tituloFormulario.textContent = "Editar empleado";
-    btnGuardar.textContent = "Actualizar";
-    btnCancelar.classList.remove("d-none");
-    formulario.scrollIntoView({ behavior: "smooth", block: "start" });
-  } catch (error) {
-    mostrarMensaje("No fue posible obtener el empleado.", "danger");
-    console.error(error);
-  }
+        tituloFormulario.textContent = "Editar empleado";
+        btnGuardar.textContent = "Actualizar";
+        btnCancelar.classList.remove("d-none");
+
+        formulario.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+
+    } catch (error) {
+        mostrarMensaje("No fue posible obtener al empleado.", "danger");
+        console.error(error);
+    }
 }
 
-async function guardarEmpleado(evento) {
-  evento.preventDefault();
 
-  if (!formulario.checkValidity()) {
-    formulario.classList.add("was-validated");
-    return;
-  }
 
-  const empleado = leerFormulario();
-  const esNuevo = empleado.idEmpleado === 0;
+async function guardarUsuario(evento) {
+    evento.preventDefault();
 
-  try {
-    btnGuardar.disabled = true;
-    btnGuardar.textContent = esNuevo ? "Guardando..." : "Actualizando...";
-
-    const resultado = await solicitar(API_URL, {
-      method: esNuevo ? "POST" : "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(empleado)
-    });
-
-    if (!resultado.isSuccess) {
-      throw new Error(`Error ${resultado.numeroError}: ${resultado.respuesta}`);
+    if (!formulario.checkValidity()) {
+        formulario.classList.add("was-validated");
+        return;
     }
 
-    mostrarMensaje(resultado.respuesta, "success");
-    limpiarFormulario();
-    await obtenerEmpleados();
-  } catch (error) {
-    mostrarMensaje(error.message || "No fue posible guardar la información.", "danger");
-    console.error(error);
-  } finally {
-    btnGuardar.disabled = false;
-    btnGuardar.textContent = document.getElementById("idEmpleado").value === "0" ? "Guardar" : "Actualizar";
-  }
+    const usuario = leerFormulario();
+    const esNuevo = usuario.idUsuario === 0;
+
+    try {
+        btnGuardar.disabled = true;
+        btnGuardar.textContent = esNuevo ? "Guardando..." : "Actualizando...";
+
+        const resultado = await solicitar(API_URL, {
+            method: esNuevo ? "POST" : "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(usuario)
+        });
+
+        if (resultado.numeroError !== 0) {
+            throw new Error(
+                `Error ${resultado.numeroError}: ${resultado.respuesta}`
+            );
+        }
+
+        mostrarMensaje(resultado.respuesta, "success");
+        limpiarFormulario();
+        await obtenerUsuarios();
+
+    } catch (error) {
+        mostrarMensaje(
+            error.message || "No fue posible guardar el usuario.",
+            "danger"
+        );
+        console.error(error);
+    } finally {
+        btnGuardar.disabled = false;
+        btnGuardar.textContent = "Guardar";
+    }
 }
+
+
 
 async function eliminarEmpleado(id) {
-  const empleado = empleados.find((item) => item.idEmpleado === id);
-  const nombre = empleado?.nombreCompleto ?? "seleccionado";
+    const empleado = usuarios.find(
+        (item) => Number(item.idUsuario) === Number(id)
+    );
 
-  if (!confirm(`¿Deseas eliminar al empleado ${nombre}?`)) return;
+    const nombre = [
+        empleado?.nombre,
+        empleado?.apellidoPaterno,
+        empleado?.apellidoMaterno
+    ].filter(Boolean).join(" ") || "seleccionado";
 
-  try {
-    const resultado = await solicitar(`${API_URL}/${id}`, { method: "DELETE" });
+    if (!confirm(`¿Deseas eliminar al empleado ${nombre}?`)) return;
 
-    if (!resultado.isSuccess) {
-      throw new Error(`Error ${resultado.numeroError}: ${resultado.respuesta}`);
+    try {
+        const resultado = await solicitar(`${API_URL}/${id}`, {
+            method: "DELETE"
+        });
+
+        if (resultado.numeroError !== 0) {
+            throw new Error(
+                `Error ${resultado.numeroError}: ${resultado.respuesta}`
+            );
+        }
+
+        mostrarMensaje(resultado.respuesta, "success");
+        await obtenerUsuarios();
+
+    } catch (error) {
+        mostrarMensaje(
+            error.message || "No fue posible eliminar al empleado.",
+            "danger"
+        );
+        console.error(error);
     }
-
-    mostrarMensaje(resultado.respuesta, "success");
-    await obtenerEmpleados();
-  } catch (error) {
-    mostrarMensaje(error.message || "No fue posible eliminar el empleado.", "danger");
-    console.error(error);
-  }
 }
+
 
 function leerFormulario() {
   return {
-    idEmpleado: Number(document.getElementById("idEmpleado").value),
-    nombreCompleto: document.getElementById("nombreCompleto").value.trim(),
-    correo: document.getElementById("correo").value.trim(),
-    sueldo: Number(document.getElementById("sueldo").value),
-    fechaContrato: document.getElementById("fechaContrato").value
+      idUsuario: Number(document.getElementById("idEntrenador").value),
+      idRol: Number(document.getElementById("entrenadorRol").value),
+      nombre: document.getElementById("entrenadorNombre").value.trim(),
+      apellidoPaterno: document.getElementById("entrenadorPaterno").value.trim(),
+      apellidoMaterno: document.getElementById("entrenadorMaterno").value.trim(),
+      correo: document.getElementById("entrenadorCorreo").value.trim(),
+      telefono: Number(document.getElementById("entrenadorTelefono").value),
+      estatus: document.getElementById("entrenadorEstatus").value,
+      codigoQr: document.getElementById("entrenadorQR").value.trim()
   };
 }
 

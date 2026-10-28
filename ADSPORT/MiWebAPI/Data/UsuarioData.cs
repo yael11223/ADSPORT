@@ -71,7 +71,7 @@ namespace ADSPORT.Data
                             ApellidoPaterno = reader["APELLIDO_PATERNO"].ToString(),
                             ApellidoMaterno = reader["APELLIDO_MATERNO"].ToString(),
                             Correo = reader["CORREO"].ToString(),
-                            Telefono = Convert.ToInt32(reader["TELEFONO"]),
+                            Telefono = Convert.ToInt64(reader["TELEFONO"]),
                             Estatus = reader["ESTATUS"].ToString(),
                             CodigoQr = reader["CODIGO_QR"].ToString(),
                             FechaUltimaModificacion = reader["FECHA__ULTIMA_MODIFICACION"].ToString()
