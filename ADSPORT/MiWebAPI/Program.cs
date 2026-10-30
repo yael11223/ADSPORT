@@ -12,6 +12,7 @@ builder.Services.AddSwaggerGen();
 
 
 builder.Services.AddSingleton<UsuarioData>();
+builder.Services.AddScoped<RolData>();
 
 builder.Services.AddCors(options =>
 {
