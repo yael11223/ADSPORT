@@ -1,0 +1,755 @@
+﻿:root {
+    --naranja: #ff6900;
+    --negro: #080808;
+    --blanco: #ffffff;
+    --gris: #b5b5b5;
+    --borde: #363636;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-height: 100vh;
+    padding: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: var(--negro);
+    color: var(--blanco);
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.contenedor {
+    width: 100%;
+    max-width: 1400px;
+    min-height: 680px;
+    display: grid;
+    grid-template-columns: 1.4fr 0.9fr;
+    border: 1px solid #333;
+    border-radius: 22px;
+    overflow: hidden;
+    background: var(--negro);
+    box-shadow: 0 20px 70px rgba(0, 0, 0, 0.4);
+}
+
+/* PANEL IZQUIERDO */
+
+
+.presentacion {
+    padding: 65px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: linear-gradient( 90deg, rgba(0, 0, 0, 0.92), rgba(0, 0, 0, 0.60) ), url("/Accet/Inicio.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+
+.marca {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.logo {
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    background: var(--naranja);
+    display: grid;
+    place-items: center;
+    font-size: 25px;
+    font-weight: 900;
+}
+
+.nombre-marca {
+    font-size: 23px;
+    font-weight: 900;
+    font-style: italic;
+    letter-spacing: 1px;
+}
+
+.eslogan {
+    margin-top: 55px;
+}
+
+.etiqueta {
+    color: var(--blanco);
+    font-size: 10px;
+    font-weight: bold;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+}
+
+.subtitulo {
+    margin-top: 35px;
+    font-size: 10px;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+.subtitulo span,
+.pie span {
+    color: var(--naranja);
+    padding: 0 8px;
+}
+
+.eslogan h1 {
+    margin-top: 32px;
+    font-size: clamp(44px, 5vw, 78px);
+    line-height: 0.98;
+    font-weight: 950;
+    font-style: italic;
+    letter-spacing: -3px;
+    text-transform: uppercase;
+}
+
+.eslogan h1 > span:first-child {
+    display: block;
+    color: var(--naranja);
+}
+
+.eslogan h1 .punto-final {
+    color: var(--naranja);
+}
+
+.descripcion {
+    max-width: 440px;
+    margin-top: 30px;
+    color: #c3c3c3;
+    font-size: 14px;
+    line-height: 1.9;
+}
+
+.pie {
+    margin-top: 60px;
+    color: #bcbcbc;
+    font-size: 10px;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+/* PANEL DEL LOGIN */
+
+.panel-login {
+    padding: 65px 55px;
+    border-left: 1px solid rgba(255, 105, 0, 0.35);
+    background:
+        radial-gradient(
+            circle at 100% 0%,
+            rgba(255, 105, 0, 0.12),
+            transparent 38%
+        ),
+        linear-gradient(160deg, #191919, #0c0c0c);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.encabezado {
+    text-align: center;
+    margin-bottom: 42px;
+}
+
+.encabezado .etiqueta {
+    color: #d2d2d2;
+}
+
+.encabezado h2 {
+    margin-top: 23px;
+    font-size: clamp(32px, 3vw, 43px);
+    font-weight: 900;
+    letter-spacing: -1.5px;
+}
+
+.encabezado h2 span {
+    color: var(--naranja);
+}
+
+.encabezado > p:last-child {
+    margin-top: 15px;
+    color: var(--gris);
+    font-size: 13px;
+}
+
+.campo {
+    margin-bottom: 24px;
+}
+
+.campo label {
+    display: block;
+    margin-bottom: 12px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.campo input {
+    width: 100%;
+    height: 54px;
+    padding: 0 16px;
+    border: 1px solid #404040;
+    border-radius: 11px;
+    background: #202020;
+    color: white;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.campo input::placeholder {
+    color: #888;
+}
+
+.campo input:focus {
+    border-color: var(--naranja);
+    box-shadow: 0 0 0 3px rgba(255, 105, 0, 0.12);
+}
+
+.contenedor-password {
+    position: relative;
+}
+
+.contenedor-password input {
+    padding-right: 50px;
+}
+
+.mostrar-password {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    background: transparent;
+    color: #bbb;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.mostrar-password:hover {
+    color: var(--naranja);
+}
+
+.opciones {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: -10px;
+    margin-bottom: 27px;
+}
+
+.opciones a {
+    color: #bcbcbc;
+    text-decoration: none;
+    font-size: 12px;
+}
+
+.opciones a:hover {
+    color: var(--naranja);
+}
+
+/* BOTÓN INGRESAR */
+
+.btn-ingresar {
+    width: 100%;
+    min-height: 55px;
+    padding: 0 20px;
+    border: none;
+    border-radius: 11px;
+    background: var(--naranja);
+    color: white;
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.btn-ingresar:hover {
+    background: #e85f00;
+    transform: translateY(-2px);
+}
+
+.btn-ingresar:disabled {
+    opacity: 0.7;
+    cursor: wait;
+    transform: none;
+}
+
+.flecha {
+    font-size: 25px;
+    font-weight: normal;
+}
+
+/* REGISTRO */
+
+.separador {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin: 32px 0;
+    color: #999;
+    font-size: 9px;
+    letter-spacing: 2px;
+    white-space: nowrap;
+}
+
+.separador::before,
+.separador::after {
+    content: "";
+    height: 1px;
+    background: #333;
+    flex: 1;
+}
+
+.registro {
+    text-align: center;
+    color: #bdbdbd;
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+.crear-cuenta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 14px 16px;
+    margin-top: 17px;
+    border: 1px solid #484848;
+    border-radius: 11px;
+    color: white;
+    font-weight: bold;
+    text-decoration: none;
+    transition: border-color 0.2s, color 0.2s;
+}
+
+.crear-cuenta span {
+    color: var(--naranja);
+    font-size: 20px;
+}
+
+.crear-cuenta:hover {
+    border-color: var(--naranja);
+    color: var(--naranja);
+}
+
+.seguridad {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 9px;
+    margin-top: 35px;
+    color: #aaa;
+    font-size: 11px;
+}
+
+.punto {
+    color: var(--naranja);
+}
+
+/* MENSAJES */
+
+.mensaje {
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid var(--borde);
+    border-radius: 8px;
+    font-size: 13px;
+}
+
+.d-none {
+    display: none !important;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 900px) {
+    body {
+        padding: 15px;
+    }
+
+    .contenedor {
+        max-width: 540px;
+        grid-template-columns: 1fr;
+    }
+
+    .presentacion {
+        padding: 35px;
+    }
+
+    .eslogan {
+        margin-top: 45px;
+    }
+
+    .eslogan h1 {
+        font-size: 48px;
+    }
+
+    .pie {
+        margin-top: 40px;
+    }
+
+    .panel-login {
+        padding: 45px 35px;
+        border-left: none;
+        border-top: 1px solid rgba(255, 105, 0, 0.35);
+    }
+}
+
+@media (max-width: 420px) {
+    .presentacion,
+    .panel-login {
+        padding: 28px 22px;
+    }
+
+    .eslogan h1 {
+        font-size: 40px;
+        letter-spacing: -2px;
+    }
+
+    .subtitulo {
+        font-size: 9px;
+        letter-spacing: 1px;
+    }
+
+    .encabezado h2 {
+        font-size: 34px;
+    }
+}
+
+
+/* ================================
+   ANIMACIONES DE INICIO ADSPORT
+================================ */
+
+/* Entrada general */
+@keyframes entradaPanel {
+    from {
+        opacity: 0;
+        transform: translateY(22px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Panel izquierdo */
+@keyframes entradaIzquierda {
+    from {
+        opacity: 0;
+        transform: translateX(-35px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Panel de login */
+@keyframes entradaDerecha {
+    from {
+        opacity: 0;
+        transform: translateX(35px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.presentacion {
+    animation: entradaIzquierda 0.9s ease-out both;
+}
+
+.panel-login {
+    animation: entradaDerecha 0.9s ease-out both;
+}
+
+/* Aparición progresiva del contenido */
+.marca {
+    animation: entradaPanel 0.7s ease-out 0.15s both;
+}
+
+.eslogan .etiqueta {
+    animation: entradaPanel 0.7s ease-out 0.25s both;
+}
+
+.eslogan .subtitulo {
+    animation: entradaPanel 0.7s ease-out 0.4s both;
+}
+
+.eslogan h1 {
+    animation: entradaPanel 0.8s ease-out 0.5s both;
+}
+
+.eslogan .descripcion {
+    animation: entradaPanel 0.8s ease-out 0.65s both;
+}
+
+.encabezado {
+    animation: entradaPanel 0.7s ease-out 0.25s both;
+}
+
+#formLogin {
+    animation: entradaPanel 0.7s ease-out 0.4s both;
+}
+
+.registro {
+    animation: entradaPanel 0.7s ease-out 0.6s both;
+}
+
+/* Brillo naranja del título */
+.eslogan h1 > span:first-child {
+    text-shadow: 0 0 0 transparent;
+    transition: text-shadow 0.3s ease;
+}
+
+    .eslogan h1 > span:first-child:hover {
+        text-shadow: 0 0 22px rgba(255, 105, 0, 0.35);
+    }
+
+/* Efecto en los campos */
+.campo input {
+    transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+}
+
+    .campo input:focus {
+        background: #252525;
+        border-color: #ff6900;
+        box-shadow: 0 0 0 3px rgba(255, 105, 0, 0.15);
+    }
+
+/* Botón de inicio */
+.btn-ingresar {
+    position: relative;
+    overflow: hidden;
+    transition: background 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+    .btn-ingresar:hover {
+        background: #ff7a1a;
+        box-shadow: 0 8px 25px rgba(255, 105, 0, 0.25);
+        transform: translateY(-3px);
+    }
+
+    .btn-ingresar:active {
+        transform: translateY(0) scale(0.99);
+    }
+
+    /* Movimiento de la flecha */
+    .btn-ingresar .flecha {
+        display: inline-block;
+        transition: transform 0.25s ease;
+    }
+
+    .btn-ingresar:hover .flecha {
+        transform: translateX(6px);
+    }
+
+/* Botón crear cuenta */
+.crear-cuenta {
+    transition: color 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+}
+
+    .crear-cuenta:hover {
+        background: rgba(255, 105, 0, 0.06);
+        border-color: #ff6900;
+    }
+
+    .crear-cuenta span {
+        display: inline-block;
+        transition: transform 0.25s ease;
+    }
+
+    .crear-cuenta:hover span {
+        transform: rotate(90deg);
+    }
+
+/* Imagen de fondo con movimiento sutil */
+.presentacion {
+    background-size: cover;
+    background-position: center;
+    transition: background-position 0.8s ease;
+}
+
+/* Respeta la configuración de accesibilidad */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* ===== CARGADOR CINEMATOGRÁFICO ADSPORT ===== */
+
+.intro-loader {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    display: grid;
+    place-items: center;
+    background: radial-gradient( circle at center, rgba(255, 105, 0, 0.12), transparent 35% ), #080808;
+    transition: opacity 0.65s ease, visibility 0.65s ease;
+}
+
+    .intro-loader.oculto {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+    }
+
+.loader-contenido {
+    width: min(330px, 85vw);
+    text-align: center;
+    animation: loaderEntrada 0.7s ease both;
+}
+
+.loader-logo {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 20px;
+    display: grid;
+    place-items: center;
+    background: #ff6900;
+    border-radius: 20px;
+    color: white;
+    font-size: 40px;
+    font-weight: 900;
+    box-shadow: 0 0 35px rgba(255, 105, 0, 0.35);
+    animation: logoPulso 1.3s ease-in-out infinite;
+}
+
+.loader-contenido h2 {
+    color: white;
+    font-size: 32px;
+    font-style: italic;
+    font-weight: 900;
+    letter-spacing: 2px;
+}
+
+    .loader-contenido h2 span {
+        color: #ff6900;
+    }
+
+.loader-contenido p {
+    margin-top: 16px;
+    color: #c5c5c5;
+    font-size: 10px;
+    font-weight: bold;
+    letter-spacing: 3px;
+}
+
+.loader-linea {
+    width: 100%;
+    height: 4px;
+    margin-top: 32px;
+    overflow: hidden;
+    border-radius: 10px;
+    background: #292929;
+}
+
+.loader-progreso {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient( 90deg, #b83e00, #ff6900, #ffb16e );
+    transform: scaleX(0);
+    transform-origin: left;
+    animation: progresoCarga 1.4s ease-in-out forwards;
+}
+
+.loader-texto {
+    display: block;
+    margin-top: 14px;
+    color: #888;
+    font-size: 9px;
+    letter-spacing: 2px;
+}
+
+@keyframes loaderEntrada {
+    from {
+        opacity: 0;
+        transform: translateY(18px) scale(0.96);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes logoPulso {
+    0%, 100% {
+        box-shadow: 0 0 18px rgba(255, 105, 0, 0.2);
+    }
+
+    50% {
+        box-shadow: 0 0 42px rgba(255, 105, 0, 0.55);
+    }
+}
+
+@keyframes progresoCarga {
+    to {
+        transform: scaleX(1);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .loader-contenido,
+    .loader-logo,
+    .loader-progreso {
+        animation: none;
+    }
+
+    .loader-progreso {
+        transform: scaleX(1);
+    }
+
+    .intro-loader {
+        transition: none;
+    }
+}
+
+/* Primero se muestra el cargador */
+.intro-loader:not(.oculto) ~ .contenedor {
+    visibility: hidden;
+}
+
+/* Cuando termina la carga, se activa la animación del login */
+.intro-loader.oculto ~ .contenedor {
+    visibility: visible;
+}
+
+    .intro-loader.oculto ~ .contenedor .presentacion {
+        animation: entradaIzquierda 0.9s ease-out both;
+    }
+
+    .intro-loader.oculto ~ .contenedor .panel-login {
+        animation: entradaDerecha 0.9s ease-out both;
+    }
+
+    /* Reactivar las animaciones del contenido */
+    .intro-loader.oculto ~ .contenedor .marca,
+    .intro-loader.oculto ~ .contenedor .eslogan .etiqueta,
+    .intro-loader.oculto ~ .contenedor .eslogan .subtitulo,
+    .intro-loader.oculto ~ .contenedor .eslogan h1,
+    .intro-loader.oculto ~ .contenedor .eslogan .descripcion,
+    .intro-loader.oculto ~ .contenedor .encabezado,
+    .intro-loader.oculto ~ .contenedor #formLogin,
+    .intro-loader.oculto ~ .contenedor .registro {
+        animation-play-state: running;
+    }
