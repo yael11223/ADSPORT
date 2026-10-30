@@ -7,7 +7,6 @@ namespace ADSPORT.Data
 {
     public class UsuarioData
     {
-
         private readonly string conexion;
 
         public UsuarioData(IConfiguration configuration)
@@ -22,25 +21,28 @@ namespace ADSPORT.Data
             using (var con = new SqlConnection(conexion))
             {
                 await con.OpenAsync();
-                SqlCommand cmd = new SqlCommand("USUARIO_LISTA", con);
-                cmd.CommandType = CommandType.StoredProcedure;
+                SqlCommand cmd = new SqlCommand("USUARIO_LISTA", con)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
 
                 using (var reader = await cmd.ExecuteReaderAsync())
                 {
-                    while (await reader.ReadAsync()) {
+                    while (await reader.ReadAsync())
+                    {
                         lista.Add(new Usuario
                         {
-                            IdUsuario = Convert.ToInt32(reader["ID_USUARIO"]),
-                            IdRol = Convert.ToInt32(reader["ID_ROL"]),
-                            NombreRol = reader["NOMBRE_ROL"].ToString(),
-                            Nombre = reader["NOMBRE"].ToString(),
-                            ApellidoPaterno = reader["APELLIDO_PATERNO"].ToString(),
-                            ApellidoMaterno = reader["APELLIDO_MATERNO"].ToString(),
-                            Correo = reader["CORREO"].ToString(),
-                            Telefono = Convert.ToInt64 (reader["TELEFONO"]),
-                            Estatus = reader["ESTATUS"].ToString(),
-                            CodigoQr = reader["CODIGO_QR"].ToString(),
-                            FechaUltimaModificacion = reader["FECHA__ULTIMA_MODIFICACION"].ToString()
+                            IdUsuario = Convert.ToInt32(reader[0]),
+                            IdRol = Convert.ToInt32(reader[1]),
+                            NombreRol = reader[2]?.ToString(),
+                            Nombre = reader[3]?.ToString(),
+                            ApellidoPaterno = reader[4]?.ToString(),
+                            ApellidoMaterno = reader[5]?.ToString(),
+                            Correo = reader[6]?.ToString(),
+                            Telefono = Convert.ToInt64(reader[7]),
+                            Estatus = reader[8]?.ToString(),
+                            CodigoQr = reader[9]?.ToString(),
+                            FechaUltimaModificacion = reader[10]?.ToString()
                         });
                     }
                 }
@@ -48,33 +50,35 @@ namespace ADSPORT.Data
             return lista;
         }
 
-        public async Task<Usuario> Obtener(int Id)
+        public async Task<Usuario?> Obtener(int Id)
         {
-            Usuario objeto = new Usuario();
+            Usuario? objeto = null;
 
             using (var con = new SqlConnection(conexion))
             {
                 await con.OpenAsync();
-                SqlCommand cmd = new SqlCommand("USUARIO_BUSCAR_POR_ID", con);
+                SqlCommand cmd = new SqlCommand("USUARIO_BUSCAR_POR_ID", con)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
                 cmd.Parameters.AddWithValue("@id_usuario", Id);
-                cmd.CommandType = CommandType.StoredProcedure;
 
                 using (var reader = await cmd.ExecuteReaderAsync())
                 {
-                    while (await reader.ReadAsync())
+                    if (await reader.ReadAsync())
                     {
                         objeto = new Usuario
                         {
-                            IdUsuario = Convert.ToInt32(reader["ID_USUARIO"]),
-                            IdRol = Convert.ToInt32(reader["ID_ROL"]),
-                            Nombre = reader["NombreCompleto"].ToString(),
-                            ApellidoPaterno = reader["APELLIDO_PATERNO"].ToString(),
-                            ApellidoMaterno = reader["APELLIDO_MATERNO"].ToString(),
-                            Correo = reader["CORREO"].ToString(),
-                            Telefono = Convert.ToInt64(reader["TELEFONO"]),
-                            Estatus = reader["ESTATUS"].ToString(),
-                            CodigoQr = reader["CODIGO_QR"].ToString(),
-                            FechaUltimaModificacion = reader["FECHA__ULTIMA_MODIFICACION"].ToString()
+                            IdUsuario = Convert.ToInt32(reader[0]),
+                            IdRol = Convert.ToInt32(reader[1]),
+                            Nombre = reader[2]?.ToString(),
+                            ApellidoPaterno = reader[3]?.ToString(),
+                            ApellidoMaterno = reader[4]?.ToString(),
+                            Correo = reader[5]?.ToString(),
+                            Telefono = Convert.ToInt64(reader[6]),
+                            Estatus = reader[7]?.ToString(),
+                            CodigoQr = reader[8]?.ToString(),
+                            FechaUltimaModificacion = reader[9]?.ToString()
                         };
                     }
                 }
@@ -86,7 +90,10 @@ namespace ADSPORT.Data
         {
             using (var con = new SqlConnection(conexion))
             {
-                SqlCommand cmd = new SqlCommand("USUARIO_AGREGA", con);
+                SqlCommand cmd = new SqlCommand("USUARIO_AGREGA", con)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
                 cmd.Parameters.AddWithValue("@id_rol", objeto.IdRol);
                 cmd.Parameters.AddWithValue("@nombre", objeto.Nombre);
                 cmd.Parameters.AddWithValue("@apellido_paterno", objeto.ApellidoPaterno);
@@ -94,18 +101,13 @@ namespace ADSPORT.Data
                 cmd.Parameters.AddWithValue("@correo", objeto.Correo);
                 cmd.Parameters.AddWithValue("@telefono", objeto.Telefono);
                 cmd.Parameters.AddWithValue("@estatus", objeto.Estatus);
-                cmd.Parameters.AddWithValue("@codigo_qr", objeto.Estatus);
-                SqlParameter numeroError = new SqlParameter("@numeroError", SqlDbType.Int)
-                {
-                    Direction = ParameterDirection.Output
-                };
-                SqlParameter respuesta = new SqlParameter("@respuesta", SqlDbType.VarChar, 1000)
-                {
-                    Direction = ParameterDirection.Output
-                };
+                cmd.Parameters.AddWithValue("@codigo_qr", objeto.CodigoQr ?? string.Empty);
+
+                SqlParameter numeroError = new SqlParameter("@numeroError", SqlDbType.Int) { Direction = ParameterDirection.Output };
+                SqlParameter respuesta = new SqlParameter("@respuesta", SqlDbType.VarChar, 1000) { Direction = ParameterDirection.Output };
+
                 cmd.Parameters.Add(numeroError);
                 cmd.Parameters.Add(respuesta);
-                cmd.CommandType = CommandType.StoredProcedure;
 
                 try
                 {
@@ -133,27 +135,25 @@ namespace ADSPORT.Data
         {
             using (var con = new SqlConnection(conexion))
             {
-                SqlCommand cmd = new SqlCommand("USUARIO_ACTUALIZA", con);
+                SqlCommand cmd = new SqlCommand("USUARIO_ACTUALIZA", con)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
                 cmd.Parameters.AddWithValue("@id_usuario", objeto.IdUsuario);
                 cmd.Parameters.AddWithValue("@id_rol", objeto.IdRol);
-                cmd.Parameters.AddWithValue("@nombre ", objeto.Nombre);
-                cmd.Parameters.AddWithValue("@apellido_paterno ", objeto.ApellidoPaterno);
-                cmd.Parameters.AddWithValue("@apellido_materno ", objeto.ApellidoMaterno);
+                cmd.Parameters.AddWithValue("@nombre", objeto.Nombre);
+                cmd.Parameters.AddWithValue("@apellido_paterno", objeto.ApellidoPaterno);
+                cmd.Parameters.AddWithValue("@apellido_materno", objeto.ApellidoMaterno);
                 cmd.Parameters.AddWithValue("@correo", objeto.Correo);
                 cmd.Parameters.AddWithValue("@telefono", objeto.Telefono);
                 cmd.Parameters.AddWithValue("@estatus", objeto.Estatus);
-                cmd.Parameters.AddWithValue("@codigo_qr", objeto.Estatus);
-                SqlParameter numeroError = new SqlParameter("@numeroError", SqlDbType.Int)
-                {
-                    Direction = ParameterDirection.Output
-                };
-                SqlParameter respuesta = new SqlParameter("@respuesta", SqlDbType.VarChar, 1000)
-                {
-                    Direction = ParameterDirection.Output
-                };
+                cmd.Parameters.AddWithValue("@codigo_qr", objeto.CodigoQr ?? string.Empty);
+
+                SqlParameter numeroError = new SqlParameter("@numeroError", SqlDbType.Int) { Direction = ParameterDirection.Output };
+                SqlParameter respuesta = new SqlParameter("@respuesta", SqlDbType.VarChar, 1000) { Direction = ParameterDirection.Output };
+
                 cmd.Parameters.Add(numeroError);
                 cmd.Parameters.Add(respuesta);
-                cmd.CommandType = CommandType.StoredProcedure;
 
                 try
                 {
@@ -181,19 +181,18 @@ namespace ADSPORT.Data
         {
             using (var con = new SqlConnection(conexion))
             {
-                SqlCommand cmd = new SqlCommand("USUARIO_ELIMINAR", con);
+                // Nombre corregido según SQL Server: USUARIO_ELIMINA
+                SqlCommand cmd = new SqlCommand("USUARIO_ELIMINA", con)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
                 cmd.Parameters.AddWithValue("@id_usuario", id);
-                SqlParameter numeroError = new SqlParameter("@numeroError", SqlDbType.Int)
-                {
-                    Direction = ParameterDirection.Output
-                };
-                SqlParameter respuesta = new SqlParameter("@respuesta", SqlDbType.VarChar, 1000)
-                {
-                    Direction = ParameterDirection.Output
-                };
+
+                SqlParameter numeroError = new SqlParameter("@numeroError", SqlDbType.Int) { Direction = ParameterDirection.Output };
+                SqlParameter respuesta = new SqlParameter("@respuesta", SqlDbType.VarChar, 1000) { Direction = ParameterDirection.Output };
+
                 cmd.Parameters.Add(numeroError);
                 cmd.Parameters.Add(respuesta);
-                cmd.CommandType = CommandType.StoredProcedure;
 
                 try
                 {

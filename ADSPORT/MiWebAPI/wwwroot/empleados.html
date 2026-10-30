@@ -85,11 +85,8 @@
                     <div class="mb-3">
                         <label for="entrenadorRol" class="form-label">Rol asignado</label>
                         <select id="entrenadorRol" name="idRol" class="form-select employee-input" required>
-                            <option value="">Seleccionar rol</option>
-                            <option value="Administrador">Administrador</option>
-                            <option value="Entrenador">Entrenador</option>
+                            <option value="">Cargando roles...</option>
                         </select>
-                        <small>Adapta las opciones para cargarlas desde tu API de roles.</small>
                     </div>
 
                     <div class="mb-3">
@@ -181,7 +178,7 @@
                         </div>
                         <div class="role-modal-actions">
                             <button type="button" class="btn-cancel" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="submit" class="btn-orange">Preparar rol →</button>
+                            <button type="submit" class="btn-orange">Guardar rol →</button>
                         </div>
                         <p id="mensajeRol" class="role-feedback d-none" role="status"></p>
                     </form>
@@ -194,19 +191,7 @@
     <script src="/js/auth.js"></script>
     <script>protegerPagina();</script>
     <script src="/js/config.js"></script>
-    <!-- Adapta este archivo a tus endpoints y campos de entrenador. -->
     <script src="/js/app.js"></script>
-
-    <script>
-        // Solo muestra una confirmación visual; no guarda el rol en la base de datos.
-        document.getElementById("formNuevoRol").addEventListener("submit", function (evento) {
-            evento.preventDefault();
-            const nombre = document.getElementById("nombreRol").value.trim();
-            const mensaje = document.getElementById("mensajeRol");
-            if (!nombre) return;
-            mensaje.textContent = 'El rol "' + nombre + '" está preparado visualmente. Conecta este formulario a tu API para guardarlo.';
-            mensaje.classList.remove("d-none");
-        });
-    </script>
+    <script src="/js/empleados.js"></script>
 </body>
 </html>

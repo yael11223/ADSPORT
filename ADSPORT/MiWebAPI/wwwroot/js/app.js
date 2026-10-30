@@ -1,4 +1,3 @@
-
 const formulario = document.getElementById("formEntrenador");
 const tabla = document.getElementById("tablaEntrenadores");
 const filtro = document.getElementById("txtFiltro");
@@ -17,37 +16,36 @@ filtro.addEventListener("input", aplicarFiltro);
 btnCancelar.addEventListener("click", limpiarFormulario);
 btnRecargar.addEventListener("click", obtenerUsuarios);
 
-
 async function solicitar(url, opciones = {}) {
-  const respuesta = await fetch(url, opciones);
+    const respuesta = await fetch(url, opciones);
 
-  if (!respuesta.ok) {
-    const detalle = await respuesta.text();
-    throw new Error(detalle || `Error HTTP ${respuesta.status}`);
-  }
+    if (!respuesta.ok) {
+        const detalle = await respuesta.text();
+        throw new Error(detalle || `Error HTTP ${respuesta.status}`);
+    }
 
-  if (respuesta.status === 204) {
-    return null;
-  }
+    if (respuesta.status === 204) {
+        return null;
+    }
 
-  return respuesta.json();
+    return respuesta.json();
 }
 
 async function obtenerUsuarios() {
-  cambiarEstadoCarga(true);
+    cambiarEstadoCarga(true);
 
-  try {
-      usuarios = await solicitar(API_URL);
-    aplicarFiltro();
-  } catch (error) {
-    mostrarMensaje(
-      "No fue posible consultar la API. Confirma que el proyecto .NET se encuentre ejecutándose.",
-      "danger"
-    );
-    console.error(error);
-  } finally {
-    cambiarEstadoCarga(false);
-  }
+    try {
+        usuarios = await solicitar(API_URL);
+        aplicarFiltro();
+    } catch (error) {
+        mostrarMensaje(
+            "No fue posible consultar la API. Confirma que el proyecto .NET se encuentre ejecutándose.",
+            "danger"
+        );
+        console.error(error);
+    } finally {
+        cambiarEstadoCarga(false);
+    }
 }
 
 function mostrarUsuarios(lista) {
@@ -81,14 +79,13 @@ function mostrarUsuarios(lista) {
 }
 
 tabla.addEventListener("click", (evento) => {
-  const boton = evento.target.closest("button[data-accion]");
-  if (!boton) return;
+    const boton = evento.target.closest("button[data-accion]");
+    if (!boton) return;
 
-  const id = Number(boton.dataset.id);
-  if (boton.dataset.accion === "editar") cargarEmpleado(id);
-  if (boton.dataset.accion === "eliminar") eliminarEmpleado(id);
+    const id = Number(boton.dataset.id);
+    if (boton.dataset.accion === "editar") cargarEmpleado(id);
+    if (boton.dataset.accion === "eliminar") eliminarEmpleado(id);
 });
-
 
 async function cargarEmpleado(id) {
     try {
@@ -119,8 +116,6 @@ async function cargarEmpleado(id) {
     }
 }
 
-
-
 async function guardarUsuario(evento) {
     evento.preventDefault();
 
@@ -130,6 +125,13 @@ async function guardarUsuario(evento) {
     }
 
     const usuario = leerFormulario();
+
+    // Validación de seguridad para asegurarse de que se seleccionó un rol
+    if (!usuario.idRol || usuario.idRol <= 0) {
+        mostrarMensaje("Por favor, selecciona un rol válido de la lista.", "danger");
+        return;
+    }
+
     const esNuevo = usuario.idUsuario === 0;
 
     try {
@@ -163,8 +165,6 @@ async function guardarUsuario(evento) {
         btnGuardar.textContent = "Guardar";
     }
 }
-
-
 
 async function eliminarEmpleado(id) {
     const empleado = usuarios.find(
@@ -202,30 +202,30 @@ async function eliminarEmpleado(id) {
     }
 }
 
-
 function leerFormulario() {
-  return {
-      idUsuario: Number(document.getElementById("idEntrenador").value),
-      idRol: Number(document.getElementById("entrenadorRol").value),
-      nombre: document.getElementById("entrenadorNombre").value.trim(),
-      apellidoPaterno: document.getElementById("entrenadorPaterno").value.trim(),
-      apellidoMaterno: document.getElementById("entrenadorMaterno").value.trim(),
-      correo: document.getElementById("entrenadorCorreo").value.trim(),
-      telefono: Number(document.getElementById("entrenadorTelefono").value),
-      estatus: document.getElementById("entrenadorEstatus").value,
-      codigoQr: document.getElementById("entrenadorQR").value.trim()
-  };
+    const valRol = document.getElementById("entrenadorRol").value;
+
+    return {
+        idUsuario: Number(document.getElementById("idEntrenador").value) || 0,
+        idRol: valRol ? parseInt(valRol, 10) : 0,
+        nombre: document.getElementById("entrenadorNombre").value.trim(),
+        apellidoPaterno: document.getElementById("entrenadorPaterno").value.trim(),
+        apellidoMaterno: document.getElementById("entrenadorMaterno").value.trim(),
+        correo: document.getElementById("entrenadorCorreo").value.trim(),
+        telefono: document.getElementById("entrenadorTelefono").value.trim(),
+        estatus: document.getElementById("entrenadorEstatus").value,
+        codigoQr: document.getElementById("entrenadorQR").value.trim()
+    };
 }
 
 function limpiarFormulario() {
-  formulario.reset();
-  formulario.classList.remove("was-validated");
-  document.getElementById("idEmpleado").value = "0";
-  tituloFormulario.textContent = "Nuevo empleado";
-  btnGuardar.textContent = "Guardar";
-  btnCancelar.classList.add("d-none");
+    formulario.reset();
+    formulario.classList.remove("was-validated");
+    document.getElementById("idEntrenador").value = "0"; // Corregido el ID del campo oculto
+    tituloFormulario.textContent = "Nuevo empleado";
+    btnGuardar.textContent = "Guardar";
+    btnCancelar.classList.add("d-none");
 }
-
 
 function aplicarFiltro() {
     const texto = filtro.value.trim().toLowerCase();
@@ -244,39 +244,39 @@ function aplicarFiltro() {
     mostrarUsuarios(resultados);
 }
 
-
 function cambiarEstadoCarga(cargando) {
-  btnRecargar.disabled = cargando;
-  btnRecargar.textContent = cargando ? "Cargando..." : "Recargar";
+    btnRecargar.disabled = cargando;
+    btnRecargar.textContent = cargando ? "Cargando..." : "Recargar";
 }
 
 function mostrarMensaje(texto, tipo) {
-  mensaje.textContent = texto;
-  mensaje.className = `alert alert-${tipo}`;
+    mensaje.textContent = texto;
+    mensaje.className = `alert alert-${tipo}`;
+    mensaje.classList.remove("d-none");
 
-  window.clearTimeout(mostrarMensaje.temporizador);
-  mostrarMensaje.temporizador = window.setTimeout(() => {
-    mensaje.classList.add("d-none");
-  }, 4500);
+    window.clearTimeout(mostrarMensaje.temporizador);
+    mostrarMensaje.temporizador = window.setTimeout(() => {
+        mensaje.classList.add("d-none");
+    }, 4500);
 }
 
 function convertirFechaParaInput(fecha) {
-  if (!fecha) return "";
-  return fecha.substring(0, 10);
+    if (!fecha) return "";
+    return fecha.substring(0, 10);
 }
 
 function formatearMoneda(valor) {
-  return new Intl.NumberFormat("es-MX", {
-    style: "currency",
-    currency: "MXN"
-  }).format(valor ?? 0);
+    return new Intl.NumberFormat("es-MX", {
+        style: "currency",
+        currency: "MXN"
+    }).format(valor ?? 0);
 }
 
 function escaparHtml(valor) {
-  return String(valor ?? "")
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
+    return String(valor ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
 }
