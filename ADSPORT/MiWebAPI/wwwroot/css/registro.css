@@ -1,0 +1,821 @@
+﻿
+/* ==========================================
+   ADSPORT - REGISTRO DE USUARIO
+   Archivo: RegistroUsuario.css
+   ========================================== */
+
+:root {
+    --naranja: #ff6b1a;
+    --naranja-oscuro: #e95608;
+    --negro: #171717;
+    --gris: #777777;
+    --fondo: #f6f7f9;
+    --borde: #e8e8e8;
+    --blanco: #ffffff;
+    --verde: #22a06b;
+    --rojo: #dc3545;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Inter', Arial, sans-serif;
+    background: var(--fondo);
+    color: var(--negro);
+}
+
+button,
+input {
+    font: inherit;
+}
+
+button,
+a {
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* ==========================================
+   BARRA SUPERIOR
+   ========================================== */
+
+.barra-superior {
+    min-height: 76px;
+    padding: 0 7%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    background: var(--blanco);
+    border-bottom: 1px solid var(--borde);
+}
+
+.marca {
+    color: var(--negro);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 35px;
+    font-weight: 900;
+    letter-spacing: -1px;
+    text-decoration: none;
+}
+
+    .marca span {
+        color: var(--naranja);
+    }
+
+.enlace-login {
+    color: var(--gris);
+    font-size: 13px;
+}
+
+    .enlace-login a {
+        margin-left: 5px;
+        color: var(--naranja-oscuro);
+        font-weight: 700;
+        text-decoration: none;
+        transition: color .2s ease;
+    }
+
+        .enlace-login a:hover {
+            color: var(--negro);
+        }
+
+/* ==========================================
+   CONTENEDOR GENERAL
+   ========================================== */
+
+.contenedor {
+    width: 100%;
+    max-width: 1250px;
+    margin: 45px auto;
+    padding: 0 25px;
+    flex: 1;
+    animation: aparecer .65s ease both;
+}
+
+/* ==========================================
+   ENCABEZADO
+   ========================================== */
+
+.encabezado {
+    margin-bottom: 32px;
+    text-align: center;
+}
+
+.etiqueta {
+    display: inline-block;
+    margin-bottom: 12px;
+    padding: 8px 13px;
+    border-radius: 30px;
+    background: #fff0e7;
+    color: var(--naranja-oscuro);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+}
+
+.encabezado h1 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: clamp(34px, 5vw, 49px);
+    font-weight: 900;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+    .encabezado h1 span {
+        color: var(--naranja);
+    }
+
+.encabezado > p {
+    margin-top: 12px;
+    color: var(--gris);
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+/* ==========================================
+   DISTRIBUCIÓN PRINCIPAL
+   ========================================== */
+
+.registro-layout {
+    display: grid;
+    grid-template-columns: .9fr 1.1fr;
+    align-items: stretch;
+    gap: 25px;
+}
+
+/* ==========================================
+   PANEL DEPORTIVO
+   ========================================== */
+
+.panel-deportivo {
+    position: relative;
+    min-height: 590px;
+    overflow: hidden;
+    isolation: isolate;
+    border-radius: 20px;
+    background: #222;
+    color: var(--blanco);
+    animation: entrarIzquierda .7s ease both;
+}
+
+    .panel-deportivo img {
+        position: absolute;
+        z-index: -2;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+        transition: transform .7s ease;
+    }
+
+    .panel-deportivo:hover img {
+        transform: scale(1.045);
+    }
+
+    .panel-deportivo::after {
+        position: absolute;
+        z-index: -1;
+        inset: 0;
+        background: linear-gradient( 180deg, rgba(0, 0, 0, .05) 0%, rgba(0, 0, 0, .20) 38%, rgba(0, 0, 0, .90) 100% );
+        content: "";
+    }
+
+.contenido-deportivo {
+    position: absolute;
+    right: 30px;
+    bottom: 35px;
+    left: 30px;
+}
+
+    .contenido-deportivo .mini-etiqueta {
+        margin-bottom: 12px;
+        color: #ffb17f;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 2px;
+    }
+
+    .contenido-deportivo h2 {
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: clamp(38px, 4vw, 57px);
+        font-weight: 900;
+        line-height: .95;
+        text-transform: uppercase;
+    }
+
+        .contenido-deportivo h2 span {
+            color: var(--naranja);
+        }
+
+    .contenido-deportivo > p:last-child {
+        max-width: 330px;
+        margin-top: 16px;
+        color: #e0e0e0;
+        font-size: 13px;
+        line-height: 1.8;
+    }
+
+/* ==========================================
+   PANEL DE FORMULARIO
+   ========================================== */
+
+.panel-formulario {
+    min-width: 0;
+    padding: 32px;
+    border: 1px solid var(--borde);
+    border-radius: 20px;
+    background: var(--blanco);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, .035);
+    animation: entrarDerecha .7s ease .12s both;
+}
+
+/* ==========================================
+   INDICADOR DE PROGRESO
+   ========================================== */
+
+.pasos {
+    display: flex;
+    align-items: center;
+    margin-bottom: 28px;
+}
+
+.paso {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    gap: 9px;
+    color: #a0a0a0;
+    font-size: 10px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+    .paso:not(:last-child)::after {
+        flex: 1;
+        height: 2px;
+        margin: 0 8px;
+        background: #e9e9e9;
+        content: "";
+    }
+
+.numero-paso {
+    display: grid;
+    width: 29px;
+    height: 29px;
+    flex-shrink: 0;
+    place-items: center;
+    border-radius: 50%;
+    background: #f0f0f0;
+    color: #888;
+    transition: background .25s ease, color .25s ease;
+}
+
+.paso.activo {
+    color: var(--naranja-oscuro);
+}
+
+    .paso.activo .numero-paso {
+        background: var(--naranja);
+        color: var(--blanco);
+        box-shadow: 0 4px 10px rgba(255, 107, 26, .22);
+    }
+
+/* ==========================================
+   TÍTULOS Y DESCRIPCIONES
+   ========================================== */
+
+.titulo-formulario {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 29px;
+    font-weight: 800;
+    line-height: 1.15;
+    text-transform: uppercase;
+}
+
+.descripcion-formulario {
+    margin: 7px 0 25px;
+    color: var(--gris);
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+/* ==========================================
+   FORMULARIOS Y CAMPOS
+   ========================================== */
+
+.grupo-campos {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 17px 14px;
+}
+
+.campo {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 8px;
+}
+
+    .campo.completo {
+        grid-column: 1 / -1;
+    }
+
+    .campo label {
+        color: #333;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+        .campo label span {
+            color: var(--naranja);
+        }
+
+    .campo input {
+        width: 100%;
+        min-width: 0;
+        height: 47px;
+        padding: 0 13px;
+        border: 1px solid #dedede;
+        border-radius: 9px;
+        outline: none;
+        background: var(--blanco);
+        color: var(--negro);
+        font-family: inherit;
+        font-size: 12px;
+        transition: border-color .2s ease, box-shadow .2s ease;
+    }
+
+        .campo input::placeholder {
+            color: #b0b0b0;
+        }
+
+        .campo input:hover {
+            border-color: #c7c7c7;
+        }
+
+        .campo input:focus {
+            border-color: var(--naranja);
+            box-shadow: 0 0 0 3px rgba(255, 107, 26, .10);
+        }
+
+/* ==========================================
+   AVISO DE CORREO
+   ========================================== */
+
+.aviso-correo {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-top: 20px;
+    padding: 14px;
+    border: 1px solid #ffe5d4;
+    border-radius: 10px;
+    background: #fff7f1;
+}
+
+.icono-aviso {
+    flex-shrink: 0;
+    font-size: 21px;
+}
+
+.aviso-correo strong {
+    display: block;
+    margin-bottom: 5px;
+    color: #292929;
+    font-size: 11px;
+}
+
+.aviso-correo p {
+    color: var(--gris);
+    font-size: 11px;
+    line-height: 1.7;
+}
+
+/* ==========================================
+   BOTONES
+   ========================================== */
+
+.boton-principal,
+.boton-secundario {
+    display: flex;
+    width: 100%;
+    min-height: 49px;
+    align-items: center;
+    justify-content: center;
+    margin-top: 22px;
+    padding: 12px 18px;
+    border-radius: 9px;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 800;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background .2s ease, color .2s ease, border-color .2s ease, transform .2s ease, box-shadow .2s ease;
+}
+
+.boton-principal {
+    border: 1px solid var(--naranja);
+    background: var(--naranja);
+    color: var(--blanco);
+    box-shadow: 0 5px 12px rgba(255, 107, 26, .12);
+}
+
+    .boton-principal:hover {
+        transform: translateY(-2px);
+        border-color: var(--naranja-oscuro);
+        background: var(--naranja-oscuro);
+        box-shadow: 0 8px 18px rgba(255, 107, 26, .20);
+    }
+
+    .boton-principal:active,
+    .boton-secundario:active {
+        transform: translateY(0);
+    }
+
+.boton-secundario {
+    margin-top: 10px;
+    border: 1px solid var(--borde);
+    background: var(--blanco);
+    color: #555;
+}
+
+    .boton-secundario:hover {
+        border-color: var(--naranja);
+        color: var(--naranja-oscuro);
+    }
+
+.enlace-boton {
+    box-sizing: border-box;
+}
+
+/* ==========================================
+   ICONOS Y PANTALLAS DE CORREO
+   ========================================== */
+
+.icono-verificacion {
+    display: grid;
+    width: 75px;
+    height: 75px;
+    margin: 0 auto 22px;
+    place-items: center;
+    border-radius: 50%;
+    background: #fff0e7;
+    color: var(--naranja);
+    font-size: 34px;
+}
+
+.pantalla-correo,
+.pantalla-verificacion,
+.pantalla-confirmacion,
+.pantalla-password,
+.pantalla-final {
+    animation: aparecer .35s ease both;
+}
+
+.pantalla-verificacion,
+.pantalla-confirmacion,
+.pantalla-password,
+.pantalla-final {
+    text-align: center;
+}
+
+    .pantalla-verificacion .campo,
+    .pantalla-password .campo {
+        text-align: left;
+    }
+
+.correo-destino {
+    margin: -12px 0 23px;
+    color: var(--naranja-oscuro);
+    font-size: 13px;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.texto-ayuda {
+    margin-top: 12px;
+    color: var(--gris);
+    font-size: 11px;
+    line-height: 1.7;
+    text-align: left;
+}
+
+/* ==========================================
+   MENSAJES DE ERROR Y ÉXITO
+   ========================================== */
+
+.mensaje-error {
+    margin-top: 15px;
+    padding: 12px;
+    border: 1px solid #f4cccc;
+    border-radius: 8px;
+    background: #fff1f1;
+    color: var(--rojo);
+    font-size: 11px;
+    line-height: 1.6;
+    text-align: left;
+}
+
+    .mensaje-error[hidden],
+    .pantalla[hidden] {
+        display: none !important;
+    }
+
+.icono-exito {
+    display: grid;
+    width: 76px;
+    height: 76px;
+    margin: 0 auto 22px;
+    place-items: center;
+    border: 1px solid #c8efdc;
+    border-radius: 50%;
+    background: #e8f8ef;
+    color: var(--verde);
+    font-size: 38px;
+    font-weight: 700;
+    box-shadow: 0 8px 22px rgba(34, 160, 107, .08);
+}
+
+.pantalla-confirmacion .etiqueta,
+.pantalla-final .etiqueta {
+    margin-bottom: 15px;
+}
+
+/* ==========================================
+   REQUISITOS DE CONTRASEÑA
+   ========================================== */
+
+.requisitos-password {
+    margin-top: 20px;
+    padding: 17px;
+    border: 1px solid var(--borde);
+    border-radius: 10px;
+    background: #fafafa;
+    text-align: left;
+}
+
+    .requisitos-password > p {
+        margin-bottom: 12px;
+        color: #333;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .requisitos-password ul {
+        display: grid;
+        gap: 10px;
+        padding-left: 0;
+        list-style: none;
+    }
+
+    .requisitos-password li {
+        position: relative;
+        padding-left: 23px;
+        color: var(--gris);
+        font-size: 11px;
+        line-height: 1.5;
+    }
+
+        .requisitos-password li::before {
+            position: absolute;
+            left: 0;
+            color: var(--naranja);
+            content: "○";
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+/* ==========================================
+   PIE DE PÁGINA
+   ========================================== */
+
+.pie-pagina {
+    padding: 22px 15px;
+    border-top: 1px solid var(--borde);
+    background: var(--blanco);
+    text-align: center;
+}
+
+    .pie-pagina p {
+        color: #999;
+        font-size: 9px;
+        font-weight: 600;
+        letter-spacing: 1px;
+        line-height: 1.8;
+    }
+
+/* ==========================================
+   ANIMACIONES
+   ========================================== */
+
+@keyframes aparecer {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes entrarIzquierda {
+    from {
+        opacity: 0;
+        transform: translateX(-18px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes entrarDerecha {
+    from {
+        opacity: 0;
+        transform: translateX(18px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* ==========================================
+   RESPONSIVE: TABLET
+   ========================================== */
+
+@media (max-width: 950px) {
+    .contenedor {
+        margin: 35px auto;
+    }
+
+    .registro-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .panel-deportivo {
+        min-height: 320px;
+    }
+
+    .contenido-deportivo h2 {
+        font-size: 48px;
+    }
+
+    .panel-formulario {
+        padding: 30px;
+    }
+}
+
+/* ==========================================
+   RESPONSIVE: MÓVIL
+   ========================================== */
+
+@media (max-width: 520px) {
+    .barra-superior {
+        min-height: 68px;
+        padding: 0 18px;
+    }
+
+    .marca {
+        font-size: 29px;
+    }
+
+    .enlace-login {
+        max-width: 170px;
+        font-size: 10px;
+        text-align: right;
+        line-height: 1.6;
+    }
+
+        .enlace-login a {
+            display: inline-block;
+            margin-left: 2px;
+        }
+
+    .contenedor {
+        margin: 28px auto;
+        padding: 0 14px;
+    }
+
+    .encabezado {
+        margin-bottom: 24px;
+    }
+
+        .encabezado h1 {
+            font-size: 37px;
+        }
+
+        .encabezado > p {
+            font-size: 12px;
+        }
+
+    .registro-layout {
+        gap: 16px;
+    }
+
+    .panel-deportivo {
+        min-height: 260px;
+        border-radius: 15px;
+    }
+
+    .contenido-deportivo {
+        right: 20px;
+        bottom: 22px;
+        left: 20px;
+    }
+
+        .contenido-deportivo h2 {
+            font-size: 39px;
+        }
+
+        .contenido-deportivo > p:last-child {
+            margin-top: 10px;
+            font-size: 11px;
+        }
+
+    .panel-formulario {
+        padding: 21px 17px;
+        border-radius: 15px;
+    }
+
+    .pasos {
+        gap: 5px;
+        margin-bottom: 24px;
+    }
+
+    .paso {
+        gap: 5px;
+        font-size: 8px;
+    }
+
+        .paso:not(:last-child)::after {
+            margin: 0 3px;
+        }
+
+    .numero-paso {
+        width: 25px;
+        height: 25px;
+    }
+
+    .titulo-formulario {
+        font-size: 26px;
+    }
+
+    .descripcion-formulario {
+        margin-bottom: 20px;
+        font-size: 11px;
+    }
+
+    .grupo-campos {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .campo.completo {
+        grid-column: auto;
+    }
+
+    .campo input {
+        height: 46px;
+    }
+
+    .aviso-correo {
+        padding: 12px;
+    }
+
+    .pie-pagina p {
+        font-size: 8px;
+    }
+}
+
+/* ==========================================
+   ACCESIBILIDAD
+   ========================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+    }
+}

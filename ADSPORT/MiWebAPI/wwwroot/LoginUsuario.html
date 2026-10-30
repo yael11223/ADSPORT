@@ -1,0 +1,163 @@
+﻿
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar sesión | ADSPORT</title>
+    <link rel="stylesheet" href="css/LoginUsuario.css">
+</head>
+<body>
+
+    <!-- PANTALLA DE CARGA -->
+    <div id="introLoader" class="intro-loader">
+        <div class="loader-contenido">
+            <div class="loader-logo">A</div>
+
+            <h2>AD<span>SPORT</span></h2>
+
+            <p>PREPARANDO TU PRÓXIMO RETO</p>
+
+            <div class="loader-linea">
+                <div class="loader-progreso"></div>
+            </div>
+
+            <span class="loader-texto">CARGANDO EXPERIENCIA...</span>
+        </div>
+    </div>
+
+    <!-- CONTENEDOR PRINCIPAL -->
+    <main class="contenedor">
+
+        <!-- PANEL DE PRESENTACIÓN -->
+        <section class="presentacion">
+
+            <header class="marca">
+                <div class="logo">A</div>
+                <span class="nombre-marca">ADSPORT</span>
+            </header>
+
+            <div class="eslogan">
+                <p class="etiqueta">TU ESFUERZO. TU HISTORIA.</p>
+
+                <p class="subtitulo">
+                    SUPERA <span>/</span>
+                    ENTRENA <span>/</span>
+                    CONQUISTA
+                </p>
+
+                <h1>
+                    TU
+                    <span>MEJOR</span>
+                    VERSIÓN
+                    <br>
+                    COMIENZA<span class="punto-final">.</span>
+                </h1>
+
+                <p class="descripcion">
+                    Cada entrenamiento es una oportunidad para superarte.
+                    Organiza tus actividades, alcanza tus objetivos y lleva
+                    tu rendimiento al siguiente nivel.
+                </p>
+            </div>
+
+            <footer class="pie">
+                ESFUERZO <span>/</span>
+                CONSTANCIA <span>/</span>
+                VICTORIA
+            </footer>
+
+        </section>
+
+        <!-- PANEL DE LOGIN -->
+        <section class="panel-login">
+
+            <div class="encabezado">
+                <p class="etiqueta">BIENVENIDO</p>
+
+                <h2>Inicia <span>sesión</span></h2>
+
+                <p>Ingresa tus datos para continuar.</p>
+            </div>
+
+            <div id="mensajeLogin"
+                 class="mensaje d-none"
+                 role="alert">
+            </div>
+
+            <form id="formLogin">
+
+                <div class="campo">
+                    <label for="correo">Correo electrónico</label>
+
+                    <input type="email"
+                           id="correo"
+                           name="correo"
+                           placeholder="tucorreo@ejemplo.com"
+                           autocomplete="username"
+                           required>
+                </div>
+
+                <div class="campo">
+                    <label for="password">Contraseña</label>
+
+                    <div class="contenedor-password">
+                        <input type="password"
+                               id="password"
+                               name="password"
+                               placeholder="Ingresa tu contraseña"
+                               autocomplete="current-password"
+                               required>
+
+                        <button type="button"
+                                id="mostrarPassword"
+                                class="mostrar-password"
+                                aria-label="Mostrar contraseña">
+                            ◉
+                        </button>
+                    </div>
+                </div>
+
+                <div class="opciones">
+                    <a href="#" id="recuperarPassword">
+                        ¿Olvidaste tu contraseña?
+                    </a>
+                </div>
+
+                <button type="submit"
+                        id="btnLogin"
+                        class="btn-ingresar">
+
+                    <span>Ingresar</span>
+                    <span class="flecha">⟶</span>
+                </button>
+
+            </form>
+
+            <div class="separador">
+                <span>ACCESO SEGURO</span>
+            </div>
+
+            <div class="registro">
+                <p>¿Todavía no tienes una cuenta?</p>
+
+                <a href="registro.html" class="crear-cuenta">
+                    Crear nueva cuenta <span>＋</span>
+                </a>
+            </div>
+
+            <div class="seguridad">
+                <span class="punto">◆</span>
+                <span>Acceso exclusivo para usuarios autorizados.</span>
+            </div>
+
+        </section>
+    </main>
+
+    <!-- SCRIPTS EXISTENTES -->
+    <script src="js/config.js"></script>
+    <script src="js/login.js"></script>
+    <script src="js/intro-loader.js"></script>
+
+</body>
+</html>
