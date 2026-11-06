@@ -1,5 +1,4 @@
-﻿
-/* ==========================================
+﻿/* ==========================================
    ADSPORT - REGISTRO DE USUARIO
    Archivo: RegistroUsuario.css
    ========================================== */
@@ -817,5 +816,236 @@ a {
         animation-duration: .01ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: .01ms !important;
+    }
+}
+
+
+/* ==========================================
+   MEJORAS DE REGISTRO: VALIDACIÓN EN VIVO
+   ========================================== */
+
+.ayuda-campo {
+    color: var(--gris);
+    font-size: 10px;
+    line-height: 1.5;
+}
+
+.requisitos-password li {
+    transition: color .25s ease;
+}
+
+    .requisitos-password li::before {
+        transition: color .25s ease, transform .25s ease;
+    }
+
+    .requisitos-password li.cumplido {
+        color: var(--verde);
+        font-weight: 700;
+    }
+
+        .requisitos-password li.cumplido::before {
+            color: var(--verde);
+            content: "✓";
+            transform: scale(1.12);
+        }
+
+.boton-principal:disabled {
+    opacity: .72;
+    cursor: wait;
+    transform: none;
+}
+
+/* ==========================================
+   VENTANA DE ENVÍO DE CORREO
+   ========================================== */
+
+.ventana-envio {
+    position: fixed;
+    z-index: 9999;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: 22px;
+    background: rgba(12, 15, 23, .64);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    animation: aparecer .2s ease both;
+}
+
+    .ventana-envio[hidden],
+    .icono-exito-envio[hidden] {
+        display: none !important;
+    }
+
+.ventana-envio-contenido {
+    width: min(100%, 395px);
+    padding: 35px 27px;
+    border-radius: 19px;
+    background: var(--blanco);
+    box-shadow: 0 24px 70px rgba(0, 0, 0, .17);
+    text-align: center;
+}
+
+.animacion-envio {
+    position: relative;
+    display: grid;
+    width: 95px;
+    height: 95px;
+    place-items: center;
+    margin: 0 auto 22px;
+    border-radius: 50%;
+    background: #fff2e8;
+    color: var(--naranja);
+}
+
+.anillo-envio {
+    position: absolute;
+    inset: -4px;
+    border: 3px solid rgba(255, 107, 26, .14);
+    border-top-color: var(--naranja);
+    border-radius: 50%;
+    animation: girarEnvio 1s linear infinite;
+}
+
+.icono-sobre-envio {
+    font-size: 39px;
+    animation: flotarEnvio 1.45s ease-in-out infinite;
+}
+
+.ventana-envio-contenido h2 {
+    margin-bottom: 9px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.ventana-envio-contenido p {
+    color: var(--gris);
+    font-size: 12px;
+    line-height: 1.65;
+}
+
+.ventana-envio.exito .animacion-envio {
+    background: #e8f8ef;
+    color: var(--verde);
+}
+
+.ventana-envio.exito .anillo-envio,
+.ventana-envio.exito .icono-sobre-envio {
+    display: none;
+}
+
+.icono-exito-envio {
+    font-size: 46px;
+    font-weight: 800;
+}
+
+@keyframes girarEnvio {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes flotarEnvio {
+    0%, 100% {
+        transform: translateY(2px);
+    }
+
+    50% {
+        transform: translateY(-6px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .anillo-envio,
+    .icono-sobre-envio {
+        animation: none !important;
+    }
+}
+
+/* ========================================
+   ADSPORT - REENVIAR CÓDIGO
+   ======================================== */
+
+.contenedor-reenvio {
+    margin-top: 22px;
+    padding: 20px;
+    border: 1px solid #ffe0cb;
+    border-radius: 12px;
+    background: #fff8f3;
+    text-align: center;
+}
+
+/* TEXTO DEL CONTADOR */
+
+.texto-reenvio {
+    margin-bottom: 10px;
+    color: #777;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+/* CONTADOR DE 60 SEGUNDOS */
+
+.contador-codigo {
+    margin: 12px 0;
+    color: var(--naranja);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 38px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    font-variant-numeric: tabular-nums;
+}
+
+/* BOTÓN REENVIAR CÓDIGO */
+
+.boton-reenviar {
+    width: 100%;
+    min-height: 45px;
+    padding: 12px;
+    border: 1px solid var(--naranja);
+    border-radius: 9px;
+    background: var(--naranja);
+    color: white;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+    /* EFECTO AL PASAR EL MOUSE */
+
+    .boton-reenviar:not(:disabled):hover {
+        background: var(--naranja-oscuro);
+        transform: translateY(-2px);
+    }
+
+    /* BOTÓN DESACTIVADO DURANTE EL CONTEO */
+
+    .boton-reenviar:disabled {
+        border-color: #dedede;
+        background: #e9e9e9;
+        color: #999;
+        cursor: not-allowed;
+        opacity: 0.8;
+    }
+
+/* ESTADO CUANDO TERMINA EL CONTADOR */
+
+.contador-codigo.disponible {
+    color: var(--verde);
+    animation: aparecer .35s ease;
+}
+
+/* AJUSTE PARA CELULARES */
+
+@media (max-width: 520px) {
+    .contenedor-reenvio {
+        padding: 15px;
+    }
+
+    .contador-codigo {
+        font-size: 32px;
     }
 }

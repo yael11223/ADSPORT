@@ -1,4 +1,5 @@
 using ADSPORT.Data;
+using ADSPORT.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,7 +12,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 
+builder.Services.AddScoped<CorreoService>();
 builder.Services.AddSingleton<UsuarioData>();
+builder.Services.AddScoped<RolData>();
+builder.Services.AddScoped<VerificacionData>();
 
 builder.Services.AddCors(options =>
 {
