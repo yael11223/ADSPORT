@@ -1,3 +1,4 @@
+
 const formulario = document.getElementById("formEntrenador");
 const tabla = document.getElementById("tablaEntrenadores");
 const filtro = document.getElementById("txtFiltro");
@@ -10,11 +11,31 @@ const btnRecargar = document.getElementById("btnRecargar");
 
 let usuarios = [];
 
-document.addEventListener("DOMContentLoaded", obtenerUsuarios);
-formulario.addEventListener("submit", guardarUsuario);
-filtro.addEventListener("input", aplicarFiltro);
-btnCancelar.addEventListener("click", limpiarFormulario);
-btnRecargar.addEventListener("click", obtenerUsuarios);
+// ========================================
+// INICIALIZAR FUNCIONES DE ENTRENADORES
+// ========================================
+
+document.addEventListener("DOMContentLoaded", () => {
+    if (
+        formulario &&
+        tabla &&
+        filtro &&
+        mensaje &&
+        sinResultados &&
+        btnRecargar
+    ) {
+        obtenerUsuarios();
+    }
+});
+
+formulario?.addEventListener("submit", guardarUsuario);
+filtro?.addEventListener("input", aplicarFiltro);
+btnCancelar?.addEventListener("click", limpiarFormulario);
+btnRecargar?.addEventListener("click", obtenerUsuarios);
+
+// ========================================
+// CONEXIÓN GENERAL CON LA API
+// ========================================
 
 async function solicitar(url, opciones = {}) {
     const respuesta = await fetch(url, opciones);
@@ -30,6 +51,10 @@ async function solicitar(url, opciones = {}) {
 
     return respuesta.json();
 }
+
+// ========================================
+// CONSULTAR USUARIOS
+// ========================================
 
 async function obtenerUsuarios() {
     cambiarEstadoCarga(true);
@@ -47,6 +72,10 @@ async function obtenerUsuarios() {
         cambiarEstadoCarga(false);
     }
 }
+
+// ========================================
+// MOSTRAR USUARIOS
+// ========================================
 
 function mostrarUsuarios(lista) {
     tabla.innerHTML = "";
@@ -78,14 +107,28 @@ function mostrarUsuarios(lista) {
     });
 }
 
-tabla.addEventListener("click", (evento) => {
+// ========================================
+// BOTONES EDITAR Y ELIMINAR
+// ========================================
+
+tabla?.addEventListener("click", (evento) => {
     const boton = evento.target.closest("button[data-accion]");
     if (!boton) return;
 
     const id = Number(boton.dataset.id);
-    if (boton.dataset.accion === "editar") cargarEmpleado(id);
-    if (boton.dataset.accion === "eliminar") eliminarEmpleado(id);
+
+    if (boton.dataset.accion === "editar") {
+        cargarEmpleado(id);
+    }
+
+    if (boton.dataset.accion === "eliminar") {
+        eliminarEmpleado(id);
+    }
 });
+
+// ========================================
+// CARGAR EMPLEADO
+// ========================================
 
 async function cargarEmpleado(id) {
     try {
@@ -111,10 +154,17 @@ async function cargarEmpleado(id) {
         });
 
     } catch (error) {
-        mostrarMensaje("No fue posible obtener al empleado.", "danger");
+        mostrarMensaje(
+            "No fue posible obtener al empleado.",
+            "danger"
+        );
         console.error(error);
     }
 }
+
+// ========================================
+// GUARDAR O ACTUALIZAR USUARIO
+// ========================================
 
 async function guardarUsuario(evento) {
     evento.preventDefault();
@@ -126,9 +176,12 @@ async function guardarUsuario(evento) {
 
     const usuario = leerFormulario();
 
-    // Validación de seguridad para asegurarse de que se seleccionó un rol
+    // Validar que se seleccionó un rol
     if (!usuario.idRol || usuario.idRol <= 0) {
-        mostrarMensaje("Por favor, selecciona un rol válido de la lista.", "danger");
+        mostrarMensaje(
+            "Por favor, selecciona un rol válido de la lista.",
+            "danger"
+        );
         return;
     }
 
@@ -136,11 +189,15 @@ async function guardarUsuario(evento) {
 
     try {
         btnGuardar.disabled = true;
-        btnGuardar.textContent = esNuevo ? "Guardando..." : "Actualizando...";
+        btnGuardar.textContent = esNuevo
+            ? "Guardando..."
+            : "Actualizando...";
 
         const resultado = await solicitar(API_URL, {
             method: esNuevo ? "POST" : "PUT",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                "Content-Type": "application/json"
+            },
             body: JSON.stringify(usuario)
         });
 
@@ -160,11 +217,16 @@ async function guardarUsuario(evento) {
             "danger"
         );
         console.error(error);
+
     } finally {
         btnGuardar.disabled = false;
         btnGuardar.textContent = "Guardar";
     }
 }
+
+// ========================================
+// ELIMINAR EMPLEADO
+// ========================================
 
 async function eliminarEmpleado(id) {
     const empleado = usuarios.find(
@@ -202,30 +264,54 @@ async function eliminarEmpleado(id) {
     }
 }
 
+// ========================================
+// LEER DATOS DEL FORMULARIO
+// ========================================
+
 function leerFormulario() {
     const valRol = document.getElementById("entrenadorRol").value;
 
     return {
-        idUsuario: Number(document.getElementById("idEntrenador").value) || 0,
+        idUsuario: Number(
+            document.getElementById("idEntrenador").value
+        ) || 0,
+
         idRol: valRol ? parseInt(valRol, 10) : 0,
+
         nombre: document.getElementById("entrenadorNombre").value.trim(),
+
         apellidoPaterno: document.getElementById("entrenadorPaterno").value.trim(),
+
         apellidoMaterno: document.getElementById("entrenadorMaterno").value.trim(),
+
         correo: document.getElementById("entrenadorCorreo").value.trim(),
+
         telefono: document.getElementById("entrenadorTelefono").value.trim(),
+
         estatus: document.getElementById("entrenadorEstatus").value,
+
         codigoQr: document.getElementById("entrenadorQR").value.trim()
     };
 }
 
+// ========================================
+// LIMPIAR FORMULARIO
+// ========================================
+
 function limpiarFormulario() {
     formulario.reset();
     formulario.classList.remove("was-validated");
-    document.getElementById("idEntrenador").value = "0"; // Corregido el ID del campo oculto
+
+    document.getElementById("idEntrenador").value = "0";
+
     tituloFormulario.textContent = "Nuevo empleado";
     btnGuardar.textContent = "Guardar";
     btnCancelar.classList.add("d-none");
 }
+
+// ========================================
+// FILTRAR USUARIOS
+// ========================================
 
 function aplicarFiltro() {
     const texto = filtro.value.trim().toLowerCase();
@@ -244,10 +330,20 @@ function aplicarFiltro() {
     mostrarUsuarios(resultados);
 }
 
+// ========================================
+// ESTADO DE CARGA
+// ========================================
+
 function cambiarEstadoCarga(cargando) {
     btnRecargar.disabled = cargando;
-    btnRecargar.textContent = cargando ? "Cargando..." : "Recargar";
+    btnRecargar.textContent = cargando
+        ? "Cargando..."
+        : "Recargar";
 }
+
+// ========================================
+// MOSTRAR MENSAJES
+// ========================================
 
 function mostrarMensaje(texto, tipo) {
     mensaje.textContent = texto;
@@ -255,14 +351,19 @@ function mostrarMensaje(texto, tipo) {
     mensaje.classList.remove("d-none");
 
     window.clearTimeout(mostrarMensaje.temporizador);
+
     mostrarMensaje.temporizador = window.setTimeout(() => {
         mensaje.classList.add("d-none");
     }, 4500);
 }
 
+// ========================================
+// FUNCIONES AUXILIARES
+// ========================================
+
 function convertirFechaParaInput(fecha) {
     if (!fecha) return "";
-    return fecha.substring(0, 10);
+    return fecha.substring(0, 1);
 }
 
 function formatearMoneda(valor) {
@@ -279,4 +380,88 @@ function escaparHtml(valor) {
         .replaceAll(">", "&gt;")
         .replaceAll('"', "&quot;")
         .replaceAll("'", "&#039;");
+}
+
+
+// ========================================
+// ADSPORT - REGISTRO DE NUEVOS USUARIOS
+// ========================================
+
+// ========================================
+// FUNCIÓN GENERAL PARA LAS APIS DEL REGISTRO
+// ========================================
+
+async function solicitarAPIRegistro(ruta, datos, codigosExito) {
+    const respuesta = await fetch(ruta, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(datos)
+    });
+
+    let resultado;
+
+    try {
+        resultado = await respuesta.json();
+    } catch {
+        throw new Error(
+            "El servidor no devolvió una respuesta JSON válida."
+        );
+    }
+
+    if (
+        !respuesta.ok ||
+        !resultado ||
+        !codigosExito.includes(Number(resultado.numeroError))
+    ) {
+        throw new Error(
+            resultado?.respuesta ||
+            resultado?.mensaje ||
+            "Ocurrió un error durante el registro."
+        );
+    }
+
+    return resultado;
+}
+
+// ========================================
+// 1. SOLICITAR CÓDIGO DE VERIFICACIÓN
+// ========================================
+
+async function solicitarCodigoRegistro(correo) {
+    return await solicitarAPIRegistro(
+        "/api/Verificacion/agregar",
+        {
+            correo: correo
+        },
+        [200]
+    );
+}
+
+// ========================================
+// 2. VALIDAR CÓDIGO DE VERIFICACIÓN
+// ========================================
+
+async function validarCodigoRegistro(correo, codigo) {
+    return await solicitarAPIRegistro(
+        "/api/Verificacion/validar",
+        {
+            correo: correo,
+            codigo: codigo
+        },
+        [200]
+    );
+}
+
+// ========================================
+// 3. REGISTRAR NUEVO USUARIO
+// ========================================
+
+async function registrarUsuarioRegistro(datos) {
+    return solicitarAPIRegistro(
+        "/api/Verificacion/registrar",
+        datos,
+        [201]
+    );
 }

@@ -1,5 +1,4 @@
-﻿
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -198,6 +197,28 @@
                             de correo no deseado.
                         </p>
 
+                        <div class="contenedor-reenvio">
+
+                            <p class="texto-reenvio" id="textoReenvio">
+                                Podrás solicitar otro código en:
+                            </p>
+
+                            <!-- CONTADOR -->
+                            <div class="contador-codigo" id="contadorCodigo"
+                                 role="timer" aria-live="off">
+                                <span id="tiempoReenvio">01:00</span>
+                            </div>
+
+                            <!-- BOTÓN REENVIAR -->
+                            <button type="button"
+                                    class="boton-reenviar"
+                                    id="btnReenviarCodigo"
+                                    disabled>
+                                REENVIAR CÓDIGO
+                            </button>
+
+                        </div>
+
                         <p class="mensaje-error" id="errorCodigo" role="alert" hidden>
                             El código introducido no es válido.
                             Comprueba los datos e inténtalo de nuevo.
@@ -246,6 +267,8 @@
                                        name="nombre"
                                        placeholder="Introduce tu nombre"
                                        autocomplete="given-name"
+                                       maxlength="100"
+                                       title="Solo se permiten letras y espacios."
                                        required>
                             </div>
 
@@ -259,6 +282,8 @@
                                        name="apellidoPaterno"
                                        placeholder="Apellido paterno"
                                        autocomplete="family-name"
+                                       maxlength="100"
+                                       title="Solo se permiten letras y espacios."
                                        required>
                             </div>
 
@@ -271,7 +296,9 @@
                                        id="apellidoMaterno"
                                        name="apellidoMaterno"
                                        placeholder="Apellido materno"
-                                       autocomplete="additional-name">
+                                       autocomplete="additional-name"
+                                       maxlength="100"
+                                       title="Solo se permiten letras y espacios.">
                             </div>
 
                             <div class="campo completo">
@@ -283,8 +310,13 @@
                                        id="telefono"
                                        name="telefono"
                                        placeholder="Introduce tu número de teléfono"
-                                       autocomplete="tel"
+                                       autocomplete="tel-national"
+                                       inputmode="numeric"
+                                       maxlength="10"
+                                       pattern="[0-9]{10}"
+                                       title="Escribe un teléfono de 10 dígitos, solo números."
                                        required>
+                                <small class="ayuda-campo">10 dígitos, sin letras ni espacios.</small>
                             </div>
 
                         </div>
@@ -361,11 +393,13 @@
                         <div class="requisitos-password">
                             <p>Tu contraseña deberá incluir:</p>
 
-                            <ul>
-                                <li>Una longitud mínima de caracteres.</li>
-                                <li>Al menos una letra mayúscula.</li>
-                                <li>Al menos un número.</li>
-                                <li>Coincidencia entre ambas contraseñas.</li>
+                            <ul id="listaRequisitosPassword">
+                                <li data-requisito="longitud">Mínimo 8 caracteres.</li>
+                                <li data-requisito="mayuscula">Al menos una letra mayúscula.</li>
+                                <li data-requisito="minuscula">Al menos una letra minúscula.</li>
+                                <li data-requisito="numero">Al menos un número.</li>
+                                <li data-requisito="especial">Al menos un carácter especial.</li>
+                                <li data-requisito="coincidencia">Las contraseñas coinciden.</li>
                             </ul>
                         </div>
 
@@ -406,9 +440,8 @@
                     </h2>
 
                     <p class="descripcion-formulario">
-                        Has completado las etapas de demostración
-                        del registro. Cuando conectemos el sistema,
-                        aquí aparecerá la confirmación real de tu cuenta.
+                        Tu cuenta se ha registrado correctamente.
+                        Ya puedes iniciar sesión y comenzar a utilizar ADSPORT.
                     </p>
 
                     <a href="login.html" class="boton-principal enlace-boton">
@@ -426,8 +459,21 @@
         <p>© 2026 ADSPORT. TODOS LOS DERECHOS RESERVADOS.</p>
     </footer>
 
-    <!-- Solo controlará la navegación visual entre pantallas -->
-    <script src="js/registro.js"></script>
+    <!-- Ventana animada para el envío del código -->
+    <div class="ventana-envio" id="ventanaEnvio" hidden>
+        <div class="ventana-envio-contenido" role="status" aria-live="polite" aria-atomic="true">
+            <div class="animacion-envio" aria-hidden="true">
+                <span class="anillo-envio"></span>
+                <span class="icono-sobre-envio">✉</span>
+                <span class="icono-exito-envio" hidden>✓</span>
+            </div>
+            <h2 id="tituloVentanaEnvio">Enviando tu código…</h2>
+            <p id="descripcionVentanaEnvio">Estamos preparando el mensaje para tu correo electrónico.</p>
+        </div>
+    </div>
+
+    <!-- Primero cargamos las funciones API y después la navegación del registro -->
+    <script src="js/app.js"></script>
     <script src="js/registro.js"></script>
 
 </body>

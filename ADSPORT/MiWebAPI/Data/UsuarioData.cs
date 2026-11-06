@@ -39,7 +39,7 @@ namespace ADSPORT.Data
                             ApellidoPaterno = reader[4]?.ToString(),
                             ApellidoMaterno = reader[5]?.ToString(),
                             Correo = reader[6]?.ToString(),
-                            Telefono = Convert.ToInt64(reader[7]),
+                            Telefono = reader[7]?.ToString(),
                             Estatus = reader[8]?.ToString(),
                             CodigoQr = reader[9]?.ToString(),
                             FechaUltimaModificacion = reader[10]?.ToString()
@@ -71,14 +71,14 @@ namespace ADSPORT.Data
                         {
                             IdUsuario = Convert.ToInt32(reader[0]),
                             IdRol = Convert.ToInt32(reader[1]),
-                            Nombre = reader[2]?.ToString(),
-                            ApellidoPaterno = reader[3]?.ToString(),
-                            ApellidoMaterno = reader[4]?.ToString(),
-                            Correo = reader[5]?.ToString(),
-                            Telefono = Convert.ToInt64(reader[6]),
-                            Estatus = reader[7]?.ToString(),
-                            CodigoQr = reader[8]?.ToString(),
-                            FechaUltimaModificacion = reader[9]?.ToString()
+                            Nombre = reader[3]?.ToString(),
+                            ApellidoPaterno = reader[4]?.ToString(),
+                            ApellidoMaterno = reader[5]?.ToString(),
+                            Correo = reader[6]?.ToString(),
+                            Telefono = reader[7]?.ToString(),
+                            Estatus = reader[8]?.ToString(),
+                            CodigoQr = reader[9]?.ToString(),
+                            FechaUltimaModificacion = reader[10]?.ToString()
                         };
                     }
                 }
