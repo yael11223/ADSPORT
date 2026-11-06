@@ -3,10 +3,6 @@
    DISEÑO CINEMATOGRÁFICO
    ========================================================== */
 
-/* ==========================================================
-   1. VARIABLES
-   ========================================================== */
-
 :root {
     --naranja: #ff6a00;
     --naranja-claro: #ff914d;
@@ -21,10 +17,6 @@
     --fuente-general: "Inter", Arial, sans-serif;
     --transicion: 0.35s ease;
 }
-
-/* ==========================================================
-   2. ESTILOS GENERALES
-   ========================================================== */
 
 * {
     margin: 0;
@@ -65,10 +57,7 @@ img {
     width: 100%;
 }
 
-/* ==========================================================
-   3. PANTALLA DE CARGA
-   ========================================================== */
-
+/* PANTALLA DE CARGA */
 .intro-loader {
     position: fixed;
     inset: 0;
@@ -97,10 +86,7 @@ img {
     animation: loaderEntrada 0.8s ease both;
 }
 
-/* ==========================================================
-   4. BALÓN REBOTANDO
-   ========================================================== */
-
+/* BALÓN REBOTANDO */
 .loader-ball-container {
     position: relative;
     width: 150px;
@@ -156,10 +142,6 @@ img {
     animation: sombraBalon 1.05s infinite ease-in-out;
 }
 
-/* ==========================================================
-   5. LOGO Y PROGRESO DE CARGA
-   ========================================================== */
-
 .loader-brand h1 {
     font-family: var(--fuente-titulos);
     font-size: clamp(48px, 8vw, 70px);
@@ -207,10 +189,7 @@ img {
     letter-spacing: 2px;
 }
 
-/* ==========================================================
-   6. CARRUSEL PRINCIPAL
-   ========================================================== */
-
+/* CARRUSEL PRINCIPAL */
 .hero-carousel {
     position: relative;
     isolation: isolate;
@@ -249,10 +228,6 @@ img {
     background: linear-gradient( 0deg, #000d 0%, #0002 45%, #000a 100% ), linear-gradient( 90deg, #0006, transparent 50%, #0006 );
 }
 
-/* ==========================================================
-   7. CONTENIDO DEL CARRUSEL
-   ========================================================== */
-
 .hero-content {
     position: relative;
     z-index: 2;
@@ -285,10 +260,6 @@ img {
     font-weight: 600;
     letter-spacing: 3px;
 }
-
-/* ==========================================================
-   8. BOTÓN EXPLORAR
-   ========================================================== */
 
 .explore-button {
     display: inline-flex;
@@ -338,10 +309,6 @@ img {
 .explore-button:hover svg {
     transform: translateX(3px);
 }
-
-/* ==========================================================
-   9. INDICADORES DEL CARRUSEL
-   ========================================================== */
 
 .carousel-indicators {
     position: absolute;
@@ -395,20 +362,26 @@ img {
 }
 
 /* ==========================================================
-   10. BIENVENIDA
+   10. BIENVENIDA (TEXTO CENTRADO Y NÍTIDO)
    ========================================================== */
 
 .intro-section {
     position: relative;
     display: flex;
     align-items: center;
+    justify-content: center; /* Centra el contenido horizontalmente */
     min-height: 85vh;
     padding: 120px 9%;
-    background: radial-gradient( ellipse at 85% 50%, #ff6a0029, transparent 50% ), var(--negro);
+    background: radial-gradient( ellipse at center, #ff6a001f 0%, transparent 70% ), var(--negro);
+    text-align: center; /* Alineación del texto al centro */
 }
 
 .intro-content {
     max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centra subtítulos y sugerencia de scroll */
 }
 
 .section-label {
@@ -431,11 +404,12 @@ img {
     }
 
 .intro-description {
-    max-width: 600px;
+    max-width: 700px;
     margin-top: 28px;
     color: #c6c6c6;
     font-size: 16px;
     line-height: 1.9;
+    text-align: center;
 }
 
 .scroll-hint {
@@ -448,16 +422,11 @@ img {
 }
 
 /* ==========================================================
-   11. VÍDEO CINEMATOGRÁFICO
+   SECCIÓN DE EXPERIENCIA SCROLL (FIX PANTALLA COMPLETA)
    ========================================================== */
 
 .video-scroll-section {
     position: relative;
-    /*
-       El usuario recorre esta altura
-       mientras el vídeo permanece fijo.
-    */
-
     height: 450vh;
     background: var(--negro);
 }
@@ -465,33 +434,52 @@ img {
 .video-sticky-container {
     position: sticky;
     top: 0;
-    width: 100%;
+    left: 0;
+    width: 100vw;
     height: 100vh;
     height: 100svh;
     overflow: hidden;
-    background: #111;
+    background: #090909;
 }
 
-.video-background {
+/* CONTENEDOR DE LAS IMÁGENES AL 100% HORIZONTAL Y VERTICAL */
+.experience-images-container {
     position: absolute;
     inset: 0;
-    z-index: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover;
-    background: #111;
+    z-index: 0;
 }
 
-/* Oscurecimiento */
+.exp-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: none !important;
+    max-height: none !important;
+    object-fit: cover !important;
+    object-position: center !important;
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(1.08);
+    transition: opacity 0.8s ease-in-out, transform 1.2s ease-out, visibility 0.8s ease-in-out;
+}
 
+    .exp-image.active {
+        opacity: 1 !important;
+        visibility: visible !important;
+        transform: scale(1);
+    }
+
+/* CAPAS Y TEXTOS */
 .video-overlay {
     position: absolute;
     inset: 0;
     z-index: 1;
-    background: linear-gradient( 90deg, #000b 0%, #0004 60%, #0007 100% );
+    background: linear-gradient( 90deg, #000d 0%, #0004 60%, #0007 100% );
 }
-
-/* Viñeta cinematográfica */
 
 .video-vignette {
     position: absolute;
@@ -500,10 +488,6 @@ img {
     pointer-events: none;
     background: radial-gradient( ellipse at center, transparent 30%, #0009 100% );
 }
-
-/* ==========================================================
-   12. DECORACIÓN DEL VÍDEO
-   ========================================================== */
 
 .video-decoration {
     position: absolute;
@@ -527,10 +511,6 @@ img {
     font-weight: 800;
     letter-spacing: 3px;
 }
-
-/* ==========================================================
-   13. ESCENAS DEL VÍDEO
-   ========================================================== */
 
 .video-scenes-container {
     position: absolute;
@@ -597,10 +577,6 @@ img {
     line-height: 1.8;
 }
 
-/* ==========================================================
-   14. INDICADORES LATERALES DEL VÍDEO
-   ========================================================== */
-
 .video-scene-indicators {
     position: absolute;
     z-index: 5;
@@ -624,10 +600,6 @@ img {
         height: 55px;
         background: var(--naranja);
     }
-
-/* ==========================================================
-   15. PROGRESO DEL VÍDEO
-   ========================================================== */
 
 .video-progress-container {
     position: absolute;
@@ -670,10 +642,6 @@ img {
     font-weight: 800;
 }
 
-/* ==========================================================
-   16. NAVEGACIÓN DEL VÍDEO
-   ========================================================== */
-
 .video-navigation {
     position: absolute;
     z-index: 5;
@@ -703,10 +671,7 @@ img {
         transform: scale(1.08);
     }
 
-/* ==========================================================
-   17. RESERVA INMEDIATA
-   ========================================================== */
-
+/* RESERVA INMEDIATA */
 .reserva-section {
     position: relative;
     padding: 140px 9%;
@@ -768,8 +733,6 @@ img {
         font-size: 20px;
     }
 
-/* Tarjeta decorativa */
-
 .reserva-visual {
     display: flex;
     align-items: center;
@@ -817,10 +780,7 @@ img {
     letter-spacing: 2px;
 }
 
-/* ==========================================================
-   18. SECCIÓN DE CLASES
-   ========================================================== */
-
+/* SECCIÓN DE CLASES */
 .clases-section {
     position: relative;
     padding: 120px 9% 150px;
@@ -852,24 +812,6 @@ img {
         line-height: 1.8;
     }
 
-/* ==========================================================
-   19. TARJETAS SUPERPUESTAS
-   ========================================================== */
-
-/*
-   EFECTO STACKING CARDS
-
-   Cada tarjeta utiliza position: sticky.
-
-   Al bajar:
-   - La primera se queda fija.
-   - La segunda se coloca encima.
-   - La tercera se superpone a las anteriores.
-
-   La variable --card-index controla
-   el orden de las tarjetas.
-*/
-
 .clases-stack {
     position: relative;
     width: min(100%, 1250px);
@@ -879,8 +821,6 @@ img {
     gap: 90px;
     padding-bottom: 30vh;
 }
-
-/* Tarjeta principal */
 
 .stack-card {
     position: sticky;
@@ -896,16 +836,9 @@ img {
     transition: box-shadow 0.4s ease, filter 0.4s ease;
 }
 
-    /*
-   El JavaScript podrá agregar esta clase
-   para reforzar el efecto de profundidad.
-*/
-
     .stack-card.is-stacked {
         box-shadow: 0 10px 30px #00000020, 0 35px 70px #00000018;
     }
-
-/* Contenido dividido en imagen e información */
 
 .stack-card-inner {
     display: grid;
@@ -913,10 +846,6 @@ img {
     width: 100%;
     min-height: 470px;
 }
-
-/* ==========================================================
-   20. IMÁGENES DE LAS TARJETAS
-   ========================================================== */
 
 .stack-card .clase-image {
     position: relative;
@@ -971,10 +900,6 @@ img {
     letter-spacing: 2px;
 }
 
-/* ==========================================================
-   21. INFORMACIÓN DE LAS TARJETAS
-   ========================================================== */
-
 .stack-card .clase-content {
     display: flex;
     flex-direction: column;
@@ -1012,8 +937,6 @@ img {
     font-size: 13px;
 }
 
-/* Horarios */
-
 .clase-details {
     display: flex;
     flex-wrap: wrap;
@@ -1037,8 +960,6 @@ img {
     .clase-detail > span:first-child {
         font-size: 16px;
     }
-
-/* Botón de reserva */
 
 .clase-button {
     display: flex;
@@ -1064,10 +985,6 @@ img {
     .clase-button span {
         font-size: 20px;
     }
-
-/* ==========================================================
-   22. FINAL DE LAS TARJETAS
-   ========================================================== */
 
 .clases-end {
     display: flex;
@@ -1100,10 +1017,7 @@ img {
     line-height: 1.7;
 }
 
-/* ==========================================================
-   23. INSTALACIONES
-   ========================================================== */
-
+/* INSTALACIONES */
 .instalaciones-section {
     padding: 120px 9%;
     background: var(--negro);
@@ -1185,10 +1099,7 @@ img {
         line-height: 1;
     }
 
-/* ==========================================================
-   24. ANIMACIONES
-   ========================================================== */
-
+/* KEYFRAMES */
 @keyframes loaderEntrada {
     from {
         opacity: 0;
@@ -1272,10 +1183,6 @@ img {
     }
 }
 
-/* ==========================================================
-   25. ANIMACIONES AL HACER SCROLL
-   ========================================================== */
-
 .reveal {
     opacity: 0;
     transform: translateY(45px);
@@ -1287,28 +1194,13 @@ img {
         transform: translateY(0);
     }
 
-/*
-   Las tarjetas sticky no deben usar
-   la misma transformación que otros elementos.
-   Esto evita interferencias con el apilamiento.
-*/
-
-.stack-card.reveal {
+.stack-card.reveal,
+.stack-card.reveal.visible {
     opacity: 1;
     transform: none;
 }
 
-    .stack-card.reveal.visible {
-        opacity: 1;
-        transform: none;
-    }
-
-/* ==========================================================
-   26. TABLET
-   ========================================================== */
-
 @media (max-width: 1024px) {
-
     .reserva-container {
         gap: 40px;
     }
@@ -1338,14 +1230,7 @@ img {
     }
 }
 
-/* ==========================================================
-   27. MÓVIL
-   ========================================================== */
-
 @media (max-width: 768px) {
-
-    /* Carrusel */
-
     .hero-carousel {
         min-height: 520px;
     }
@@ -1374,8 +1259,6 @@ img {
         bottom: 35px;
     }
 
-    /* Bienvenida */
-
     .intro-section {
         min-height: 70vh;
         padding: 100px 7%;
@@ -1388,8 +1271,6 @@ img {
     .intro-description {
         font-size: 14px;
     }
-
-    /* Vídeo */
 
     .video-scroll-section {
         height: 350vh;
@@ -1443,8 +1324,6 @@ img {
         height: 42px;
     }
 
-    /* Reserva */
-
     .reserva-section {
         padding: 100px 7%;
     }
@@ -1461,8 +1340,6 @@ img {
     .reserva-visual-card {
         min-height: 320px;
     }
-
-    /* Clases superpuestas */
 
     .clases-section {
         padding: 90px 5% 110px;
@@ -1527,8 +1404,6 @@ img {
         font-size: 32px;
     }
 
-    /* Instalaciones */
-
     .instalaciones-section {
         padding: 100px 7%;
     }
@@ -1550,12 +1425,7 @@ img {
     }
 }
 
-/* ==========================================================
-   28. MÓVILES PEQUEÑOS
-   ========================================================== */
-
 @media (max-width: 420px) {
-
     .hero-content h1 {
         font-size: 60px;
     }
@@ -1616,15 +1486,8 @@ img {
     }
 }
 
-/* ==========================================================
-   29. ACCESIBILIDAD
-   ========================================================== */
-
 @media (prefers-reduced-motion: reduce) {
-
-    *,
-    *::before,
-    *::after {
+    *, *::before, *::after {
         scroll-behavior: auto !important;
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;

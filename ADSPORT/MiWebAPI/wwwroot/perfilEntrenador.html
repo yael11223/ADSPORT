@@ -1,0 +1,223 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#090909">
+    <title>Perfil Entrenador | ADSPORT</title>
+
+    <!-- FUENTES -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- BOOTSTRAP 5.3 & ESTILOS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/Perfil.css">
+</head>
+
+<body class="profile-page">
+
+    <!-- ENCABEZADO -->
+    <header class="profile-header">
+        <div class="container-fluid px-4 px-lg-5">
+            <div class="d-flex justify-content-between align-items-center">
+                <a href="indexUsuario.html" class="brand-logo">
+                    AD<span>SPORT</span>
+                </a>
+                <nav class="profile-nav">
+                    <a href="indexUsuario.html">INICIO</a>
+                    <a href="Nosotros.html">NOSOTROS</a>
+                    <a href="indexUsuario.html#clases">CLASES</a>
+                    <a href="index.html" class="btn-logout">CERRAR SESIÓN</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTENIDO PRINCIPAL DEL PERFIL -->
+    <main class="container profile-container py-5">
+
+        <!-- DASHBOARD GRID -->
+        <div class="row g-4 align-items-stretch">
+
+            <!-- COLUMNA IZQUIERDA: FOTO, NOMBRE Y DISCIPLINAS -->
+            <div class="col-12 col-lg-4">
+                <div class="profile-card text-center">
+                    <div class="avatar-wrapper">
+                        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=500&q=80" alt="Foto Entrenador" class="profile-avatar">
+                        <span class="status-badge active"><i class="status-dot"></i> Activo</span>
+                    </div>
+                    <h2 class="user-name mt-3" id="lblNombreEntrenador">Valeria Gómez</h2>
+                    <p class="user-role">ENTRENADOR ADSPORT</p>
+
+                    <div class="disciplines-container mt-2">
+                        <span class="discipline-tag">Tenis</span>
+                        <span class="discipline-tag">Boxeo</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COLUMNA CENTRAL: MIS CLASES Y TOTAL ALUMNOS -->
+            <div class="col-12 col-lg-5">
+                <div class="profile-card">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h3 class="section-title mb-0">MIS CLASES IMPARTIDAS</h3>
+                        <button type="button" class="btn-add-class" data-bs-toggle="modal" data-bs-target="#modalNuevaClase">
+                            + Nueva Clase
+                        </button>
+                    </div>
+
+                    <!-- CLASE 1 -->
+                    <div class="class-item active-class-box">
+                        <div class="class-info">
+                            <span class="class-name">🎾 Tenis Avanzado</span>
+                            <span class="class-time">Lun y Mié | 5:00 - 7:00 p.m.</span>
+                        </div>
+                        <span class="badge-count">12 Alumnos</span>
+                    </div>
+
+                    <!-- CLASE 2 -->
+                    <div class="class-item active-class-box mt-3">
+                        <div class="class-info">
+                            <span class="class-name">🥊 Boxeo Intermedio</span>
+                            <span class="class-time">Mar y Jue | 7:00 - 9:00 p.m.</span>
+                        </div>
+                        <span class="badge-count">8 Alumnos</span>
+                    </div>
+
+                    <div class="total-students-banner mt-4">
+                        <span>TOTAL ALUMNOS ACTIVOS:</span>
+                        <strong class="students-count">20 personas</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COLUMNA DERECHA: CÓDIGO QR -->
+            <div class="col-12 col-lg-3">
+                <div class="profile-card qr-card text-center">
+                    <h3 class="qr-title">CÓDIGO QR</h3>
+                    <div class="qr-box">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=ADSPORT-TRAINER-001&color=090909" alt="Código QR de Acceso">
+                    </div>
+                    <p class="qr-hint">Acceso Staff / Instructor</p>
+                </div>
+            </div>
+
+            <!-- FILA INFERIOR: LISTAS DE ASISTENCIA POR DEPORTE/CLASE -->
+            <div class="col-12">
+                <div class="profile-card attendance-card">
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+                        <h3 class="section-title mb-0">LISTA DE ASISTENCIA</h3>
+
+                        <!-- FILTRO POR DEPORTE -->
+                        <div class="class-selector-tabs">
+                            <button class="tab-btn active" onclick="filtrarAsistencia('tenis')">🎾 Tenis (5 p.m.)</button>
+                            <button class="tab-btn" onclick="filtrarAsistencia('boxeo')">🥊 Boxeo (7 p.m.)</button>
+                        </div>
+                    </div>
+
+                    <!-- ASISTENCIA CLASE TENIS -->
+                    <div id="asistenciaTenis" class="attendance-group">
+                        <div class="d-flex justify-content-between align-items-center time-header">
+                            <span class="time-label">Hoy - Tenis Cancha 1</span>
+                            <span class="time-value">5:00 p.m.</span>
+                        </div>
+                        <ul class="student-list">
+                            <li>Elienay Cantera Martínez <span class="badge bg-success float-end">Confirmado</span></li>
+                            <li>Carlos Mendoza Ríos <span class="badge bg-success float-end">Confirmado</span></li>
+                            <li>Sofía Torres Lara <span class="badge bg-warning text-dark float-end">Pendiente</span></li>
+                            <li>Miguel Ángel Pérez <span class="badge bg-success float-end">Confirmado</span></li>
+                        </ul>
+                    </div>
+
+                    <!-- ASISTENCIA CLASE BOXEO -->
+                    <div id="asistenciaBoxeo" class="attendance-group d-none">
+                        <div class="d-flex justify-content-between align-items-center time-header">
+                            <span class="time-label">Hoy - Ring Principal</span>
+                            <span class="time-value">7:00 p.m.</span>
+                        </div>
+                        <ul class="student-list">
+                            <li>Alejandro Ruiz <span class="badge bg-success float-end">Confirmado</span></li>
+                            <li>Mariana López <span class="badge bg-success float-end">Confirmado</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- MODAL PARA AGREGAR NUEVA CLASE -->
+    <div class="modal fade" id="modalNuevaClase" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content modal-adsport">
+
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title section-title w-100 mb-0">AGREGAR NUEVA CLASE</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+
+                <div class="modal-body pt-4">
+                    <form id="formNuevaClase">
+
+                        <div class="mb-3">
+                            <label class="form-label modal-label">Nombre de la Clase</label>
+                            <input type="text" class="form-control modal-input" placeholder="Ej. Tenis Principiantes" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label modal-label">Deporte</label>
+                            <select class="form-select modal-input" required>
+                                <option value="1">Tenis</option>
+                                <option value="2">Boxeo</option>
+                                <option value="3">Baloncesto</option>
+                            </select>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-6 mb-3">
+                                <label class="form-label modal-label">Cupo Máximo</label>
+                                <input type="number" class="form-control modal-input" value="15" required>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <label class="form-label modal-label">Precio ($)</label>
+                                <input type="number" step="0.01" class="form-control modal-input" value="250.00" required>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-modal-submit mt-3">
+                            GUARDAR CLASE
+                        </button>
+
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- BOOTSTRAP JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+                function filtrarAsistencia(deporte) {
+                    const tabs = document.querySelectorAll('.tab-btn');
+                    tabs.forEach(t => t.classList.remove('active'));
+
+                    const tabSeleccionada = event.target;
+                    tabSeleccionada.classList.add('active');
+
+                    if (deporte === 'tenis') {
+                        document.getElementById('asistenciaTenis').classList.remove('d-none');
+                        document.getElementById('asistenciaBoxeo').classList.add('d-none');
+                    } else {
+                        document.getElementById('asistenciaTenis').classList.add('d-none');
+                        document.getElementById('asistenciaBoxeo').classList.remove('d-none');
+                    }
+                }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,118 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#090909">
+    <title>Perfil Cliente | ADSPORT</title>
+
+    <!-- FUENTES -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- BOOTSTRAP 5.3 & ESTILOS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/Perfil.css">
+</head>
+
+<body class="profile-page">
+
+    <!-- ENCABEZADO -->
+    <header class="profile-header">
+        <div class="container-fluid px-4 px-lg-5">
+            <div class="d-flex justify-content-between align-items-center">
+                <a href="indexUsuario.html" class="brand-logo">
+                    AD<span>SPORT</span>
+                </a>
+                <nav class="profile-nav">
+                    <a href="indexUsuario.html">INICIO</a>
+                    <a href="Nosotros.html">NOSOTROS</a>
+                    <a href="indexUsuario.html#clases">CLASES</a>
+                    <a href="index.html" class="btn-logout">CERRAR SESIÓN</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTENIDO PRINCIPAL DEL PERFIL -->
+    <main class="container profile-container py-5">
+
+        <!-- DASHBOARD GRID -->
+        <div class="row g-4 align-items-stretch">
+
+            <!-- COLUMNA IZQUIERDA: USUARIO Y FOTO -->
+            <div class="col-12 col-lg-4">
+                <div class="profile-card text-center">
+                    <div class="avatar-wrapper">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=500&q=80" alt="Foto de perfil" class="profile-avatar">
+                        <span class="status-badge active"><i class="status-dot"></i> Activo</span>
+                    </div>
+                    <h2 class="user-name mt-3" id="lblNombreUsuario">Elienay Cantera</h2>
+                    <p class="user-role">CLIENTE ADSPORT</p>
+                </div>
+            </div>
+
+            <!-- COLUMNA CENTRAL: MIS CLASES Y PRÓXIMAS -->
+            <div class="col-12 col-lg-5">
+                <div class="profile-card">
+                    <h3 class="section-title">MIS CLASES</h3>
+                    <div class="class-item">
+                        <div class="class-info">
+                            <span class="class-name">Tenis</span>
+                            <span class="class-time">5 - 7 p.m.</span>
+                        </div>
+                    </div>
+
+                    <h3 class="section-title mt-4">PRÓXIMAS</h3>
+                    <div class="class-item">
+                        <div class="class-info">
+                            <span class="class-name">Tenis</span>
+                            <span class="class-time">5 - 7 p.m.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COLUMNA DERECHA: CÓDIGO QR -->
+            <div class="col-12 col-lg-3">
+                <div class="profile-card qr-card text-center">
+                    <h3 class="qr-title">CÓDIGO QR</h3>
+                    <div class="qr-box">
+                        <!-- QR dinámico genérico para acceso -->
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=ADSPORT-CLIENTE-001&color=090909" alt="Código QR de Acceso">
+                    </div>
+                    <p class="qr-hint">Muestra este código al ingresar</p>
+                </div>
+            </div>
+
+            <!-- FILA INFERIOR DESTACADA: MEMBRESÍA -->
+            <div class="col-12">
+                <div class="membership-banner d-flex flex-column flex-md-row justify-content-between align-items-center">
+                    <div class="membership-info d-flex align-items-center gap-4 mb-3 mb-md-0">
+                        <div>
+                            <span class="banner-label">MEMBRESÍA</span>
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="status-dot"></span>
+                                <span class="banner-value text-success">Activo</span>
+                            </div>
+                        </div>
+                        <div class="divider-vertical"></div>
+                        <div>
+                            <span class="banner-label">DURACIÓN</span>
+                            <span class="banner-value">14 de mayo 2027</span>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-pay-again">
+                        VOLVER A PAGAR
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+</body>
+</html>
