@@ -1,5 +1,6 @@
 using ADSPORT.Data;
 using ADSPORT.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,6 +17,7 @@ builder.Services.AddScoped<CorreoService>();
 builder.Services.AddSingleton<UsuarioData>();
 builder.Services.AddScoped<RolData>();
 builder.Services.AddScoped<VerificacionData>();
+builder.Services.AddScoped<LoginUsuarioData>();
 
 builder.Services.AddCors(options =>
 {
@@ -24,6 +26,30 @@ builder.Services.AddCors(options =>
         app.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
     });
 });
+
+
+builder.Services
+    .AddAuthentication(
+        CookieAuthenticationDefaults.AuthenticationScheme
+    )
+    .AddCookie(options =>
+    {
+        options.Cookie.Name = "ADSPORT.Auth";
+        options.Cookie.HttpOnly = true;
+        options.Cookie.SecurePolicy =
+            CookieSecurePolicy.Always;
+        options.Cookie.SameSite =
+            SameSiteMode.Lax;
+
+        options.ExpireTimeSpan =
+            TimeSpan.FromHours(8);
+
+        options.SlidingExpiration = true;
+
+        options.LoginPath = "/login.html";
+    });
+
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
@@ -39,6 +65,7 @@ app.UseDefaultFiles();
 app.UseStaticFiles();
 
 app.UseCors("NuevaPolitica");
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
