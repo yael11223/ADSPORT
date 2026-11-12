@@ -8,6 +8,98 @@
    01. VARIABLES GLOBALES
    ========================================================== */
 
+/* ==========================================
+   HEADER - ADSPORT
+   ========================================== */
+
+.profile-header {
+    background: #0d0d0d;
+    border-bottom: 1px solid #252525;
+    padding: 20px 0;
+}
+
+    /* Contenedor principal */
+    .profile-header .container-fluid {
+        width: 100%;
+        padding: 0 5%;
+    }
+
+    /* Alinear logo y menú */
+    .profile-header .d-flex {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 30px;
+    }
+
+/* Logo */
+.brand-logo {
+    font-family: var(--fuente-titulos);
+    font-size: 32px;
+    font-weight: 900;
+    color: var(--blanco);
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+    .brand-logo span {
+        color: var(--naranja);
+    }
+
+/* Navegación */
+.profile-nav {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+    .profile-nav a {
+        color: var(--gris);
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        transition: color 0.3s ease;
+    }
+
+        .profile-nav a:hover {
+            color: var(--naranja);
+        }
+
+    /* Botón cerrar sesión */
+    .profile-nav .btn-logout {
+        color: var(--naranja);
+        border: 1px solid var(--naranja);
+        padding: 8px 16px;
+        border-radius: 20px;
+        white-space: nowrap;
+    }
+
+        .profile-nav .btn-logout:hover {
+            background: var(--naranja);
+            color: var(--blanco);
+        }
+
+/* Adaptación para celulares */
+@media (max-width: 600px) {
+    .profile-header .d-flex {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .profile-nav {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+    }
+
+        .profile-nav a {
+            font-size: 11px;
+        }
+}
+
+
+     /*=======================================================================*/
 :root {
     --ads-orange: #ff6a00;
     --ads-orange-light: #ff963f;

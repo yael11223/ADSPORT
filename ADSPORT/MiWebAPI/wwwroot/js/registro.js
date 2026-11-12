@@ -2,7 +2,67 @@
 document.addEventListener("DOMContentLoaded", () => {
 
     // ========================================
-    // ADSPORT - NAVEGACIÓN DEL REGISTRO
+    // ADSPORT - API DE REGISTRO (INDEPENDIENTE)
+    // ========================================
+
+    async function solicitarAPIRegistro(ruta, datos, codigosExito) {
+        const respuesta = await fetch(ruta, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(datos)
+        });
+
+        let resultado;
+
+        try {
+            resultado = await respuesta.json();
+        } catch {
+            throw new Error(
+                `El servidor no devolvió JSON válido (HTTP ${respuesta.status}).`
+            );
+        }
+
+        if (
+            !respuesta.ok ||
+            !resultado ||
+            !codigosExito.includes(Number(resultado.numeroError))
+        ) {
+            throw new Error(
+                resultado?.respuesta ||
+                resultado?.mensaje ||
+                `Error HTTP ${respuesta.status} al conectar con el servidor.`
+            );
+        }
+
+        return resultado;
+    }
+
+    function solicitarCodigoRegistro(correo) {
+        return solicitarAPIRegistro(
+            "/api/Verificacion/agregar",
+            { correo },
+            [200]
+        );
+    }
+
+    function validarCodigoRegistro(correo, codigo) {
+        return solicitarAPIRegistro(
+            "/api/Verificacion/validar",
+            { correo, codigo },
+            [200]
+        );
+    }
+
+    function registrarUsuarioRegistro(datos) {
+        return solicitarAPIRegistro(
+            "/api/Verificacion/registrar",
+            datos,
+            [201]
+        );
+    }
+
+    // ========================================
+    // ELEMENTOS Y ESTADO DEL FORMULARIO
     // ========================================
 
     const pantallas = [
@@ -17,81 +77,67 @@ document.addEventListener("DOMContentLoaded", () => {
     const correoInput = document.getElementById("correo");
     const correoDestino = document.getElementById("correoDestino");
     const codigoInput = document.getElementById("codigo");
-    // ========================================
-    // CONTADOR PARA REENVIAR CÓDIGO
-    // ========================================
+    const telefonoInput = document.getElementById("telefono");
+    const passwordInput = document.getElementById("password");
+    const confirmarInput = document.getElementById("confirmarPassword");
 
-    const btnReenviarCodigo =
-        document.getElementById("btnReenviarCodigo");
+    const btnReenviarCodigo = document.getElementById("btnReenviarCodigo");
+    const tiempoReenvio = document.getElementById("tiempoReenvio");
+    const textoReenvio = document.getElementById("textoReenvio");
+    const contadorCodigo = document.getElementById("contadorCodigo");
 
-    const tiempoReenvio =
-        document.getElementById("tiempoReenvio");
+    const ventanaEnvio = document.getElementById("ventanaEnvio");
+    const tituloVentanaEnvio = document.getElementById("tituloVentanaEnvio");
+    const descripcionVentanaEnvio = document.getElementById("descripcionVentanaEnvio");
 
-    const textoReenvio =
-        document.getElementById("textoReenvio");
-
-    const contadorCodigo =
-        document.getElementById("contadorCodigo");
+    const iconoExitoEnvio =
+        ventanaEnvio?.querySelector(".icono-exito-envio");
 
     const DURACION_REENVIO = 60;
+
+    const expresionNombre =
+        /^[\p{L}\p{M}]+(?: [\p{L}\p{M}]+)*$/u;
+
+    let correoSolicitado = "";
+    let correoValidado = false;
 
     let finEsperaReenvio = 0;
     let intervaloReenvio = null;
     let reenviandoCodigo = false;
 
-    let pantallaActual = 0;
-    let correoSolicitado = "";
-    let correoValidado = false;
-
     // ========================================
-    // MOSTRAR PANTALLA
+    // NAVEGACIÓN ENTRE LAS 5 PANTALLAS
     // ========================================
 
     function mostrarPantalla(indice) {
-
-        if (indice < 0 || indice >= pantallas.length) {
-            return;
-        }
+        if (indice < 0 || indice >= pantallas.length) return;
 
         pantallas.forEach((id, posicion) => {
             const pantalla = document.getElementById(id);
 
-            if (!pantalla) return;
-
-            pantalla.hidden = posicion !== indice;
+            if (pantalla) {
+                pantalla.hidden = posicion !== indice;
+            }
         });
 
-        pantallaActual = indice;
+        const pasoActual = indice <= 1 ? indice : 2;
 
-        pasos.forEach((paso, indicePaso) => {
+        pasos.forEach((paso, posicion) => {
             paso.classList.toggle(
                 "activo",
-                indicePaso === obtenerPaso(indice)
+                posicion === pasoActual
             );
         });
 
-        const panel = document.querySelector(".panel-formulario");
-
-        if (panel) {
-            panel.scrollIntoView({
+        document.querySelector(".panel-formulario")
+            ?.scrollIntoView({
                 behavior: "smooth",
                 block: "start"
             });
-        }
     }
 
     // ========================================
-    // INDICADOR DE PROGRESO
-    // ========================================
-
-    function obtenerPaso(indice) {
-        if (indice <= 1) return indice;
-        if (indice <= 3) return 2;
-        return 2;
-    }
-
-    // ========================================
-    // MENSAJES
+    // MENSAJES DE ERROR
     // ========================================
 
     const idsErrores = [
@@ -119,19 +165,19 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    function mostrarError(id, mensaje) {
+    function mostrarError(id, texto) {
         const elemento = document.getElementById(id);
 
-        if (elemento) {
-            elemento.textContent = mensaje;
-            elemento.hidden = false;
-        } else {
-            alert(mensaje);
+        if (!elemento) {
+            alert(texto);
+            return;
         }
+
+        elemento.textContent = texto;
+        elemento.hidden = false;
     }
 
     function limpiarMensajes() {
-
         idsErrores.forEach(id => {
             const elemento = document.getElementById(id);
 
@@ -146,56 +192,17 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ========================================
-    // VALIDAR CORREO
-    // ========================================
-
-    function prepararCorreo() {
-
-        if (!correoInput) return false;
-
-        const correo = correoInput.value.trim();
-
-        if (!correo || !correoInput.checkValidity()) {
-            mostrarMensaje("errorCorreo", true);
-            correoInput.focus();
-            return false;
-        }
-
-        mostrarMensaje("errorCorreo", false);
-
-        if (correoDestino) {
-            correoDestino.textContent = correo;
-        }
-
-        return true;
-    }
-
-    // ========================================
     // VALIDACIONES EN TIEMPO REAL
-    // NOMBRES, APELLIDOS Y TELÉFONO
     // ========================================
 
-    const idsNombres = [
+    [
         "nombre",
         "apellidoPaterno",
         "apellidoMaterno"
-    ];
-
-    const expresionNombre =
-        /^[\p{L}\p{M}]+(?: [\p{L}\p{M}]+)*$/u;
-
-    const telefonoInput = document.getElementById("telefono");
-
-    idsNombres.forEach(id => {
-
+    ].forEach(id => {
         const campo = document.getElementById(id);
 
-        if (!campo) return;
-
-        // Eliminar números y símbolos al escribir o pegar.
-        // Se permiten letras, acentos, ñ y espacios.
-        campo.addEventListener("input", () => {
-
+        campo?.addEventListener("input", () => {
             if (campo.isComposing) return;
 
             campo.value = campo.value
@@ -203,75 +210,55 @@ document.addEventListener("DOMContentLoaded", () => {
                 .slice(0, 100);
         });
 
-        // Eliminar espacios innecesarios.
-        campo.addEventListener("blur", () => {
-
+        campo?.addEventListener("blur", () => {
             campo.value = campo.value
                 .replace(/\s+/g, " ")
                 .trim();
         });
     });
 
-    // Permitir únicamente números en el teléfono.
     telefonoInput?.addEventListener("input", () => {
-
         telefonoInput.value = telefonoInput.value
             .replace(/\D/g, "")
             .slice(0, 10);
     });
 
-    // El código de verificación también será numérico.
     codigoInput?.addEventListener("input", () => {
-
         codigoInput.value = codigoInput.value
             .replace(/\D/g, "")
             .slice(0, 6);
     });
 
-    // ========================================
-    // VALIDACIÓN EN TIEMPO REAL
-    // DE CONTRASEÑAS
-    // ========================================
+    correoInput?.addEventListener("input", () => {
+        if (
+            correoInput.value.trim().toLowerCase() !==
+            correoSolicitado
+        ) {
+            correoValidado = false;
+        }
+    });
 
-    const passwordInput = document.getElementById("password");
-
-    const confirmarInput =
-        document.getElementById("confirmarPassword");
+    // ========================================
+    // VALIDACIÓN DE CONTRASEÑA
+    // ========================================
 
     function evaluarRequisitosPassword() {
-
         const clave = passwordInput?.value || "";
         const confirmacion = confirmarInput?.value || "";
 
         const reglas = {
-
-            // Mínimo 8 caracteres.
             longitud: clave.length >= 8,
-
-            // Al menos una mayúscula.
             mayuscula: /[A-Z]/.test(clave),
-
-            // Al menos una minúscula.
             minuscula: /[a-z]/.test(clave),
-
-            // Al menos un número.
             numero: /[0-9]/.test(clave),
-
-            // Al menos un carácter especial.
-            especial:
-                /[^\p{L}\p{M}0-9\s]/u.test(clave),
-
-            // Las dos contraseñas deben coincidir.
+            especial: /[^\p{L}\p{M}0-9\s]/u.test(clave),
             coincidencia:
                 clave.length > 0 &&
                 clave === confirmacion
         };
 
-        // Cambiar los requisitos a verde
-        // conforme el usuario los cumpla.
         Object.entries(reglas).forEach(
             ([requisito, cumplido]) => {
-
                 const elemento = document.querySelector(
                     `[data-requisito="${requisito}"]`
                 );
@@ -290,17 +277,14 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         );
 
-        // Solo es válida si cumple todas las reglas.
         return Object.values(reglas).every(Boolean);
     }
 
-    // Evaluar mientras escribe la contraseña.
     passwordInput?.addEventListener(
         "input",
         evaluarRequisitosPassword
     );
 
-    // Evaluar mientras confirma la contraseña.
     confirmarInput?.addEventListener(
         "input",
         evaluarRequisitosPassword
@@ -309,24 +293,143 @@ document.addEventListener("DOMContentLoaded", () => {
     evaluarRequisitosPassword();
 
     // ========================================
-    // VENTANA ANIMADA PARA ENVIAR CORREO
+    // VALIDAR CORREO
     // ========================================
 
-    const ventanaEnvio =
-        document.getElementById("ventanaEnvio");
+    function prepararCorreo() {
+        if (
+            !correoInput ||
+            !correoInput.value.trim() ||
+            !correoInput.checkValidity()
+        ) {
+            mostrarError(
+                "errorCorreo",
+                "Introduce un correo electrónico válido."
+            );
 
-    const tituloVentanaEnvio =
-        document.getElementById("tituloVentanaEnvio");
+            correoInput?.focus();
+            return false;
+        }
 
-    const descripcionVentanaEnvio =
-        document.getElementById("descripcionVentanaEnvio");
+        if (correoDestino) {
+            correoDestino.textContent =
+                correoInput.value.trim();
+        }
 
-    const iconoExitoEnvio =
-        ventanaEnvio?.querySelector(".icono-exito-envio");
+        mostrarMensaje("errorCorreo", false);
+        return true;
+    }
 
-    // Mostrar ventana mientras se envía el correo.
+    // ========================================
+    // VALIDAR DATOS PERSONALES
+    // ========================================
+
+    function prepararDatos() {
+        const nombre = document.getElementById("nombre");
+        const paterno =
+            document.getElementById("apellidoPaterno");
+        const materno =
+            document.getElementById("apellidoMaterno");
+
+        for (const campo of [nombre, paterno, materno]) {
+            if (!campo) continue;
+
+            campo.value = campo.value
+                .replace(/\s+/g, " ")
+                .trim();
+
+            const obligatorio =
+                campo === nombre || campo === paterno;
+
+            if (
+                (obligatorio && !campo.value) ||
+                (
+                    campo.value &&
+                    !expresionNombre.test(campo.value)
+                )
+            ) {
+                mostrarError(
+                    "errorDatos",
+                    "Escribe nombres y apellidos solo con letras y espacios."
+                );
+
+                campo.focus();
+                return false;
+            }
+        }
+
+        if (
+            !nombre ||
+            !paterno ||
+            !telefonoInput ||
+            !/^\d{10}$/.test(telefonoInput.value)
+        ) {
+            mostrarError(
+                "errorDatos",
+                "Introduce un número de teléfono válido de 10 dígitos."
+            );
+
+            telefonoInput?.focus();
+            return false;
+        }
+
+        mostrarMensaje("errorDatos", false);
+        return true;
+    }
+
+    // ========================================
+    // VALIDAR CONTRASEÑA FINAL
+    // ========================================
+
+    function prepararPassword() {
+        if (
+            !passwordInput ||
+            !confirmarInput ||
+            !evaluarRequisitosPassword()
+        ) {
+            mostrarError(
+                "errorPassword",
+                "La contraseña debe cumplir todos los requisitos y coincidir con su confirmación."
+            );
+
+            return false;
+        }
+
+        mostrarMensaje("errorPassword", false);
+        return true;
+    }
+
+    // ========================================
+    // OBTENER DATOS DEL USUARIO
+    // ========================================
+
+    function obtenerDatosRegistro() {
+        return {
+            correo: correoSolicitado,
+
+            nombre:
+                document.getElementById("nombre")
+                    .value.trim(),
+
+            apellidoPaterno:
+                document.getElementById("apellidoPaterno")
+                    .value.trim(),
+
+            apellidoMaterno:
+                document.getElementById("apellidoMaterno")
+                    ?.value.trim() || "",
+
+            telefono: telefonoInput.value.trim(),
+
+            password: passwordInput.value
+        };
+    }
+
+    // ========================================
+    // VENTANA ANIMADA DEL ENVÍO DE CORREO
+    // ========================================
+
     function abrirVentanaEnvio() {
-
         if (!ventanaEnvio) return;
 
         ventanaEnvio.classList.remove("exito");
@@ -348,9 +451,7 @@ document.addEventListener("DOMContentLoaded", () => {
         ventanaEnvio.hidden = false;
     }
 
-    // Mostrar confirmación cuando la API responda.
     function mostrarEnvioExitoso() {
-
         if (!ventanaEnvio) return;
 
         ventanaEnvio.classList.add("exito");
@@ -370,175 +471,30 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // Ocultar la ventana.
     function cerrarVentanaEnvio() {
-
         if (ventanaEnvio) {
             ventanaEnvio.hidden = true;
         }
     }
 
-    // ========================================
-    // VALIDAR DATOS PERSONALES
-    // ========================================
-
-    function prepararDatos() {
-
-        const nombre =
-            document.getElementById("nombre");
-
-        const paterno =
-            document.getElementById("apellidoPaterno");
-
-        const materno =
-            document.getElementById("apellidoMaterno");
-
-        // Revisar los tres campos de nombre.
-        // El apellido materno es opcional.
-        for (const campo of [nombre, paterno, materno]) {
-
-            if (!campo) continue;
-
-            campo.value = campo.value
-                .replace(/\s+/g, " ")
-                .trim();
-
-            const obligatorio =
-                campo === nombre || campo === paterno;
-
-            if (
-                (obligatorio && !campo.value) ||
-                (
-                    campo.value &&
-                    !expresionNombre.test(campo.value)
-                )
-            ) {
-
-                mostrarError(
-                    "errorDatos",
-                    "Escribe nombres y apellidos solo con letras y espacios."
-                );
-
-                campo.focus();
-
-                return false;
-            }
-        }
-
-        // Comprobar que el teléfono tenga 10 dígitos.
-        if (
-            !nombre ||
-            !paterno ||
-            !telefonoInput ||
-            !/^\d{10}$/.test(telefonoInput.value)
-        ) {
-
-            mostrarError(
-                "errorDatos",
-                "Introduce un número de teléfono válido de 10 dígitos."
-            );
-
-            telefonoInput?.focus();
-
-            return false;
-        }
-
-        mostrarMensaje("errorDatos", false);
-
-        return true;
-    }
+    const esperar = ms =>
+        new Promise(resolve => setTimeout(resolve, ms));
 
     // ========================================
-    // VALIDAR CONTRASEÑAS
-    // ========================================
-
-    function prepararPassword() {
-
-        if (!passwordInput || !confirmarInput) {
-            return false;
-        }
-
-        // Revisar todos los requisitos.
-        if (!evaluarRequisitosPassword()) {
-
-            mostrarError(
-                "errorPassword",
-                "La contraseña debe cumplir todos los requisitos y coincidir con su confirmación."
-            );
-
-            return false;
-        }
-
-        mostrarMensaje("errorPassword", false);
-
-        return true;
-    }
-
-    // ========================================
-    // OBTENER DATOS DEL NUEVO USUARIO
-    // ========================================
-
-    function obtenerDatosRegistro() {
-
-        return {
-
-            correo: correoSolicitado,
-
-            nombre:
-                document.getElementById("nombre")
-                    .value.trim(),
-
-            apellidoPaterno:
-                document.getElementById("apellidoPaterno")
-                    .value.trim(),
-
-            apellidoMaterno:
-                document.getElementById("apellidoMaterno")
-                    ?.value.trim() || "",
-
-            telefono:
-                document.getElementById("telefono")
-                    .value.trim(),
-
-            password:
-                document.getElementById("password")
-                    .value
-        };
-    }
-
-    // ========================================
-    // INVALIDAR VERIFICACIÓN SI CAMBIA CORREO
-    // ========================================
-
-    correoInput?.addEventListener("input", () => {
-
-        const correoActual =
-            correoInput.value.trim().toLowerCase();
-
-        if (correoActual !== correoSolicitado) {
-            correoValidado = false;
-        }
-    });
-
-    // ========================================
-    // CONTADOR PARA REENVIAR CÓDIGO
+    // REENVÍO DEL CÓDIGO (60 SEGUNDOS)
     // ========================================
 
     function actualizarContadorReenvio() {
-
-        const segundosRestantes = Math.max(
+        const restantes = Math.max(
             0,
             Math.ceil(
                 (finEsperaReenvio - Date.now()) / 1000
             )
         );
 
-        const minutos = Math.floor(segundosRestantes / 60);
-        const segundos = segundosRestantes % 60;
-
         const tiempo =
-            String(minutos).padStart(2, "0") + ":" +
-            String(segundos).padStart(2, "0");
+            `${String(Math.floor(restantes / 60)).padStart(2, "0")}:` +
+            `${String(restantes % 60).padStart(2, "0")}`;
 
         if (tiempoReenvio) {
             tiempoReenvio.textContent = tiempo;
@@ -546,40 +502,31 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (btnReenviarCodigo) {
             btnReenviarCodigo.disabled =
-                segundosRestantes > 0 || reenviandoCodigo;
+                restantes > 0 || reenviandoCodigo;
         }
 
-        if (segundosRestantes === 0) {
+        if (textoReenvio) {
+            textoReenvio.textContent =
+                restantes > 0
+                    ? "Podrás solicitar otro código en:"
+                    : "¿No recibiste el código? Puedes solicitar otro.";
+        }
 
-            if (textoReenvio) {
-                textoReenvio.textContent =
-                    "¿No recibiste el código? Puedes solicitar otro.";
-            }
+        contadorCodigo?.classList.toggle(
+            "disponible",
+            restantes === 0
+        );
 
-            contadorCodigo?.classList.add("disponible");
-
-            if (intervaloReenvio !== null) {
-                clearInterval(intervaloReenvio);
-                intervaloReenvio = null;
-            }
-
-        } else {
-
-            if (textoReenvio) {
-                textoReenvio.textContent =
-                    "Podrás solicitar otro código en:";
-            }
-
-            contadorCodigo?.classList.remove("disponible");
+        if (
+            restantes === 0 &&
+            intervaloReenvio !== null
+        ) {
+            clearInterval(intervaloReenvio);
+            intervaloReenvio = null;
         }
     }
 
-    // ========================================
-    // INICIAR CONTADOR DE 60 SEGUNDOS
-    // ========================================
-
     function iniciarContadorReenvio() {
-
         finEsperaReenvio =
             Date.now() + DURACION_REENVIO * 1000;
 
@@ -603,7 +550,6 @@ document.addEventListener("DOMContentLoaded", () => {
         "click",
         async () => {
 
-            // Evitar solicitudes duplicadas.
             if (
                 reenviandoCodigo ||
                 Date.now() < finEsperaReenvio ||
@@ -616,31 +562,21 @@ document.addEventListener("DOMContentLoaded", () => {
             reenviandoCodigo = true;
             actualizarContadorReenvio();
             limpiarMensajes();
+            abrirVentanaEnvio();
 
             try {
-
-                // Mostrar animación de envío.
-                abrirVentanaEnvio();
-
-                // Reutilizar la API que ya funciona.
                 await solicitarCodigoRegistro(
                     correoSolicitado
                 );
 
-                // Limpiar el código anterior.
                 if (codigoInput) {
                     codigoInput.value = "";
                 }
 
-                // Reiniciar contador después del éxito.
                 iniciarContadorReenvio();
-
-                // Mostrar confirmación.
                 mostrarEnvioExitoso();
 
-                await new Promise(resolve =>
-                    setTimeout(resolve, 850)
-                );
+                await esperar(850);
 
             } catch (error) {
 
@@ -666,7 +602,7 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
     // ========================================
-    // BOTONES PARA AVANZAR
+    // BOTONES SIGUIENTE
     // ========================================
 
     document.querySelectorAll("[data-siguiente]")
@@ -674,9 +610,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
             boton.addEventListener(
                 "click",
-                async (evento) => {
+                async evento => {
 
                     evento.preventDefault();
+
+                    if (boton.disabled) return;
 
                     limpiarMensajes();
 
@@ -688,9 +626,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     if (indiceDestino === -1) return;
 
-                    if (boton.disabled) return;
-
-                    // Evitar solicitudes duplicadas.
                     boton.disabled = true;
 
                     try {
@@ -703,32 +638,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
                             if (!prepararCorreo()) return;
 
-                            if (
-                                typeof solicitarCodigoRegistro !== "function"
-                            ) {
-                                throw new Error(
-                                    "No se encontró la función de envío en app.js."
-                                );
-                            }
-
                             const correo =
                                 correoInput.value
                                     .trim()
                                     .toLowerCase();
 
-                            // Mostrar la ventana de carga.
                             abrirVentanaEnvio();
 
-                            // Esperar respuesta real de la API.
-                            await solicitarCodigoRegistro(correo);
+                            await solicitarCodigoRegistro(
+                                correo
+                            );
 
-                            // Solo mostrar éxito si la API respondió bien.
                             mostrarEnvioExitoso();
 
-                            // Mostrar brevemente la confirmación.
-                            await new Promise(resolve =>
-                                setTimeout(resolve, 850)
-                            );
+                            await esperar(850);
 
                             correoSolicitado = correo;
                             correoValidado = false;
@@ -737,17 +660,15 @@ document.addEventListener("DOMContentLoaded", () => {
                                 codigoInput.value = "";
                             }
 
-                            // Iniciar los 60 segundos después del primer envío.
                             iniciarContadorReenvio();
 
                             mostrarPantalla(indiceDestino);
-
 
                             return;
                         }
 
                         // ========================================
-                        // 2. VALIDAR EL CÓDIGO RECIBIDO
+                        // 2. VALIDAR CÓDIGO RECIBIDO
                         // ========================================
 
                         if (destino === "pantallaDatos") {
@@ -763,7 +684,6 @@ document.addEventListener("DOMContentLoaded", () => {
                                 );
 
                                 codigoInput?.focus();
-
                                 return;
                             }
 
@@ -777,21 +697,11 @@ document.addEventListener("DOMContentLoaded", () => {
                                 return;
                             }
 
-                            if (
-                                typeof validarCodigoRegistro !== "function"
-                            ) {
-                                throw new Error(
-                                    "No se encontró la función de validación en app.js."
-                                );
-                            }
-
-                            // Consultar la API de verificación.
                             await validarCodigoRegistro(
                                 correoSolicitado,
                                 codigo
                             );
 
-                            // Solo permitir avanzar si fue correcto.
                             correoValidado = true;
 
                             mostrarPantalla(indiceDestino);
@@ -840,28 +750,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
                             if (!prepararPassword()) return;
 
-                            if (
-                                typeof registrarUsuarioRegistro !== "function"
-                            ) {
-                                throw new Error(
-                                    "El registro de usuarios todavía no está conectado."
-                                );
-                            }
+                            const datos =
+                                obtenerDatosRegistro();
 
-                            const datos = obtenerDatosRegistro();
+                            await registrarUsuarioRegistro(
+                                datos
+                            );
 
-                            // Esperar a que SQL Server confirme el registro.
-                            await registrarUsuarioRegistro(datos);
-
-                            // Mostrar éxito solo cuando termine.
                             mostrarPantalla(indiceDestino);
 
                             return;
                         }
-
-                        // ========================================
-                        // NAVEGACIÓN GENERAL
-                        // ========================================
 
                         mostrarPantalla(indiceDestino);
 
@@ -872,46 +771,25 @@ document.addEventListener("DOMContentLoaded", () => {
                             error
                         );
 
-                        const mensaje =
+                        const idError =
+                            destino === "pantallaVerificacion"
+                                ? "errorCorreo"
+                                : destino === "pantallaDatos"
+                                    ? "errorCodigo"
+                                    : destino === "pantallaFinal"
+                                        ? "errorPassword"
+                                        : "errorDatos";
+
+                        mostrarError(
+                            idError,
                             error.message ||
-                            "Ocurrió un error inesperado.";
-
-                        // Mostrar el error en la pantalla correcta.
-                        if (destino === "pantallaVerificacion") {
-
-                            mostrarError(
-                                "errorCorreo",
-                                mensaje
-                            );
-
-                        } else if (destino === "pantallaDatos") {
-
-                            mostrarError(
-                                "errorCodigo",
-                                mensaje
-                            );
-
-                        } else if (destino === "pantallaFinal") {
-
-                            mostrarError(
-                                "errorPassword",
-                                mensaje
-                            );
-
-                        } else {
-
-                            mostrarError(
-                                "errorDatos",
-                                mensaje
-                            );
-                        }
+                            "Ocurrió un error inesperado."
+                        );
 
                     } finally {
 
-                        // Ocultar la ventana al terminar.
                         cerrarVentanaEnvio();
 
-                        // Reactivar el botón.
                         boton.disabled = false;
                     }
                 }
@@ -925,20 +803,18 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll("[data-anterior]")
         .forEach(boton => {
 
-            boton.addEventListener("click", (evento) => {
+            boton.addEventListener("click", evento => {
 
                 evento.preventDefault();
 
                 limpiarMensajes();
 
-                const destino =
-                    boton.dataset.anterior;
+                const indice = pantallas.indexOf(
+                    boton.dataset.anterior
+                );
 
-                const indiceDestino =
-                    pantallas.indexOf(destino);
-
-                if (indiceDestino !== -1) {
-                    mostrarPantalla(indiceDestino);
+                if (indice !== -1) {
+                    mostrarPantalla(indice);
                 }
             });
         });

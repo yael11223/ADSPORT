@@ -1,0 +1,578 @@
+﻿
+/* ==========================================================
+   ADSPORT - COMPONENTES COMPARTIDOS
+   Archivo: componentes.css
+
+   1. Variables de estilo
+   2. Header
+   3. Navegación y botones
+   4. Footer
+   5. Responsive
+   ========================================================== */
+
+
+/* ==========================================================
+   1. VARIABLES DE LOS COMPONENTES
+   ========================================================== */
+
+.profile-header,
+.ads-footer {
+    --ads-naranja: var(--naranja, #ff6500);
+    --ads-blanco: var(--blanco, #ffffff);
+    --ads-gris: var(--gris, #b8b8b8);
+    --ads-fondo: #0d0d0d;
+    --ads-borde: #252525;
+}
+
+
+/* ==========================================================
+   2. HEADER - ADSPORT
+   ========================================================== */
+
+.profile-header {
+    background: var(--ads-fondo);
+    border-bottom: 1px solid var(--ads-borde);
+    padding: 20px 0;
+    width: 100%;
+    position: relative;
+    z-index: 100;
+}
+
+    /* Contenedor principal */
+
+    .profile-header .container-fluid {
+        width: 100%;
+        padding-left: 5%;
+        padding-right: 5%;
+    }
+
+    /* Alinear logotipo y navegación */
+
+    .profile-header .d-flex {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 30px;
+    }
+
+    /* Logotipo */
+
+    .profile-header .brand-logo {
+        font-family: var( --fuente-titulos, Arial, sans-serif );
+        font-size: 32px;
+        font-weight: 900;
+        color: var(--ads-blanco);
+        text-decoration: none;
+        white-space: nowrap;
+        letter-spacing: -1px;
+        transition: opacity 0.3s ease;
+    }
+
+        .profile-header .brand-logo span {
+            color: var(--ads-naranja);
+        }
+
+        .profile-header .brand-logo:hover {
+            color: var(--ads-blanco);
+            opacity: 0.85;
+        }
+
+
+    /* ==========================================================
+   3. NAVEGACIÓN DEL HEADER
+   ========================================================== */
+
+    .profile-header .profile-nav {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+        gap: 25px;
+    }
+
+        /* Enlaces generales */
+
+        .profile-header .profile-nav a {
+            color: var(--ads-gris);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            white-space: nowrap;
+            transition: color 0.3s ease, background 0.3s ease, border-color 0.3s ease;
+        }
+
+            /* Hover */
+
+            .profile-header .profile-nav a:hover {
+                color: var(--ads-naranja);
+            }
+
+            /* Página activa */
+
+            .profile-header .profile-nav a.activo,
+            .profile-header .profile-nav a[aria-current="page"] {
+                color: var(--ads-naranja);
+            }
+
+            /* Enlace con indicador de sección activa */
+
+            .profile-header .profile-nav a[data-nav] {
+                position: relative;
+                padding: 8px 0;
+            }
+
+                .profile-header .profile-nav a[data-nav]::after {
+                    content: "";
+                    position: absolute;
+                    bottom: 0;
+                    left: 0;
+                    width: 0;
+                    height: 2px;
+                    background: var(--ads-naranja);
+                    border-radius: 5px;
+                    transition: width 0.3s ease;
+                }
+
+                .profile-header .profile-nav a[data-nav]:hover::after,
+                .profile-header .profile-nav a[data-nav].activo::after,
+                .profile-header .profile-nav a[data-nav][aria-current="page"]::after {
+                    width: 100%;
+                }
+
+
+        /* ==========================================================
+   BOTÓN INICIAR SESIÓN
+   ========================================================== */
+
+        .profile-header .profile-nav .btn-login {
+            color: var(--ads-blanco);
+            border: 1px solid #555555;
+            padding: 9px 17px;
+            border-radius: 25px;
+        }
+
+            .profile-header .profile-nav .btn-login:hover {
+                background: #242424;
+                border-color: var(--ads-naranja);
+                color: var(--ads-blanco);
+            }
+
+
+        /* ==========================================================
+   BOTÓN ÚNETE / CERRAR SESIÓN
+   ========================================================== */
+
+        .profile-header .profile-nav .btn-logout {
+            color: var(--ads-naranja);
+            border: 1px solid var(--ads-naranja);
+            padding: 9px 18px;
+            border-radius: 25px;
+        }
+
+            .profile-header .profile-nav .btn-logout:hover {
+                background: var(--ads-naranja);
+                color: var(--ads-blanco);
+            }
+
+
+    /* ==========================================================
+   OCULTAR BOTONES SEGÚN EL ESTADO DE SESIÓN
+   ========================================================== */
+
+    .profile-header [hidden] {
+        display: none !important;
+    }
+
+
+/* ==========================================================
+   4. FOOTER - ADSPORT
+   ========================================================== */
+
+.ads-footer {
+    background: radial-gradient( ellipse at 10% 0%, rgba(255, 101, 0, 0.08), transparent 45% ), #090909;
+    border-top: 3px solid var(--ads-naranja);
+    color: var(--ads-blanco);
+    width: 100%;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+    .ads-footer,
+    .ads-footer * {
+        box-sizing: border-box;
+    }
+
+
+/* CONTENEDOR PRINCIPAL */
+
+.ads-footer__container {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 70px 32px 0;
+}
+
+
+/* DISTRIBUCIÓN DE COLUMNAS */
+
+.ads-footer__grid {
+    display: grid;
+    grid-template-columns: 1.3fr 0.8fr 1fr;
+    gap: 65px;
+    padding-bottom: 60px;
+}
+
+.ads-footer__section {
+    min-width: 0;
+}
+
+
+/* ==========================================================
+   LOGOTIPO DEL FOOTER
+   ========================================================== */
+
+.ads-footer__brand {
+    display: inline-block;
+    margin-bottom: 22px;
+    font-family: var( --fuente-titulos, Arial, sans-serif );
+    font-size: 34px;
+    font-weight: 900;
+    letter-spacing: -1px;
+    color: var(--ads-blanco);
+    text-decoration: none;
+    transition: opacity 0.3s ease;
+}
+
+    .ads-footer__brand span {
+        color: var(--ads-naranja);
+    }
+
+    .ads-footer__brand:hover {
+        color: var(--ads-blanco);
+        opacity: 0.85;
+    }
+
+
+/* DESCRIPCIÓN DE ADSPORT */
+
+.ads-footer__description {
+    color: #ababab;
+    font-size: 14px;
+    line-height: 1.9;
+    max-width: 340px;
+    margin: 0 0 30px;
+}
+
+
+/* ==========================================================
+   TÍTULOS DE LAS SECCIONES
+   ========================================================== */
+
+.ads-footer__title {
+    position: relative;
+    color: var(--ads-blanco);
+    font-size: 17px;
+    font-weight: 800;
+    margin: 9px 0 28px;
+    padding-bottom: 15px;
+}
+
+    .ads-footer__title::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 38px;
+        height: 3px;
+        background: var(--ads-naranja);
+        border-radius: 5px;
+    }
+
+
+/* ==========================================================
+   REDES SOCIALES
+   ========================================================== */
+
+.ads-footer__social {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.ads-footer__social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    color: var(--ads-blanco);
+    border: 1px solid #343434;
+    border-radius: 50%;
+    background: #191919;
+    text-decoration: none;
+    transition: background 0.25s ease, border-color 0.25s ease, color 0.25s ease, transform 0.25s ease;
+}
+
+    .ads-footer__social-link svg {
+        width: 21px;
+        height: 21px;
+    }
+
+    .ads-footer__social-link:hover {
+        background: var(--ads-naranja);
+        border-color: var(--ads-naranja);
+        color: var(--ads-blanco);
+        transform: translateY(-4px);
+    }
+
+
+/* ==========================================================
+   ENLACES DEL FOOTER
+   ========================================================== */
+
+.ads-footer__links {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 17px;
+}
+
+    .ads-footer__links a {
+        color: var(--ads-gris);
+        font-size: 14px;
+        font-weight: 400;
+        text-decoration: none;
+        transition: color 0.25s ease, transform 0.25s ease;
+    }
+
+        .ads-footer__links a:hover {
+            color: var(--ads-naranja);
+            transform: translateX(5px);
+        }
+
+
+/* ==========================================================
+   CONTACTO
+   ========================================================== */
+
+.ads-footer__contact {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.ads-footer__contact-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+}
+
+/* Iconos del contacto */
+
+.ads-footer__contact-icon {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    background: rgba(255, 101, 0, 0.12);
+    color: var(--ads-naranja);
+    border-radius: 12px;
+}
+
+    .ads-footer__contact-icon svg {
+        width: 21px;
+        height: 21px;
+    }
+
+/* Títulos del contacto */
+
+.ads-footer__contact-item strong {
+    display: block;
+    color: var(--ads-blanco);
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 7px;
+}
+
+/* Datos de contacto */
+
+.ads-footer__contact-item p,
+.ads-footer__contact-item a {
+    display: block;
+    color: #ababab;
+    font-size: 13px;
+    line-height: 1.6;
+    margin: 0 0 5px;
+    text-decoration: none;
+    overflow-wrap: anywhere;
+}
+
+    .ads-footer__contact-item a:hover {
+        color: var(--ads-naranja);
+    }
+
+
+/* ==========================================================
+   PARTE INFERIOR DEL FOOTER
+   ========================================================== */
+
+.ads-footer__bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 25px 0;
+    border-top: 1px solid #292929;
+}
+
+    .ads-footer__bottom p {
+        color: #999999;
+        font-size: 12px;
+        line-height: 1.6;
+        margin: 0;
+    }
+
+    .ads-footer__bottom strong {
+        color: var(--ads-blanco);
+    }
+
+.ads-footer__slogan {
+    color: var(--ads-naranja);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.8px;
+}
+
+
+/* ==========================================================
+   5. ACCESIBILIDAD
+   ========================================================== */
+
+.profile-header a:focus-visible,
+.ads-footer a:focus-visible {
+    outline: 2px solid var(--ads-naranja);
+    outline-offset: 4px;
+}
+
+
+/* ==========================================================
+   6. RESPONSIVE - TABLET
+   ========================================================== */
+
+@media (max-width: 950px) {
+
+    /* HEADER */
+
+    .profile-header .container-fluid {
+        padding-left: 4%;
+        padding-right: 4%;
+    }
+
+    .profile-header .d-flex {
+        gap: 20px;
+    }
+
+    .profile-header .profile-nav {
+        gap: 16px;
+    }
+
+        .profile-header .profile-nav a {
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+
+    /* FOOTER */
+
+    .ads-footer__grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 45px;
+    }
+
+    .ads-footer__section:last-child {
+        grid-column: 1 / -1;
+    }
+}
+
+
+/* ==========================================================
+   7. RESPONSIVE - CELULARES
+   ========================================================== */
+
+@media (max-width: 600px) {
+
+    /* HEADER */
+
+    .profile-header {
+        padding: 16px 0;
+    }
+
+        .profile-header .d-flex {
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .profile-header .brand-logo {
+            font-size: 29px;
+        }
+
+        .profile-header .profile-nav {
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+            .profile-header .profile-nav a {
+                font-size: 11px;
+                letter-spacing: 0.8px;
+            }
+
+            .profile-header .profile-nav .btn-login,
+            .profile-header .profile-nav .btn-logout {
+                padding: 8px 13px;
+            }
+
+    /* FOOTER */
+
+    .ads-footer__container {
+        padding: 48px 24px 0;
+    }
+
+    .ads-footer__grid {
+        grid-template-columns: 1fr;
+        gap: 38px;
+        padding-bottom: 40px;
+    }
+
+    .ads-footer__section:last-child {
+        grid-column: auto;
+    }
+
+    .ads-footer__brand {
+        font-size: 29px;
+    }
+
+    .ads-footer__bottom {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .ads-footer__slogan {
+        font-size: 10px;
+    }
+}
+
+
+/* ==========================================================
+   8. REDUCIR ANIMACIONES SI EL USUARIO LO PREFIERE
+   ========================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .profile-header a,
+    .ads-footer a {
+        transition: none;
+    }
+}

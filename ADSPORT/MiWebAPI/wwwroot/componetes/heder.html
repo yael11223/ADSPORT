@@ -1,0 +1,64 @@
+﻿<!-- ========================================
+     ADSPORT - HEADER COMPARTIDO
+     ======================================== -->
+
+<header class="profile-header">
+
+    <div class="container-fluid px-4 px-lg-5">
+
+        <div class="d-flex justify-content-between align-items-center">
+
+            <!-- LOGOTIPO -->
+            <a href="indexUsuario.html" class="brand-logo">
+                AD<span>SPORT</span>
+            </a>
+
+            <!-- MENÚ DE NAVEGACIÓN -->
+            <nav class="profile-nav" aria-label="Navegación principal">
+
+                <a href="indexUsuario.html"
+                   data-nav="inicio">
+                    INICIO
+                </a>
+
+                <a href="Nosotros.html"
+                   data-nav="nosotros">
+                    NOSOTROS
+                </a>
+
+                <a href="indexUsuario.html#clases"
+                   data-nav="clases">
+                    CLASES
+                </a>
+
+                <!-- USUARIO SIN SESIÓN -->
+                <a href="/LoginUsuario.html"
+                   class="btn-login"
+                   data-auth="guest"
+                   hidden>
+                    INICIAR SESIÓN
+                </a>
+
+                <a href="/Registro.html"
+                   class="btn-logout"
+                   data-auth="guest"
+                   hidden>
+                    ÚNETE
+                </a>
+
+                <!-- USUARIO CON SESIÓN -->
+                <a href="#"
+                   id="btnCerrarSesion"
+                   class="btn-logout"
+                   data-auth="user"
+                   hidden>
+                    CERRAR SESIÓN
+                </a>
+
+            </nav>
+
+        </div>
+
+    </div>
+
+</header>

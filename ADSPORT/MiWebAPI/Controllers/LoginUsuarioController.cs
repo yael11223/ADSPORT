@@ -4,6 +4,7 @@ using ADSPORT.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 
 namespace MiWebAPI.Controllers
@@ -29,6 +30,7 @@ namespace MiWebAPI.Controllers
         // ========================================
 
         [HttpPost("login")]
+        [AllowAnonymous]
         public async Task<IActionResult> Login(
             [FromBody] LoginUsuario objeto)
         {
@@ -123,6 +125,68 @@ namespace MiWebAPI.Controllers
                 isSuccess = true,
                 numeroError = 0,
                 respuesta = "Inicio de sesión correcto."
+            });
+        }
+
+        // ========================================
+        // 2. CONSULTAR SESIÓN DEL USUARIO
+        // ========================================
+
+        [HttpGet("sesion")]
+        [AllowAnonymous]
+        public IActionResult ConsultarSesion()
+        {
+            // Comprobar la identidad autenticada
+            // mediante la cookie de ASP.NET Core.
+
+            bool autenticado =
+                User.Identity?.IsAuthenticated == true;
+
+            if (!autenticado)
+            {
+                return Ok(new
+                {
+                    autenticado = false,
+                    idUsuario = (string?)null
+                });
+            }
+
+            // Obtener el ID del usuario autenticado.
+            string? idUsuario = User.FindFirstValue(
+                ClaimTypes.NameIdentifier
+            );
+
+            return Ok(new
+            {
+                autenticado = true,
+                idUsuario = idUsuario
+            });
+        }
+
+        // ========================================
+        // 3. CERRAR SESIÓN DEL USUARIO
+        // ========================================
+
+        [HttpPost("logout")]
+        [Authorize(
+            AuthenticationSchemes =
+                CookieAuthenticationDefaults.AuthenticationScheme
+        )]
+        public async Task<IActionResult> CerrarSesion()
+        {
+            // Eliminar la autenticación por cookie.
+
+            await HttpContext.SignOutAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme
+            );
+
+            // Informar al frontend.
+
+            return Ok(new
+            {
+                isSuccess = true,
+                numeroError = 0,
+                respuesta = "Sesión cerrada correctamente."
             });
         }
     }
