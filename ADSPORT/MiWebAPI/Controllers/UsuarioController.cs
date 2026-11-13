@@ -171,14 +171,27 @@ namespace ADSPORT.Controllers
 
             // Devolver solamente los datos
             // necesarios para el Header.
+
             return Ok(new
             {
                 idUsuario = usuario.IdUsuario,
+
                 nombre = usuario.Nombre,
                 nombreCompleto = nombreCompleto,
+
+                apellidoPaterno = usuario.ApellidoPaterno,
+                apellidoMaterno = usuario.ApellidoMaterno,
+
+                correo = usuario.Correo,
+                telefono = usuario.Telefono,
+
+                nombreRol = usuario.NombreRol,
+                estatus = usuario.Estatus,
+
                 tieneFoto = usuario.Foto != null
                     && usuario.Foto.Length > 0
             });
+
         }
 
         // ========================================

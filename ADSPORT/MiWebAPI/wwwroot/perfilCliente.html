@@ -1,109 +1,633 @@
-﻿<!DOCTYPE html>
+﻿
+<!DOCTYPE html>
 <html lang="es">
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
     <meta name="theme-color" content="#090909">
-    <title>Perfil Cliente | ADSPORT</title>
 
-    <!-- FUENTES -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <meta name="description"
+          content="Consulta y administra tu perfil de ADSPORT.">
 
-    <!-- BOOTSTRAP 5.3 & ESTILOS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/Perfil.css">
-    <link rel="stylesheet" href="/css/componentes.css">
+    <title>Mi Perfil | ADSPORT</title>
+
+    <!-- =====================================
+         FUENTES
+         ===================================== -->
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <!-- =====================================
+         BOOTSTRAP
+         ===================================== -->
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <!-- =====================================
+         COMPONENTES COMPARTIDOS
+         ===================================== -->
+
+    <link rel="stylesheet"
+          href="/css/componentes.css">
+
+    <!-- =====================================
+         ESTILOS DEL PERFIL
+         ===================================== -->
+
+    <link rel="stylesheet"
+          href="/css/Perfil.css?v=2">
+
 </head>
+
 
 <body class="profile-page">
 
-    <!-- ENCABEZADO -->
+    <!-- =====================================
+         HEADER COMPARTIDO
+         ===================================== -->
+
     <div id="contenedor-header"></div>
 
-    <!-- CONTENIDO PRINCIPAL DEL PERFIL -->
-    <main class="container profile-container py-5">
 
-        <!-- DASHBOARD GRID -->
-        <div class="row g-4 align-items-stretch">
+    <!-- =====================================
+         CONTENIDO PRINCIPAL
+         ===================================== -->
 
-            <!-- COLUMNA IZQUIERDA: USUARIO Y FOTO -->
-            <div class="col-12 col-lg-4">
-                <div class="profile-card text-center">
-                    <div class="avatar-wrapper">
-                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=500&q=80" alt="Foto de perfil" class="profile-avatar">
-                        <span class="status-badge active"><i class="status-dot"></i> Activo</span>
-                    </div>
-                    <h2 class="user-name mt-3" id="lblNombreUsuario">Elienay Cantera</h2>
-                    <p class="user-role">CLIENTE ADSPORT</p>
-                </div>
+    <main class="profile-container container py-5"
+          id="contenidoPerfil">
+
+
+        <!-- =====================================
+             1. ENCABEZADO DE LA PÁGINA
+             ===================================== -->
+
+        <section class="profile-welcome">
+
+            <div>
+
+                <span class="profile-eyebrow">
+                    ADSPORT / MI CUENTA
+                </span>
+
+                <h1 class="profile-main-title">
+                    MI <span>PERFIL.</span>
+                </h1>
+
+                <p class="profile-main-description">
+                    Consulta tu información personal,
+                    tus clases y el estado de tu cuenta.
+                </p>
+
             </div>
 
-            <!-- COLUMNA CENTRAL: MIS CLASES Y PRÓXIMAS -->
-            <div class="col-12 col-lg-5">
-                <div class="profile-card">
-                    <h3 class="section-title">MIS CLASES</h3>
-                    <div class="class-item">
-                        <div class="class-info">
-                            <span class="class-name">Tenis</span>
-                            <span class="class-time">5 - 7 p.m.</span>
-                        </div>
-                    </div>
 
-                    <h3 class="section-title mt-4">PRÓXIMAS</h3>
-                    <div class="class-item">
-                        <div class="class-info">
-                            <span class="class-name">Tenis</span>
-                            <span class="class-time">5 - 7 p.m.</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <!-- BOTÓN DE EDICIÓN -->
+            <!-- Se conectará con perfil.js -->
 
-            <!-- COLUMNA DERECHA: CÓDIGO QR -->
-            <div class="col-12 col-lg-3">
-                <div class="profile-card qr-card text-center">
-                    <h3 class="qr-title">CÓDIGO QR</h3>
-                    <div class="qr-box">
-                        <!-- QR dinámico genérico para acceso -->
-                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=ADSPORT-CLIENTE-001&color=090909" alt="Código QR de Acceso">
-                    </div>
-                    <p class="qr-hint">Muestra este código al ingresar</p>
-                </div>
-            </div>
+            <button type="button"
+                    class="btn-edit-profile"
+                    id="btnEditarPerfil"
+                    disabled
+                    title="Edición de perfil próximamente">
 
-            <!-- FILA INFERIOR DESTACADA: MEMBRESÍA -->
-            <div class="col-12">
-                <div class="membership-banner d-flex flex-column flex-md-row justify-content-between align-items-center">
-                    <div class="membership-info d-flex align-items-center gap-4 mb-3 mb-md-0">
-                        <div>
-                            <span class="banner-label">MEMBRESÍA</span>
-                            <div class="d-flex align-items-center gap-2">
-                                <span class="status-dot"></span>
-                                <span class="banner-value text-success">Activo</span>
-                            </div>
-                        </div>
-                        <div class="divider-vertical"></div>
-                        <div>
-                            <span class="banner-label">DURACIÓN</span>
-                            <span class="banner-value">14 de mayo 2027</span>
-                        </div>
-                    </div>
-                    <button type="button" class="btn-pay-again">
-                        VOLVER A PAGAR
-                    </button>
-                </div>
-            </div>
+                <span aria-hidden="true">✎</span>
+                EDITAR MI PERFIL
+
+            </button>
+
+        </section>
+
+
+        <!-- =====================================
+             MENSAJES DEL PERFIL
+             ===================================== -->
+
+        <div id="perfilAviso"
+             class="profile-notice"
+             role="status"
+             aria-live="polite">
+
+            Cargando información de tu perfil...
 
         </div>
 
+
+
+        <!-- =====================================
+             2. DASHBOARD PRINCIPAL
+             ===================================== -->
+
+        <div class="row g-4 align-items-stretch">
+
+
+            <!-- =================================
+                 COLUMNA IZQUIERDA
+                 FOTO E INFORMACIÓN
+                 ================================= -->
+
+            <div class="col-12 col-lg-4">
+
+                <section class="profile-card profile-user-card h-100"
+                         aria-labelledby="tituloDatosUsuario">
+
+
+                    <!-- FOTO DE PERFIL -->
+
+                    <div class="avatar-wrapper">
+
+                        <div class="profile-avatar-container">
+
+                            <img src="/img/perfiles/default.png"
+                                 alt="Fotografía del usuario"
+                                 class="profile-avatar"
+                                 id="imgPerfilUsuario"
+                                 width="180"
+                                 height="180">
+
+                        </div>
+
+
+                        <!-- CAMBIAR FOTOGRAFÍA -->
+                        <!-- Se habilitará con perfil.js -->
+
+                        <button type="button"
+                                id="btnCambiarFoto"
+                                class="btn-change-avatar"
+                                disabled
+                                title="Cambio de fotografía próximamente"
+                                aria-label="Cambiar foto de perfil">
+
+                            <span aria-hidden="true">📷</span>
+
+                        </button>
+
+
+                        <input type="file"
+                               id="inputFotoPerfil"
+                               accept="image/jpeg,image/png,image/webp"
+                               hidden>
+
+                    </div>
+
+
+
+                    <!-- ESTADO DEL USUARIO -->
+
+                    <div class="profile-status">
+
+                        <span class="status-badge"
+                              id="estadoUsuario">
+
+                            Por consultar
+
+                        </span>
+
+                    </div>
+
+
+
+                    <!-- NOMBRE DEL USUARIO -->
+
+                    <h2 class="user-name mt-3"
+                        id="lblNombreUsuario">
+
+                        Cargando...
+
+                    </h2>
+
+
+
+                    <!-- ROL DEL USUARIO -->
+
+                    <p class="user-role"
+                       id="lblRolUsuario">
+
+                        USUARIO ADSPORT
+
+                    </p>
+
+
+
+                    <!-- SEPARADOR -->
+
+                    <div class="profile-divider"></div>
+
+
+
+                    <!-- DATOS PERSONALES -->
+
+                    <div class="profile-personal-data">
+
+                        <h3 class="profile-subtitle"
+                            id="tituloDatosUsuario">
+
+                            INFORMACIÓN PERSONAL
+
+                        </h3>
+
+
+
+                        <!-- CORREO -->
+
+                        <div class="profile-data-item">
+
+                            <span class="profile-data-label">
+                                CORREO ELECTRÓNICO
+                            </span>
+
+                            <span class="profile-data-value"
+                                  id="lblCorreoUsuario">
+
+                                —
+
+                            </span>
+
+                        </div>
+
+
+
+                        <!-- TELÉFONO -->
+
+                        <div class="profile-data-item">
+
+                            <span class="profile-data-label">
+                                TELÉFONO
+                            </span>
+
+                            <span class="profile-data-value"
+                                  id="lblTelefonoUsuario">
+
+                                —
+
+                            </span>
+
+                        </div>
+
+
+
+                        <!-- IDENTIFICADOR -->
+
+                        <div class="profile-data-item">
+
+                            <span class="profile-data-label">
+                                ID DE USUARIO
+                            </span>
+
+                            <span class="profile-data-value"
+                                  id="lblIdUsuario">
+
+                                —
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                </section>
+
+            </div>
+
+
+
+            <!-- =================================
+                 COLUMNA CENTRAL
+                 CLASES Y PRÓXIMAS SESIONES
+                 ================================= -->
+
+            <div class="col-12 col-lg-5">
+
+                <section class="profile-card profile-classes-card h-100"
+                         aria-labelledby="tituloMisClases">
+
+
+                    <!-- MIS CLASES -->
+
+                    <div class="profile-section-heading">
+
+                        <div>
+
+                            <span class="profile-small-label">
+                                TU ACTIVIDAD
+                            </span>
+
+                            <h3 class="section-title"
+                                id="tituloMisClases">
+
+                                MIS <span>CLASES</span>
+
+                            </h3>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- LISTA DINÁMICA -->
+                    <!-- Aquí se mostrarán las clases
+                         obtenidas posteriormente
+                         desde SQL Server -->
+
+                    <div id="listaMisClases"
+                         class="profile-classes-list">
+
+                        <div class="profile-empty-state">
+
+                            <span class="profile-empty-icon"
+                                  aria-hidden="true">
+                                ◇
+                            </span>
+
+                            <p>
+                                Todavía no hay información
+                                de clases disponible.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- PRÓXIMAS CLASES -->
+
+                    <div class="profile-section-heading mt-4">
+
+                        <div>
+
+                            <span class="profile-small-label">
+                                AGENDA DEPORTIVA
+                            </span>
+
+                            <h3 class="section-title">
+
+                                PRÓXIMAS <span>CLASES</span>
+
+                            </h3>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- LISTA DINÁMICA -->
+
+                    <div id="listaProximasClases"
+                         class="profile-classes-list">
+
+                        <div class="profile-empty-state">
+
+                            <span class="profile-empty-icon"
+                                  aria-hidden="true">
+                                ◷
+                            </span>
+
+                            <p>
+                                No hay próximas clases
+                                para mostrar.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- EXPLORAR DEPORTES -->
+
+                    <a href="/indexUsuario.html#clases"
+                       class="btn-explore-classes">
+
+                        EXPLORAR CLASES
+
+                        <span aria-hidden="true">
+                            ↗
+                        </span>
+
+                    </a>
+
+
+                </section>
+
+            </div>
+
+
+
+            <!-- =================================
+                 COLUMNA DERECHA
+                 CÓDIGO QR
+                 ================================= -->
+
+            <div class="col-12 col-lg-3">
+
+                <section class="profile-card qr-card h-100 text-center"
+                         aria-labelledby="tituloQR">
+
+
+                    <span class="profile-small-label">
+                        IDENTIFICACIÓN DIGITAL
+                    </span>
+
+
+                    <h3 class="qr-title"
+                        id="tituloQR">
+
+                        MI CÓDIGO QR
+
+                    </h3>
+
+
+
+                    <!-- CONTENEDOR DEL QR -->
+                    <!-- No generamos códigos falsos.
+                         Después utilizaremos la API
+                         para obtener un QR válido. -->
+
+                    <div class="qr-box"
+                         id="contenedorQR">
+
+                        <div class="qr-placeholder">
+
+                            <span aria-hidden="true">
+                                ▦
+                            </span>
+
+                            <p>
+                                Código no disponible
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- ESTADO DEL QR -->
+
+                    <div class="qr-status"
+                         id="estadoQR">
+
+                        Pendiente de cargar
+
+                    </div>
+
+
+
+                    <p class="qr-hint">
+
+                        Tu código QR de identificación
+                        aparecerá aquí cuando esté
+                        disponible.
+
+                    </p>
+
+
+                </section>
+
+            </div>
+
+
+
+            <!-- =================================
+                 3. MEMBRESÍA
+                 ================================= -->
+
+            <div class="col-12">
+
+                <section class="membership-banner"
+                         aria-labelledby="tituloMembresia">
+
+
+                    <div class="membership-info">
+
+
+                        <!-- ESTADO -->
+
+                        <div class="membership-detail">
+
+                            <span class="banner-label"
+                                  id="tituloMembresia">
+
+                                MEMBRESÍA
+
+                            </span>
+
+                            <span class="banner-value"
+                                  id="lblEstadoMembresia">
+
+                                Por consultar
+
+                            </span>
+
+                        </div>
+
+
+
+                        <!-- SEPARADOR -->
+
+                        <div class="divider-vertical"></div>
+
+
+
+                        <!-- VENCIMIENTO -->
+
+                        <div class="membership-detail">
+
+                            <span class="banner-label">
+                                FECHA DE VENCIMIENTO
+                            </span>
+
+                            <span class="banner-value"
+                                  id="lblVencimientoMembresia">
+
+                                —
+
+                            </span>
+
+                        </div>
+
+
+                    </div>
+
+
+
+                    <!-- BOTÓN FUTURO -->
+
+                    <button type="button"
+                            class="btn-pay-again"
+                            id="btnRenovarMembresia"
+                            disabled
+                            title="La renovación todavía no está disponible">
+
+                        RENOVAR MEMBRESÍA
+
+                    </button>
+
+
+                </section>
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- =====================================
+             4. MENSAJE DE SEGURIDAD
+             ===================================== -->
+
+        <div class="profile-security-note">
+
+            <span aria-hidden="true">🔒</span>
+
+            <p>
+                Tu información personal se mostrará
+                únicamente cuando tengas una sesión
+                válida en ADSPORT.
+            </p>
+
+        </div>
+
+
     </main>
+
+
+
+    <!-- =====================================
+         FOOTER COMPARTIDO
+         ===================================== -->
+
     <div id="contenedor-footer"></div>
 
 
-    <script src="/js/layout.js?v=1"></script>
+
+    <!-- =====================================
+         JAVASCRIPT
+         ===================================== -->
+    <!-- HEADER, FOOTER Y SESIÓN -->
+    <script src="/js/layout.js?v=5"></script>
+
+    <!-- FUNCIONES EXCLUSIVAS DEL PERFIL -->
+    <!-- Lo crearemos después del CSS -->
+    <script src="/js/perfil.js?v=1" defer></script>
+
 
 </body>
 </html>
