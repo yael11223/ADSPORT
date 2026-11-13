@@ -5,15 +5,16 @@
 
    1. Cargar Header y Footer
    2. Detectar página activa
-   3. Comprobar sesión del usuario
-   4. Mostrar botones según autenticación
-   5. Cerrar sesión
+   3. Controlar menús desplegables
+   4. Comprobar sesión
+   5. Mostrar nombre y fotografía del usuario
+   6. Cerrar sesión
    ========================================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
 
     // ========================================
-    // CONFIGURACIÓN GENERAL
+    // CONFIGURACIÓN
     // ========================================
 
     const RUTA_HEADER = "/componetes/heder.html";
@@ -22,10 +23,23 @@ document.addEventListener("DOMContentLoaded", () => {
     const API_SESION = "/api/LoginUsuario/sesion";
     const API_LOGOUT = "/api/LoginUsuario/logout";
 
+    const API_PERFIL = "/api/Usuario/mi-perfil";
+    const API_FOTO = "/api/Usuario/mi-foto";
+
+    const FOTO_DEFAULT = "/Accet/perfil.png";
+
     const PAGINA_LOGIN = "/loginUsuario.html";
 
+    const PAGINAS_DEPORTES = [
+        "tenis.html",
+        "futbol.html",
+        "baloncesto.html",
+        "natacion.html"
+    ];
+
+
     // ========================================
-    // 1. CARGAR COMPONENTES HTML
+    // 1. CARGAR COMPONENTES
     // ========================================
 
     async function cargarComponente(ruta, idContenedor) {
@@ -46,13 +60,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (!respuesta.ok) {
                 throw new Error(
-                    `No se pudo cargar ${ruta}. HTTP ${respuesta.status}`
+                    `Error HTTP ${respuesta.status}: ${ruta}`
                 );
             }
 
-            const contenido = await respuesta.text();
-
-            contenedor.innerHTML = contenido;
+            contenedor.innerHTML =
+                await respuesta.text();
 
             return true;
 
@@ -67,8 +80,9 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+
     // ========================================
-    // 2. IDENTIFICAR PÁGINA ACTIVA
+    // 2. MARCAR PÁGINA ACTIVA
     // ========================================
 
     function marcarPaginaActiva() {
@@ -85,44 +99,42 @@ document.addEventListener("DOMContentLoaded", () => {
             ".profile-nav [data-nav]"
         );
 
-        // Quitar selección anterior.
         enlaces.forEach(enlace => {
-
             enlace.classList.remove("activo");
+            enlace.removeAttribute("aria-current");
+        });
 
+        const enlacesDeportes = document.querySelectorAll(
+            ".nav-dropdown__menu a"
+        );
+
+        enlacesDeportes.forEach(enlace => {
+            enlace.classList.remove("activo");
             enlace.removeAttribute("aria-current");
         });
 
         let seccionActiva = "";
-
-        // ========================================
-        // PÁGINA INICIO
-        // ========================================
 
         if (
             paginaActual === "indexusuario.html" ||
             paginaActual === ""
         ) {
 
-            if (seccionActual === "#clases") {
-                seccionActiva = "clases";
-            } else {
-                seccionActiva = "inicio";
-            }
-        }
+            seccionActiva =
+                seccionActual === "#clases"
+                    ? "clases"
+                    : "inicio";
 
-        // ========================================
-        // PÁGINA NOSOTROS
-        // ========================================
-
-        else if (paginaActual === "nosotros.html") {
+        } else if (paginaActual === "nosotros.html") {
 
             seccionActiva = "nosotros";
-        }
 
-        // ========================================
-        // MARCAR ENLACE ACTIVO
-        // ========================================
+        } else if (
+            PAGINAS_DEPORTES.includes(paginaActual)
+        ) {
+
+            seccionActiva = "clases";
+        }
 
         if (seccionActiva) {
 
@@ -134,47 +146,291 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 enlaceActivo.classList.add("activo");
 
-                enlaceActivo.setAttribute(
-                    "aria-current",
-                    "page"
-                );
+                if (
+                    enlaceActivo.tagName.toLowerCase() === "a"
+                ) {
+                    enlaceActivo.setAttribute(
+                        "aria-current",
+                        "page"
+                    );
+                }
             }
+        }
+
+        // Marcar el deporte seleccionado.
+        if (PAGINAS_DEPORTES.includes(paginaActual)) {
+
+            enlacesDeportes.forEach(enlace => {
+
+                const ruta = enlace.getAttribute("href");
+
+                if (!ruta) return;
+
+                const destino = ruta
+                    .split("#")[0]
+                    .split("/")
+                    .pop()
+                    .toLowerCase();
+
+                if (destino === paginaActual) {
+
+                    enlace.classList.add("activo");
+
+                    enlace.setAttribute(
+                        "aria-current",
+                        "page"
+                    );
+                }
+            });
         }
     }
 
+
     // ========================================
-    // 3. MOSTRAR OPCIONES SEGÚN LA SESIÓN
+    // 3. CONFIGURAR MENÚS DESPLEGABLES
+    // ========================================
+
+    function configurarMenus() {
+
+        const menus = [
+            document.querySelector(".nav-dropdown"),
+            document.getElementById("menuUsuario")
+        ].filter(Boolean);
+
+        // Al abrir uno, cerrar el otro.
+        menus.forEach(menu => {
+
+            menu.addEventListener("toggle", () => {
+
+                if (!menu.open) return;
+
+                menus.forEach(otroMenu => {
+
+                    if (otroMenu !== menu) {
+                        otroMenu.open = false;
+                    }
+                });
+            });
+        });
+
+        // Cerrar al hacer clic fuera.
+        document.addEventListener("click", evento => {
+
+            menus.forEach(menu => {
+
+                if (
+                    menu.open &&
+                    !menu.contains(evento.target)
+                ) {
+                    menu.open = false;
+                }
+            });
+        });
+
+        // Cerrar con Escape.
+        document.addEventListener("keydown", evento => {
+
+            if (evento.key !== "Escape") return;
+
+            menus.forEach(menu => {
+
+                if (menu.open) {
+
+                    menu.open = false;
+
+                    menu.querySelector("summary")?.focus();
+                }
+            });
+        });
+    }
+
+
+    // ========================================
+    // 4. MOSTRAR ELEMENTOS SEGÚN SESIÓN
     // ========================================
 
     function actualizarMenuSesion(autenticado) {
 
-        const enlacesInvitado =
-            document.querySelectorAll(
-                '.profile-header [data-auth="guest"]'
-            );
+        const invitados = document.querySelectorAll(
+            '.profile-header [data-auth="guest"]'
+        );
 
-        const enlacesUsuario =
-            document.querySelectorAll(
-                '.profile-header [data-auth="user"]'
-            );
+        const usuarios = document.querySelectorAll(
+            '.profile-header [data-auth="user"]'
+        );
 
-        // Si NO inició sesión:
-        // Mostrar INICIAR SESIÓN y ÚNETE.
-        enlacesInvitado.forEach(elemento => {
-
+        invitados.forEach(elemento => {
             elemento.hidden = autenticado;
         });
 
-        // Si inició sesión:
-        // Mostrar CERRAR SESIÓN.
-        enlacesUsuario.forEach(elemento => {
-
+        usuarios.forEach(elemento => {
             elemento.hidden = !autenticado;
+
+            if (!autenticado && elemento.tagName === "DETAILS") {
+                elemento.open = false;
+            }
+        });
+
+        if (!autenticado) {
+            establecerPerfilPredeterminado();
+        }
+    }
+
+
+    // ========================================
+    // 5. PERFIL PREDETERMINADO
+    // ========================================
+
+    function establecerPerfilPredeterminado() {
+
+        const nombreHeader =
+            document.getElementById("nombreUsuarioHeader");
+
+        const nombreMenu =
+            document.getElementById("nombreUsuarioMenu");
+
+        if (nombreHeader) {
+            nombreHeader.textContent = "MI CUENTA";
+        }
+
+        if (nombreMenu) {
+            nombreMenu.textContent = "Mi cuenta";
+        }
+
+        actualizarFotografias(FOTO_DEFAULT);
+    }
+
+
+    // ========================================
+    // 6. ACTUALIZAR FOTOGRAFÍAS
+    // ========================================
+
+    function actualizarFotografias(rutaFoto) {
+
+        const imagenes = [
+            document.getElementById("fotoUsuarioHeader"),
+            document.getElementById("fotoUsuarioMenu")
+        ];
+
+        imagenes.forEach(imagen => {
+
+            if (!imagen) return;
+
+            // Si falla la imagen, usar la predeterminada.
+            imagen.onerror = () => {
+
+                imagen.onerror = null;
+
+                imagen.src = FOTO_DEFAULT;
+            };
+
+            imagen.src = rutaFoto;
         });
     }
 
+
     // ========================================
-    // 4. CONSULTAR SESIÓN EN ASP.NET CORE
+    // 7. OBTENER PERFIL DESDE LA API
+    // ========================================
+
+    async function cargarPerfilUsuario() {
+
+        try {
+
+            const respuesta = await fetch(API_PERFIL, {
+
+                method: "GET",
+
+                credentials: "same-origin",
+
+                cache: "no-store",
+
+                headers: {
+                    "Accept": "application/json"
+                }
+            });
+
+            if (respuesta.status === 401) {
+
+                actualizarMenuSesion(false);
+
+                return;
+            }
+
+            if (!respuesta.ok) {
+
+                throw new Error(
+                    `Error HTTP ${respuesta.status} al obtener perfil.`
+                );
+            }
+
+            const usuario = await respuesta.json();
+
+            // Obtener nombre real de la API.
+            const nombreCompleto = (
+                usuario.nombreCompleto ||
+                usuario.nombre ||
+                "MI CUENTA"
+            ).trim();
+
+            const primerNombre = (
+                usuario.nombre ||
+                nombreCompleto
+            ).trim();
+
+            // ====================================
+            // MOSTRAR NOMBRE EN EL HEADER
+            // ====================================
+
+            const nombreHeader =
+                document.getElementById("nombreUsuarioHeader");
+
+            if (nombreHeader) {
+                nombreHeader.textContent = primerNombre;
+            }
+
+            // ====================================
+            // MOSTRAR NOMBRE EN EL MENÚ
+            // ====================================
+
+            const nombreMenu =
+                document.getElementById("nombreUsuarioMenu");
+
+            if (nombreMenu) {
+                nombreMenu.textContent = nombreCompleto;
+            }
+
+            // ====================================
+            // MOSTRAR FOTOGRAFÍA
+            // ====================================
+
+            if (usuario.tieneFoto === true) {
+
+                actualizarFotografias(API_FOTO);
+
+            } else {
+
+                actualizarFotografias(FOTO_DEFAULT);
+            }
+
+            console.log(
+                "ADSPORT - Perfil de usuario cargado."
+            );
+
+        } catch (error) {
+
+            console.error(
+                "ADSPORT - No se pudo cargar el perfil:",
+                error
+            );
+
+            establecerPerfilPredeterminado();
+        }
+    }
+
+
+    // ========================================
+    // 8. COMPROBAR SESIÓN
     // ========================================
 
     async function comprobarSesion() {
@@ -194,7 +450,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             });
 
-            // No hay sesión válida.
             if (respuesta.status === 401) {
 
                 actualizarMenuSesion(false);
@@ -202,40 +457,40 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            // La API todavía no existe o falló.
             if (!respuesta.ok) {
 
                 throw new Error(
-                    `Error HTTP ${respuesta.status} al comprobar la sesión.`
+                    `Error HTTP ${respuesta.status}`
                 );
             }
 
             const resultado = await respuesta.json();
-
-            // La API debe devolver:
-            // { autenticado: true }
-            // o { autenticado: false }
 
             const autenticado =
                 resultado.autenticado === true;
 
             actualizarMenuSesion(autenticado);
 
+            // Si hay sesión, consultar sus datos.
+            if (autenticado) {
+
+                await cargarPerfilUsuario();
+            }
+
         } catch (error) {
 
             console.error(
-                "ADSPORT - No se pudo comprobar la sesión:",
+                "ADSPORT - Error al comprobar sesión:",
                 error
             );
 
-            // Por seguridad, no mostrar al usuario
-            // como autenticado si no se pudo verificar.
             actualizarMenuSesion(false);
         }
     }
 
+
     // ========================================
-    // 5. CERRAR SESIÓN
+    // 9. CERRAR SESIÓN
     // ========================================
 
     async function cerrarSesion(evento) {
@@ -250,6 +505,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         if (boton) {
+
             boton.dataset.procesando = "true";
             boton.style.pointerEvents = "none";
             boton.textContent = "CERRANDO...";
@@ -269,15 +525,14 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             if (!respuesta.ok) {
+
                 throw new Error(
-                    `No se pudo cerrar la sesión. HTTP ${respuesta.status}`
+                    `No se pudo cerrar sesión. HTTP ${respuesta.status}`
                 );
             }
 
-            // Actualizar menú.
             actualizarMenuSesion(false);
 
-            // Redirigir al login de usuarios.
             window.location.replace(PAGINA_LOGIN);
 
         } catch (error) {
@@ -288,12 +543,13 @@ document.addEventListener("DOMContentLoaded", () => {
             );
 
             alert(
-                "No fue posible cerrar la sesión. Inténtalo nuevamente."
+                "No fue posible cerrar sesión. Inténtalo nuevamente."
             );
 
         } finally {
 
             if (boton) {
+
                 boton.dataset.procesando = "false";
                 boton.style.pointerEvents = "";
                 boton.textContent = "CERRAR SESIÓN";
@@ -301,8 +557,9 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+
     // ========================================
-    // 6. INICIALIZAR HEADER
+    // 10. INICIALIZAR HEADER
     // ========================================
 
     async function inicializarHeader() {
@@ -312,20 +569,19 @@ document.addEventListener("DOMContentLoaded", () => {
             "contenedor-header"
         );
 
-        if (!cargado) {
-            return;
-        }
+        if (!cargado) return;
 
-        // Resaltar la página actual.
         marcarPaginaActiva();
 
-        // Cambiar selección al navegar a #clases.
+        configurarMenus();
+
+        establecerPerfilPredeterminado();
+
         window.addEventListener(
             "hashchange",
             marcarPaginaActiva
         );
 
-        // Vincular el botón de cerrar sesión.
         const botonCerrar =
             document.getElementById("btnCerrarSesion");
 
@@ -334,12 +590,12 @@ document.addEventListener("DOMContentLoaded", () => {
             cerrarSesion
         );
 
-        // Consultar si el usuario está autenticado.
         await comprobarSesion();
     }
 
+
     // ========================================
-    // 7. INICIALIZAR FOOTER
+    // 11. INICIALIZAR FOOTER
     // ========================================
 
     async function inicializarFooter() {
@@ -350,8 +606,9 @@ document.addEventListener("DOMContentLoaded", () => {
         );
     }
 
+
     // ========================================
-    // 8. INICIAR COMPONENTES
+    // 12. INICIAR COMPONENTES
     // ========================================
 
     async function iniciarLayout() {

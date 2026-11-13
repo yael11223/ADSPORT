@@ -576,3 +576,436 @@
         transition: none;
     }
 }
+
+
+/* ==========================================
+   ADSPORT - MENÚ DESPLEGABLE DE DEPORTES
+   ========================================== */
+
+.profile-nav .nav-dropdown {
+    position: relative;
+}
+
+    /* Botón CLASES */
+    .profile-nav .nav-dropdown summary {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        padding: 10px 12px;
+        color: inherit;
+        font-size: inherit;
+        font-weight: 700;
+        cursor: pointer;
+        list-style: none;
+        user-select: none;
+    }
+
+        .profile-nav .nav-dropdown summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .profile-nav .nav-dropdown summary:hover,
+        .profile-nav .nav-dropdown summary.activo,
+        .profile-nav .nav-dropdown[open] summary {
+            color: #ff6500;
+        }
+
+/* Flecha */
+.nav-dropdown__flecha {
+    display: inline-block;
+    font-size: 16px;
+    transition: transform .2s ease;
+}
+
+.nav-dropdown[open] .nav-dropdown__flecha {
+    transform: rotate(180deg);
+}
+
+/* Contenedor desplegable */
+.profile-nav .nav-dropdown__menu {
+    position: absolute;
+    z-index: 1000;
+    top: calc(100% + 12px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 270px;
+    padding: 13px;
+    border: 1px solid #e9e9e9;
+    border-radius: 14px;
+    background: #fff;
+    color: #181818;
+    box-shadow: 0 18px 45px rgba(0,0,0,.17);
+}
+
+/* Encabezado del menú */
+.nav-dropdown__titulo {
+    display: block;
+    padding: 12px;
+    margin-bottom: 5px;
+    color: #777;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+}
+
+/* Opciones deportivas */
+.profile-nav .nav-dropdown__item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 13px 12px;
+    border-radius: 8px;
+    color: #222;
+    font-size: 12px;
+    font-weight: 800;
+    text-decoration: none;
+    transition: background .2s ease, color .2s ease;
+}
+
+/* Efecto al pasar el mouse */
+.profile-nav a.nav-dropdown__item:hover {
+    color: #ff6500;
+    background: #fff1e7;
+}
+
+/* Deportes aún no disponibles */
+.profile-nav .nav-dropdown__item--disabled {
+    color: #888;
+    cursor: default;
+}
+
+.nav-dropdown__item--disabled small {
+    color: #999;
+    font-size: 9px;
+    font-weight: 500;
+}
+
+/* Ver todas las clases */
+.profile-nav .nav-dropdown__todos {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 8px;
+    padding: 14px 12px;
+    border-radius: 8px;
+    background: #ff6500;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 800;
+    text-decoration: none;
+}
+
+    .profile-nav .nav-dropdown__todos:hover {
+        color: #fff;
+        background: #e85b00;
+    }
+
+/* Accesibilidad */
+.profile-nav .nav-dropdown summary:focus-visible,
+.profile-nav .nav-dropdown__menu a:focus-visible {
+    outline: 2px solid #ff6500;
+    outline-offset: 3px;
+}
+
+/* Móviles */
+@media (max-width: 768px) {
+
+    .profile-nav .nav-dropdown__menu {
+        position: absolute;
+        left: auto;
+        right: 0;
+        transform: none;
+        width: min(270px, 90vw);
+    }
+}
+
+/* ==========================================================
+   9. ADSPORT - MENÚ DESPLEGABLE DE PERFIL
+   Nombre del usuario, fotografía y opciones de cuenta
+   ========================================================== */
+
+/* Mantener oculto el perfil sin sesión */
+.profile-header .user-dropdown[hidden] {
+    display: none !important;
+}
+
+/* Contenedor principal */
+.profile-header .user-dropdown {
+    position: relative;
+    flex-shrink: 0;
+}
+
+/* ==========================================
+   BOTÓN PRINCIPAL DEL USUARIO
+   ========================================== */
+
+.profile-header .user-dropdown__trigger {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    min-height: 49px;
+    padding: 5px 13px 5px 5px;
+    border: 1px solid #444;
+    border-radius: 40px;
+    background: #1a1a1a;
+    color: #ffffff;
+    cursor: pointer;
+    list-style: none;
+    transition: background .25s ease, border-color .25s ease;
+}
+
+    /* Ocultar marcador nativo */
+    .profile-header .user-dropdown__trigger::-webkit-details-marker {
+        display: none;
+    }
+
+    .profile-header .user-dropdown__trigger::marker {
+        content: "";
+    }
+
+    /* Hover y menú abierto */
+    .profile-header .user-dropdown__trigger:hover,
+    .profile-header .user-dropdown[open]
+    .user-dropdown__trigger {
+        background: #26201b;
+        border-color: var(--ads-naranja);
+    }
+
+/* ==========================================
+   FOTOGRAFÍA DE PERFIL
+   ========================================== */
+
+.profile-header .user-dropdown__avatar {
+    display: block;
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+    object-fit: cover;
+    object-position: center;
+    border: 2px solid var(--ads-naranja);
+    border-radius: 50%;
+    background: #333;
+}
+
+/* ==========================================
+   NOMBRE DEL USUARIO
+   ========================================== */
+
+.profile-header .user-dropdown__nombre {
+    display: block;
+    max-width: 150px;
+    overflow: hidden;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: .3px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/* Flecha desplegable */
+.profile-header .user-dropdown__flecha {
+    margin-left: 3px;
+    color: var(--ads-naranja);
+    font-size: 17px;
+    transition: transform .25s ease;
+}
+
+.profile-header .user-dropdown[open]
+.user-dropdown__flecha {
+    transform: rotate(180deg);
+}
+
+/* ==========================================
+   PANEL DESPLEGABLE DEL PERFIL
+   ========================================== */
+
+.profile-header .user-dropdown__menu {
+    position: absolute;
+    z-index: 1100;
+    top: calc(100% + 13px);
+    right: 0;
+    width: 300px;
+    max-width: calc(100vw - 28px);
+    padding: 15px;
+    border: 1px solid #363636;
+    border-radius: 17px;
+    background: #151515;
+    color: #fff;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, .45);
+}
+
+/* ==========================================
+   INFORMACIÓN SUPERIOR DEL PERFIL
+   ========================================== */
+
+.profile-header .user-dropdown__perfil {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 12px 8px 20px;
+}
+
+.profile-header .user-dropdown__avatar-grande {
+    display: block;
+    width: 58px;
+    height: 58px;
+    flex-shrink: 0;
+    object-fit: cover;
+    object-position: center;
+    border: 2px solid var(--ads-naranja);
+    border-radius: 50%;
+    background: #333;
+}
+
+.profile-header .user-dropdown__datos {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    min-width: 0;
+}
+
+    .profile-header .user-dropdown__datos strong {
+        display: block;
+        overflow: hidden;
+        color: #fff;
+        font-size: 14px;
+        font-weight: 800;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    .profile-header .user-dropdown__datos > span {
+        color: #aaa;
+        font-size: 11px;
+    }
+
+/* ==========================================
+   SEPARADORES
+   ========================================== */
+
+.profile-header .user-dropdown__separador {
+    height: 1px;
+    margin: 7px 0;
+    background: #343434;
+}
+
+/* ==========================================
+   OPCIONES DEL MENÚ
+   ========================================== */
+
+.profile-header .profile-nav
+.user-dropdown__item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    min-height: 47px;
+    padding: 12px;
+    border-radius: 9px;
+    background: transparent;
+    color: #e7e7e7;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .2px;
+    text-decoration: none;
+    white-space: normal;
+    transition: background .2s ease, color .2s ease;
+}
+
+/* Iconos */
+.profile-header .user-dropdown__icono {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    flex-shrink: 0;
+    font-size: 17px;
+}
+
+/* Opciones pendientes */
+.profile-header .profile-nav
+.user-dropdown__item--disabled {
+    color: #a0a0a0;
+    cursor: default;
+}
+
+.profile-header .user-dropdown__item--disabled small {
+    margin-left: auto;
+    color: #777;
+    font-size: 9px;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+/* ==========================================
+   BOTÓN CERRAR SESIÓN
+   ========================================== */
+
+.profile-header .profile-nav
+a.user-dropdown__cerrar {
+    color: #ff8b52;
+    background: transparent;
+}
+
+    .profile-header .profile-nav
+    a.user-dropdown__cerrar:hover {
+        color: #ff6500;
+        background: rgba(255, 101, 0, .13);
+    }
+
+    /* ==========================================
+   ACCESIBILIDAD
+   ========================================== */
+
+    .profile-header .user-dropdown__trigger:focus-visible,
+    .profile-header .profile-nav
+    a.user-dropdown__cerrar:focus-visible {
+        outline: 2px solid var(--ads-naranja);
+        outline-offset: 3px;
+    }
+
+/* ==========================================
+   RESPONSIVE
+   ========================================== */
+
+@media (max-width: 768px) {
+
+    .profile-header .user-dropdown__nombre {
+        max-width: 95px;
+    }
+
+    .profile-header .user-dropdown__menu {
+        width: 275px;
+    }
+}
+
+@media (max-width: 600px) {
+
+    .profile-header .user-dropdown__trigger {
+        gap: 7px;
+    }
+
+    .profile-header .user-dropdown__nombre {
+        max-width: 90px;
+        font-size: 11px;
+    }
+
+    .profile-header .user-dropdown__avatar {
+        width: 34px;
+        height: 34px;
+    }
+
+    .profile-header .user-dropdown__menu {
+        width: min(275px, calc(100vw - 28px));
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .profile-header .user-dropdown__trigger,
+    .profile-header .user-dropdown__flecha {
+        transition: none;
+    }
+}

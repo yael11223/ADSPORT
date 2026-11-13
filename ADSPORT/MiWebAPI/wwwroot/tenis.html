@@ -1,20 +1,30 @@
 ﻿
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
+
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0">
 
+    <meta name="description"
+          content="Conoce las clases de tenis de ADSPORT, nuestros entrenadores, precios y horarios disponibles.">
+
     <title>Clases de Tenis | ADSPORT</title>
 
-    <!-- COMPONENTES COMPARTIDOS -->
+    <!-- =====================================
+         ESTILOS DE COMPONENTES
+         ===================================== -->
     <link rel="stylesheet"
           href="/css/componentes.css">
 
-    <!-- DISEÑO EXCLUSIVO DE TENIS -->
+    <!-- =====================================
+         ESTILOS DE LA PÁGINA
+         ===================================== -->
     <link rel="stylesheet"
           href="/css/tenis.css">
+
 </head>
 
 <body>
@@ -24,276 +34,830 @@
          ===================================== -->
     <div id="contenedor-header"></div>
 
+
     <main class="tenis-page">
 
+
         <!-- =====================================
-             PORTADA DE TENIS
+             1. PORTADA PRINCIPAL
              ===================================== -->
-        <section class="tenis-hero">
 
-            <div class="tenis-hero__decoration"
-                 aria-hidden="true">
-            </div>
+        <section class="tenis-hero"
+                 aria-labelledby="titulo-tenis">
 
-            <div class="tenis-hero__content">
+            <!--
+                REEMPLAZAR LA RUTA CON TU
+                IMAGEN REAL DE TENIS
+            -->
+            <img src="/img/tenis/portada-tenis.jpg"
+                 alt="Pelota de tenis sobre una cancha"
+                 class="tenis-hero__imagen">
 
-                <span class="tenis-eyebrow">
-                    ADSPORT / DISCIPLINAS
+            <div class="tenis-hero__overlay"></div>
+
+            <div class="tenis-hero__contenido">
+
+                <span class="tenis-hero__etiqueta">
+                    ADSPORT / DEPORTES
                 </span>
 
-                <h1>
-                    DOMINA <br>
-                    LA <span>CANCHA.</span>
+                <h1 id="titulo-tenis">
+                    TENIS
                 </h1>
 
                 <p>
-                    Descubre tu potencial en el tenis.
-                    Mejora tu técnica, fortalece tu
-                    condición física y supera tus
-                    propios límites.
+                    Entrena, aprende y supera
+                    tus límites con nuestras
+                    clases de tenis.
                 </p>
 
-                <a href="#profesores"
-                   class="tenis-btn tenis-btn--primary">
-                    CONOCE LAS CLASES
-                    <span aria-hidden="true">↗</span>
+                <a href="#entrenadores"
+                   class="tenis-btn tenis-btn--principal">
+
+                    EXPLORAR CLASES
+
+                    <span aria-hidden="true">
+                        ↗
+                    </span>
+
                 </a>
 
-                <div class="tenis-hero__details">
-                    <span>DISCIPLINA</span>
-                    <strong>TENIS</strong>
-                    <span class="tenis-hero__separator"></span>
-                    <span>ADSPORT 2026</span>
-                </div>
+            </div>
+
+            <div class="tenis-hero__inferior">
+
+                <span>
+                    DISCIPLINA Y PRECISIÓN
+                </span>
+
+                <span>
+                    ADSPORT
+                </span>
 
             </div>
 
-            <!-- PELOTA DECORATIVA EN CSS -->
-            <div class="tenis-hero__visual"
-                 aria-hidden="true">
+        </section>
 
-                <div class="tenis-ball"></div>
 
-                <div class="tenis-hero__circle">
-                    ENERGÍA · PRECISIÓN · DISCIPLINA
+        <!-- =====================================
+             2. INFORMACIÓN DEL DEPORTE
+             ===================================== -->
+
+        <section class="tenis-info"
+                 id="informacion">
+
+            <div class="tenis-container">
+
+                <div class="tenis-info__encabezado">
+
+                    <div>
+
+                        <span class="tenis-etiqueta">
+                            CONOCE EL DEPORTE
+                        </span>
+
+                        <h2>
+                            DESCUBRE EL
+                            <span>TENIS.</span>
+                        </h2>
+
+                    </div>
+
+                    <p>
+                        El tenis es un deporte que
+                        combina velocidad, coordinación,
+                        resistencia y concentración.
+
+                        En ADSPORT podrás conocer
+                        diferentes entrenadores y
+                        encontrar clases que se adapten
+                        a tus necesidades y disponibilidad.
+                    </p>
+
+                </div>
+
+
+                <div class="tenis-beneficios">
+
+                    <article class="tenis-beneficio">
+
+                        <span class="tenis-beneficio__numero">
+                            01
+                        </span>
+
+                        <h3>
+                            TÉCNICA
+                        </h3>
+
+                        <p>
+                            Desarrolla precisión,
+                            control y coordinación
+                            durante tus entrenamientos.
+                        </p>
+
+                    </article>
+
+
+                    <article class="tenis-beneficio">
+
+                        <span class="tenis-beneficio__numero">
+                            02
+                        </span>
+
+                        <h3>
+                            CONDICIÓN FÍSICA
+                        </h3>
+
+                        <p>
+                            Mejora tu resistencia,
+                            velocidad y agilidad
+                            dentro de la cancha.
+                        </p>
+
+                    </article>
+
+
+                    <article class="tenis-beneficio">
+
+                        <span class="tenis-beneficio__numero">
+                            03
+                        </span>
+
+                        <h3>
+                            APRENDIZAJE
+                        </h3>
+
+                        <p>
+                            Aprende a tu ritmo
+                            con el acompañamiento
+                            de un entrenador.
+                        </p>
+
+                    </article>
+
                 </div>
 
             </div>
 
         </section>
 
+
         <!-- =====================================
-             INTRODUCCIÓN A LA DISCIPLINA
+             3. CATÁLOGO DE ENTRENADORES
              ===================================== -->
-        <section class="tenis-intro">
 
-            <span class="tenis-section-label">
-                EL DEPORTE QUE TE DESAFÍA
-            </span>
+        <section class="tenis-entrenadores"
+                 id="entrenadores">
 
-            <h2>
-                CADA PUNTO ES UNA
-                <span>NUEVA OPORTUNIDAD.</span>
-            </h2>
+            <div class="tenis-container">
 
-            <p>
-                Nuestras clases están pensadas para
-                desarrollar coordinación, resistencia,
-                concentración y técnica, acompañándote
-                en cada etapa de tu entrenamiento.
-            </p>
+                <div class="tenis-seccion-header">
 
-            <div class="tenis-features">
+                    <div>
 
-                <div class="tenis-feature">
-                    <span class="tenis-feature__number">01</span>
-                    <strong>Técnica</strong>
+                        <span class="tenis-etiqueta">
+                            ENCUENTRA TU ENTRENADOR
+                        </span>
+
+                        <h2>
+                            NUESTROS
+                            <span>ENTRENADORES.</span>
+                        </h2>
+
+                    </div>
+
                     <p>
-                        Mejora tus golpes, precisión
-                        y control de la raqueta.
+                        Consulta sus perfiles,
+                        precios por clase y horarios
+                        disponibles durante la semana.
                     </p>
+
                 </div>
 
-                <div class="tenis-feature">
-                    <span class="tenis-feature__number">02</span>
-                    <strong>Condición física</strong>
-                    <p>
-                        Desarrolla agilidad,
-                        resistencia y coordinación.
-                    </p>
-                </div>
 
-                <div class="tenis-feature">
-                    <span class="tenis-feature__number">03</span>
-                    <strong>Progreso</strong>
-                    <p>
-                        Aprende de forma gradual
-                        y supera nuevos retos.
-                    </p>
+                <div class="tenis-entrenadores__grid">
+
+
+                    <!-- =================================
+                         ENTRENADOR 1
+                         ================================= -->
+
+                    <article class="tenis-profesor-card">
+
+                        <!-- FOTOGRAFÍA -->
+
+                        <div class="tenis-profesor-card__foto">
+
+                            <img src="/img/tenis/entrenador-1.jpg"
+                                 alt="Fotografía de Marco Contreras"
+                                 loading="lazy">
+
+                            <span class="tenis-profesor-card__categoria">
+                                ENTRENADOR DE TENIS
+                            </span>
+
+                        </div>
+
+
+                        <!-- INFORMACIÓN -->
+
+                        <div class="tenis-profesor-card__contenido">
+
+                            <div class="tenis-profesor-card__encabezado">
+
+                                <div>
+
+                                    <h3>
+                                        Marco Contreras
+                                    </h3>
+
+                                    <span class="tenis-profesor-card__experiencia">
+                                        5 años de experiencia
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <p class="tenis-profesor-card__descripcion">
+                                Aprende los fundamentos
+                                del tenis y mejora tu
+                                técnica con entrenamientos
+                                orientados al desarrollo
+                                de tus habilidades.
+                            </p>
+
+
+                            <!-- PRECIO -->
+
+                            <div class="tenis-profesor-card__precio">
+
+                                <div>
+                                    <span>
+                                        PRECIO POR CLASE
+                                    </span>
+
+                                    <strong>
+                                        $500
+                                    </strong>
+                                </div>
+
+                                <small>
+                                    MXN
+                                </small>
+
+                            </div>
+
+
+                            <!-- HORARIOS -->
+
+                            <div class="tenis-profesor-card__horarios">
+
+                                <h4>
+                                    Horarios publicados
+                                </h4>
+
+                                <div class="tenis-horario">
+
+                                    <span class="tenis-horario__dia">
+                                        Martes
+                                    </span>
+
+                                    <span class="tenis-horario__hora">
+                                        5:00 - 7:00 p. m.
+                                    </span>
+
+                                </div>
+
+                                <p class="tenis-profesor-card__nota">
+                                    Cupos sujetos a confirmación.
+                                </p>
+
+                            </div>
+
+
+                            <!-- ACCIÓN -->
+
+                            <a href="mailto:admin@adsport.com.mx?subject=Consulta%20de%20clase%20con%20Marco%20Contreras"
+                               class="tenis-btn tenis-btn--reservar">
+
+                                CONSULTAR CLASE
+
+                                <span aria-hidden="true">
+                                    ↗
+                                </span>
+
+                            </a>
+
+                        </div>
+
+                    </article>
+
+
+
+                    <!-- =================================
+                         ENTRENADOR 2
+                         DATOS DE EJEMPLO
+                         ================================= -->
+
+                    <article class="tenis-profesor-card">
+
+                        <!-- FOTOGRAFÍA -->
+
+                        <div class="tenis-profesor-card__foto">
+
+                            <img src="/img/tenis/entrenador-2.jpg"
+                                 alt="Fotografía del segundo entrenador"
+                                 loading="lazy">
+
+                            <span class="tenis-profesor-card__categoria">
+                                ENTRENADOR DE TENIS
+                            </span>
+
+                        </div>
+
+
+                        <!-- INFORMACIÓN -->
+
+                        <div class="tenis-profesor-card__contenido">
+
+                            <div class="tenis-profesor-card__encabezado">
+
+                                <div>
+
+                                    <h3>
+                                        Entrenador 02
+                                    </h3>
+
+                                    <span class="tenis-profesor-card__experiencia">
+                                        Experiencia por agregar
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <p class="tenis-profesor-card__descripcion">
+                                Aquí mostraremos la
+                                descripción del entrenador,
+                                sus especialidades y el
+                                tipo de clases que imparte.
+                            </p>
+
+
+                            <!-- PRECIO -->
+
+                            <div class="tenis-profesor-card__precio">
+
+                                <div>
+                                    <span>
+                                        PRECIO POR CLASE
+                                    </span>
+
+                                    <strong>
+                                        Por definir
+                                    </strong>
+                                </div>
+
+                            </div>
+
+
+                            <!-- HORARIOS -->
+
+                            <div class="tenis-profesor-card__horarios">
+
+                                <h4>
+                                    Horarios disponibles
+                                </h4>
+
+                                <!-- HORARIOS DE EJEMPLO -->
+
+                                <div class="tenis-horario">
+
+                                    <span class="tenis-horario__dia">
+                                        Lunes
+                                    </span>
+
+                                    <span class="tenis-horario__hora">
+                                        8:00 - 10:00 a. m.
+                                    </span>
+
+                                </div>
+
+
+                                <div class="tenis-horario">
+
+                                    <span class="tenis-horario__dia">
+                                        Miércoles
+                                    </span>
+
+                                    <span class="tenis-horario__hora">
+                                        4:00 - 6:00 p. m.
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- ACCIÓN -->
+
+                            <a href="mailto:admin@adsport.com.mx?subject=Consulta%20de%20clases%20de%20tenis"
+                               class="tenis-btn tenis-btn--reservar">
+
+                                CONSULTAR CLASE
+
+                                <span aria-hidden="true">
+                                    ↗
+                                </span>
+
+                            </a>
+
+                        </div>
+
+                    </article>
+
+
+
+                    <!-- =================================
+                         ENTRENADOR 3
+                         DATOS DE EJEMPLO
+                         ================================= -->
+
+                    <article class="tenis-profesor-card">
+
+                        <!-- FOTOGRAFÍA -->
+
+                        <div class="tenis-profesor-card__foto">
+
+                            <img src="/img/tenis/entrenador-3.jpg"
+                                 alt="Fotografía del tercer entrenador"
+                                 loading="lazy">
+
+                            <span class="tenis-profesor-card__categoria">
+                                ENTRENADOR DE TENIS
+                            </span>
+
+                        </div>
+
+
+                        <!-- INFORMACIÓN -->
+
+                        <div class="tenis-profesor-card__contenido">
+
+                            <div class="tenis-profesor-card__encabezado">
+
+                                <div>
+
+                                    <h3>
+                                        Entrenador 03
+                                    </h3>
+
+                                    <span class="tenis-profesor-card__experiencia">
+                                        Experiencia por agregar
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <p class="tenis-profesor-card__descripcion">
+                                Aquí mostraremos la
+                                trayectoria del entrenador,
+                                la información de sus clases
+                                y las habilidades que
+                                pueden desarrollar sus alumnos.
+                            </p>
+
+
+                            <!-- PRECIO -->
+
+                            <div class="tenis-profesor-card__precio">
+
+                                <div>
+                                    <span>
+                                        PRECIO POR CLASE
+                                    </span>
+
+                                    <strong>
+                                        Por definir
+                                    </strong>
+                                </div>
+
+                            </div>
+
+
+                            <!-- HORARIOS -->
+
+                            <div class="tenis-profesor-card__horarios">
+
+                                <h4>
+                                    Horarios disponibles
+                                </h4>
+
+                                <!-- HORARIOS DE EJEMPLO -->
+
+                                <div class="tenis-horario">
+
+                                    <span class="tenis-horario__dia">
+                                        Martes
+                                    </span>
+
+                                    <span class="tenis-horario__hora">
+                                        9:00 - 11:00 a. m.
+                                    </span>
+
+                                </div>
+
+
+                                <div class="tenis-horario">
+
+                                    <span class="tenis-horario__dia">
+                                        Viernes
+                                    </span>
+
+                                    <span class="tenis-horario__hora">
+                                        5:00 - 7:00 p. m.
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- ACCIÓN -->
+
+                            <a href="mailto:admin@adsport.com.mx?subject=Consulta%20de%20clases%20de%20tenis"
+                               class="tenis-btn tenis-btn--reservar">
+
+                                CONSULTAR CLASE
+
+                                <span aria-hidden="true">
+                                    ↗
+                                </span>
+
+                            </a>
+
+                        </div>
+
+                    </article>
+
+
                 </div>
 
             </div>
 
         </section>
 
-        <!-- =====================================
-             PROFESORES Y RESERVAS
-             ===================================== -->
-        <section class="tenis-profesores"
-                 id="profesores">
 
-            <div class="tenis-section-header">
+
+        <!-- =====================================
+             4. HORARIOS SEMANALES
+             ===================================== -->
+
+        <section class="tenis-calendario"
+                 id="horarios">
+
+            <div class="tenis-container">
+
+                <div class="tenis-seccion-header">
+
+                    <div>
+
+                        <span class="tenis-etiqueta">
+                            PLANIFICA TU ENTRENAMIENTO
+                        </span>
+
+                        <h2>
+                            HORARIOS
+                            <span>SEMANALES.</span>
+                        </h2>
+
+                    </div>
+
+                    <p>
+                        Consulta los días y las horas
+                        de clase de cada entrenador.
+                    </p>
+
+                </div>
+
+
+                <div class="tenis-calendario__contenedor">
+
+                    <table class="tenis-calendario__tabla">
+
+                        <caption>
+                            Vista de horarios semanales.
+                            Los datos de los entrenadores
+                            02 y 03 son demostrativos.
+                        </caption>
+
+                        <thead>
+
+                            <tr>
+                                <th scope="col">
+                                    Entrenador
+                                </th>
+
+                                <th scope="col">
+                                    Lunes
+                                </th>
+
+                                <th scope="col">
+                                    Martes
+                                </th>
+
+                                <th scope="col">
+                                    Miércoles
+                                </th>
+
+                                <th scope="col">
+                                    Jueves
+                                </th>
+
+                                <th scope="col">
+                                    Viernes
+                                </th>
+
+                                <th scope="col">
+                                    Sábado
+                                </th>
+
+                                <th scope="col">
+                                    Domingo
+                                </th>
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            <!-- ENTRENADOR 1 -->
+
+                            <tr>
+
+                                <th scope="row">
+                                    Marco Contreras
+                                </th>
+
+                                <td>—</td>
+
+                                <td>
+                                    <span class="tenis-calendario__clase">
+                                        5:00 - 7:00 p. m.
+                                    </span>
+                                </td>
+
+                                <td>—</td>
+                                <td>—</td>
+                                <td>—</td>
+                                <td>—</td>
+                                <td>—</td>
+
+                            </tr>
+
+
+                            <!-- ENTRENADOR 2 -->
+
+                            <tr>
+
+                                <th scope="row">
+                                    Entrenador 02
+                                </th>
+
+                                <td>
+                                    <span class="tenis-calendario__clase">
+                                        8:00 - 10:00 a. m.
+                                    </span>
+                                </td>
+
+                                <td>—</td>
+
+                                <td>
+                                    <span class="tenis-calendario__clase">
+                                        4:00 - 6:00 p. m.
+                                    </span>
+                                </td>
+
+                                <td>—</td>
+                                <td>—</td>
+                                <td>—</td>
+                                <td>—</td>
+
+                            </tr>
+
+
+                            <!-- ENTRENADOR 3 -->
+
+                            <tr>
+
+                                <th scope="row">
+                                    Entrenador 03
+                                </th>
+
+                                <td>—</td>
+
+                                <td>
+                                    <span class="tenis-calendario__clase">
+                                        9:00 - 11:00 a. m.
+                                    </span>
+                                </td>
+
+                                <td>—</td>
+                                <td>—</td>
+
+                                <td>
+                                    <span class="tenis-calendario__clase">
+                                        5:00 - 7:00 p. m.
+                                    </span>
+                                </td>
+
+                                <td>—</td>
+                                <td>—</td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                <p class="tenis-calendario__aviso">
+                    Los horarios publicados pueden cambiar.
+                    Consulta con ADSPORT para confirmar
+                    precios, cupos y disponibilidad.
+                </p>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =====================================
+             5. SECCIÓN FINAL
+             ===================================== -->
+
+        <section class="tenis-cta">
+
+            <div class="tenis-container tenis-cta__contenido">
 
                 <div>
-                    <span class="tenis-section-label">
-                        ENTRENA CON NOSOTROS
+
+                    <span class="tenis-etiqueta">
+                        COMIENZA TU ENTRENAMIENTO
                     </span>
 
                     <h2>
-                        NUESTROS
-                        <span>PROFESORES.</span>
+                        TU PRÓXIMO
+                        <span>RETO TE ESPERA.</span>
                     </h2>
+
+                    <p>
+                        Descubre nuevas habilidades,
+                        conoce a nuestros entrenadores
+                        y encuentra tu próxima clase.
+                    </p>
+
                 </div>
 
-                <p>
-                    Conoce al personal encargado
-                    de acompañarte durante tus clases.
-                </p>
 
-            </div>
+                <a href="/registro.html"
+                   class="tenis-btn tenis-btn--principal">
 
-            <div class="tenis-profesores__grid">
+                    ÚNETE A ADSPORT
 
-                <!-- PERFIL DEL PROFESOR -->
-                <article class="tenis-coach">
-
-                    <div class="tenis-coach__avatar"
-                         aria-label="Imagen de perfil por agregar">
-                        <span>MC</span>
-                    </div>
-
-                    <div class="tenis-coach__information">
-
-                        <span class="tenis-coach__tag">
-                            ENTRENADOR DE TENIS
-                        </span>
-
-                        <h3>Marco Contreras</h3>
-
-                        <p class="tenis-coach__experience">
-                            5 años de experiencia
-                        </p>
-
-                        <p class="tenis-coach__description">
-                            Aprende los fundamentos
-                            del tenis, mejora tu técnica
-                            y desarrolla tus habilidades
-                            en la cancha con un
-                            entrenamiento progresivo.
-                        </p>
-
-                        <div class="tenis-coach__values">
-                            <span>Técnica</span>
-                            <span>Resistencia</span>
-                            <span>Coordinación</span>
-                        </div>
-
-                    </div>
-
-                </article>
-
-                <!-- INFORMACIÓN DE LA CLASE -->
-                <aside class="tenis-reserva">
-
-                    <span class="tenis-reserva__eyebrow">
-                        TU PRÓXIMO RETO
+                    <span aria-hidden="true">
+                        ↗
                     </span>
 
-                    <h3>Clase de tenis</h3>
-
-                    <p class="tenis-reserva__subtitle">
-                        Consulta la información
-                        para comenzar a entrenar.
-                    </p>
-
-                    <div class="tenis-reserva__price">
-                        <strong>$500</strong>
-                        <span>MXN / clase</span>
-                    </div>
-
-                    <div class="tenis-reserva__information">
-
-                        <div>
-                            <span>Profesor</span>
-                            <strong>Marco Contreras</strong>
-                        </div>
-
-                        <div>
-                            <span>Día</span>
-                            <strong>Martes</strong>
-                        </div>
-
-                        <div>
-                            <span>Horario</span>
-                            <strong>5:00 – 7:00 p. m.</strong>
-                        </div>
-
-                        <div>
-                            <span>Disponibilidad</span>
-                            <strong>Consultar cupo</strong>
-                        </div>
-
-                    </div>
-
-                    <a class="tenis-btn tenis-btn--reserve"
-                       href="mailto:admin@adsport.com.mx?subject=Solicitud%20de%20clase%20de%20tenis">
-                        SOLICITAR RESERVA
-                        <span aria-hidden="true">↗</span>
-                    </a>
-
-                    <p class="tenis-reserva__note">
-                        La disponibilidad deberá
-                        confirmarse con ADSPORT.
-                    </p>
-
-                </aside>
+                </a>
 
             </div>
 
         </section>
 
-        <!-- =====================================
-             SECCIÓN FINAL
-             ===================================== -->
-        <section class="tenis-cta">
-
-            <div>
-                <span class="tenis-section-label">
-                    EL SIGUIENTE NIVEL TE ESPERA
-                </span>
-
-                <h2>
-                    EL PRIMER PASO
-                    <span>DEPENDE DE TI.</span>
-                </h2>
-            </div>
-
-            <a href="/registro.html"
-               class="tenis-btn tenis-btn--primary">
-                ÚNETE A ADSPORT
-                <span aria-hidden="true">↗</span>
-            </a>
-
-        </section>
 
     </main>
+
+
 
     <!-- =====================================
          FOOTER COMPARTIDO
          ===================================== -->
     <div id="contenedor-footer"></div>
 
-    <!-- JAVASCRIPT DE COMPONENTES -->
+
+    <!-- =====================================
+         JAVASCRIPT DE COMPONENTES
+         ===================================== -->
     <script src="/js/layout.js?v=3"></script>
 
 </body>

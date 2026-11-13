@@ -8,52 +8,315 @@
 
         <div class="d-flex justify-content-between align-items-center">
 
-            <!-- LOGOTIPO -->
-            <a href="indexUsuario.html" class="brand-logo">
+            <!-- =====================================
+                 LOGOTIPO
+                 ===================================== -->
+
+            <a href="/indexUsuario.html"
+               class="brand-logo">
+
                 AD<span>SPORT</span>
+
             </a>
 
-            <!-- MENÚ DE NAVEGACIÓN -->
-            <nav class="profile-nav" aria-label="Navegación principal">
 
-                <a href="indexUsuario.html"
+            <!-- =====================================
+                 MENÚ DE NAVEGACIÓN
+                 ===================================== -->
+
+            <nav class="profile-nav"
+                 aria-label="Navegación principal">
+
+
+                <!-- INICIO -->
+
+                <a href="/indexUsuario.html"
                    data-nav="inicio">
                     INICIO
                 </a>
 
-                <a href="Nosotros.html"
+
+                <!-- NOSOTROS -->
+
+                <a href="/Nosotros.html"
                    data-nav="nosotros">
                     NOSOTROS
                 </a>
 
-                <a href="indexUsuario.html#clases"
-                   data-nav="clases">
-                    CLASES
-                </a>
 
-                <!-- USUARIO SIN SESIÓN -->
+                <!-- =================================
+                     CLASES - MENÚ DESPLEGABLE
+                     ================================= -->
+
+                <details class="nav-dropdown">
+
+                    <summary data-nav="clases">
+
+                        CLASES
+
+                        <span class="nav-dropdown__flecha"
+                              aria-hidden="true">
+                            ▾
+                        </span>
+
+                    </summary>
+
+
+                    <div class="nav-dropdown__menu">
+
+                        <span class="nav-dropdown__titulo">
+                            EXPLORA LOS DEPORTES
+                        </span>
+
+
+                        <!-- TENIS -->
+
+                        <a href="/tenis.html"
+                           class="nav-dropdown__item">
+
+                            <span>🎾 TENIS</span>
+                            <span>↗</span>
+
+                        </a>
+
+
+                        <!-- FÚTBOL -->
+
+                        <span class="nav-dropdown__item nav-dropdown__item--disabled">
+
+                            <span>⚽ FÚTBOL</span>
+                            <small>Próximamente</small>
+
+                        </span>
+
+
+                        <!-- BALONCESTO -->
+
+                        <span class="nav-dropdown__item nav-dropdown__item--disabled">
+
+                            <span>🏀 BALONCESTO</span>
+                            <small>Próximamente</small>
+
+                        </span>
+
+
+                        <!-- NATACIÓN -->
+
+                        <span class="nav-dropdown__item nav-dropdown__item--disabled">
+
+                            <span>🏊 NATACIÓN</span>
+                            <small>Próximamente</small>
+
+                        </span>
+
+
+                        <!-- VER TODAS LAS CLASES -->
+
+                        <a href="/indexUsuario.html#clases"
+                           class="nav-dropdown__todos">
+
+                            VER TODAS LAS CLASES
+
+                            <span>→</span>
+
+                        </a>
+
+                    </div>
+
+                </details>
+
+
+
+                <!-- =================================
+                     USUARIO SIN SESIÓN
+                     ================================= -->
+
                 <a href="/LoginUsuario.html"
                    class="btn-login"
                    data-auth="guest"
                    hidden>
+
                     INICIAR SESIÓN
+
                 </a>
+
 
                 <a href="/Registro.html"
                    class="btn-logout"
                    data-auth="guest"
                    hidden>
+
                     ÚNETE
+
                 </a>
 
-                <!-- USUARIO CON SESIÓN -->
-                <a href="#"
-                   id="btnCerrarSesion"
-                   class="btn-logout"
-                   data-auth="user"
-                   hidden>
-                    CERRAR SESIÓN
-                </a>
+
+
+                <!-- =================================
+                     USUARIO CON SESIÓN
+                     MENÚ DE PERFIL
+                     ================================= -->
+
+                <details class="user-dropdown"
+                         id="menuUsuario"
+                         data-auth="user"
+                         hidden>
+
+
+                    <!-- BOTÓN DE PERFIL -->
+
+                    <summary class="user-dropdown__trigger"
+                             aria-label="Abrir menú de mi cuenta">
+
+
+                        <!-- FOTO DEL USUARIO -->
+
+                        <img src="/img/perfiles/default.png"
+                             alt="Foto de perfil"
+                             id="fotoUsuarioHeader"
+                             class="user-dropdown__avatar"
+                             width="38"
+                             height="38">
+
+
+                        <!-- NOMBRE DEL USUARIO -->
+
+                        <span class="user-dropdown__nombre"
+                              id="nombreUsuarioHeader">
+
+                            MI CUENTA
+
+                        </span>
+
+
+                        <!-- FLECHA -->
+
+                        <span class="user-dropdown__flecha"
+                              aria-hidden="true">
+
+                            ▾
+
+                        </span>
+
+                    </summary>
+
+
+
+                    <!-- =================================
+                         CONTENIDO DESPLEGABLE
+                         ================================= -->
+
+                    <div class="user-dropdown__menu">
+
+
+                        <!-- ENCABEZADO DEL PERFIL -->
+
+                        <div class="user-dropdown__perfil">
+
+
+                            <img src="/img/perfiles/default.png"
+                                 alt="Foto de perfil"
+                                 id="fotoUsuarioMenu"
+                                 class="user-dropdown__avatar-grande"
+                                 width="58"
+                                 height="58">
+
+
+                            <div class="user-dropdown__datos">
+
+                                <strong id="nombreUsuarioMenu">
+                                    Nombre del usuario
+                                </strong>
+
+                                <span>
+                                    Mi cuenta ADSPORT
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <!-- SEPARADOR -->
+
+                        <div class="user-dropdown__separador"></div>
+
+
+
+                        <!-- =================================
+                             MI PERFIL
+                             ================================= -->
+
+                        <span class="user-dropdown__item user-dropdown__item--disabled"
+                              aria-disabled="true"
+                              title="Próximamente">
+
+                            <span class="user-dropdown__icono">
+                                👤
+                            </span>
+
+                            <span>
+                                MI PERFIL
+                            </span>
+
+                            <small>Próximamente</small>
+
+                        </span>
+
+
+
+                        <!-- =================================
+                             CONFIGURACIÓN
+                             ================================= -->
+
+                        <span class="user-dropdown__item user-dropdown__item--disabled"
+                              aria-disabled="true"
+                              title="Próximamente">
+
+                            <span class="user-dropdown__icono">
+                                ⚙️
+                            </span>
+
+                            <span>
+                                CONFIGURACIÓN
+                            </span>
+
+                            <small>Próximamente</small>
+
+                        </span>
+
+
+
+                        <!-- SEPARADOR -->
+
+                        <div class="user-dropdown__separador"></div>
+
+
+
+                        <!-- =================================
+                             CERRAR SESIÓN
+                             ================================= -->
+
+                        <a href="#"
+                           id="btnCerrarSesion"
+                           class="user-dropdown__item user-dropdown__cerrar">
+
+                            <span class="user-dropdown__icono">
+                                ↪
+                            </span>
+
+                            <span>
+                                CERRAR SESIÓN
+                            </span>
+
+                        </a>
+
+
+                    </div>
+
+                </details>
+
 
             </nav>
 

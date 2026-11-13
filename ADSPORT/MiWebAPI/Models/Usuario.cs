@@ -13,6 +13,7 @@
         public string? Estatus { get; set;}
         public string? CodigoQr {  get; set;}
         public string? FechaUltimaModificacion { get; set;}
+        public byte[]? Foto {  get; set;}
         
 
 
