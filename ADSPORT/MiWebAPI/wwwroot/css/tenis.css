@@ -1,5 +1,4 @@
-﻿
-/* ================================================
+﻿/* ================================================
    ADSPORT - CLASES DE TENIS
    Diseño exclusivo de la página de tenis
    No modifica Header ni Footer compartidos
@@ -10,21 +9,22 @@
 ================================================ */
 
 .tenis-page {
-    --tenis-negro: #111410;
-    --tenis-negro-suave: #1b2018;
-    --tenis-verde: #b8ed38;
-    --tenis-verde-oscuro: #426c17;
+    --tenis-negro: #111111;
+    --tenis-negro-suave: #1c1a18;
+    --tenis-verde: #ff6500;
+    --tenis-verde-oscuro: #ff6500;
     --tenis-naranja: #ff6500;
     --tenis-blanco: #ffffff;
-    --tenis-fondo: #f6f7f3;
-    --tenis-gris: #6e756c;
-    --tenis-borde: #e7eae1;
+    --tenis-fondo: #f7f6f5;
+    --tenis-gris: #6e6c6a;
+    --tenis-borde: #eae7e4;
     width: 100%;
+    max-width: 100%;
     min-width: 0;
-    overflow: clip;
+    overflow-x: hidden;
     background: var(--tenis-fondo);
     color: var(--tenis-negro);
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: 'Inter', Arial, Helvetica, sans-serif;
 }
 
     .tenis-page,
@@ -59,7 +59,7 @@
 .tenis-etiqueta {
     display: inline-block;
     margin-bottom: 16px;
-    color: var(--tenis-verde-oscuro);
+    color: var(--tenis-naranja);
     font-size: 12px;
     font-weight: 800;
     letter-spacing: 2.2px;
@@ -101,7 +101,7 @@
 .tenis-btn--principal {
     color: #fff;
     background: var(--tenis-naranja);
-    box-shadow: 0 10px 30px rgba(255, 101, 0, .2);
+    box-shadow: 0 10px 30px rgba(255, 101, 0, .25);
 }
 
     .tenis-btn--principal span {
@@ -129,7 +129,7 @@
 
     .tenis-btn--reservar:hover {
         color: #fff;
-        background: #30372c;
+        background: #2b2724;
         transform: translateY(-2px);
     }
 
@@ -152,7 +152,7 @@
     padding: 110px 24px 100px;
     overflow: hidden;
     isolation: isolate;
-    background: #263b0e;
+    background: #1a110b;
     color: #fff;
 }
 
@@ -175,7 +175,7 @@
     position: absolute;
     inset: 0;
     z-index: -1;
-    background: linear-gradient( 180deg, rgba(12, 22, 4, .25) 0%, rgba(12, 22, 4, .38) 45%, rgba(10, 18, 4, .72) 100% );
+    background: linear-gradient( 180deg, rgba(17, 12, 8, .28) 0%, rgba(17, 12, 8, .42) 45%, rgba(12, 9, 6, .75) 100% );
 }
 
 /* Contenido centrado */
@@ -207,13 +207,13 @@
     font-weight: 900;
     line-height: .95;
     letter-spacing: -7px;
-    text-shadow: 0 12px 35px rgba(0,0,0,.2);
+    text-shadow: 0 12px 35px rgba(0,0,0,.25);
 }
 
 .tenis-hero__contenido p {
     width: min(100%, 490px);
     margin: 0 auto 30px;
-    color: #f0f4e9;
+    color: #f3efe9;
     font-size: 16px;
     line-height: 1.9;
 }
@@ -264,7 +264,7 @@
 
     .tenis-info h2 span,
     .tenis-seccion-header h2 span {
-        color: var(--tenis-verde-oscuro);
+        color: var(--tenis-naranja);
     }
 
 .tenis-info__encabezado > p {
@@ -288,20 +288,20 @@
     padding: 32px;
     border: 1px solid var(--tenis-borde);
     border-radius: 18px;
-    background: #f8f9f5;
+    background: #faf8f6;
     transition: border-color .25s ease, transform .25s ease, box-shadow .25s ease;
 }
 
     .tenis-beneficio:hover {
         transform: translateY(-5px);
-        border-color: #d3e1b1;
+        border-color: rgba(255, 101, 0, .4);
         box-shadow: 0 15px 35px rgba(0,0,0,.05);
     }
 
 .tenis-beneficio__numero {
     display: inline-block;
     margin-bottom: 38px;
-    color: var(--tenis-verde-oscuro);
+    color: var(--tenis-naranja);
     font-size: 15px;
     font-weight: 900;
 }
@@ -366,7 +366,7 @@
     flex-direction: column;
     min-width: 0;
     overflow: hidden;
-    border: 1px solid #e5e9df;
+    border: 1px solid #e8e4e0;
     border-radius: 22px;
     background: #fff;
     box-shadow: 0 8px 25px rgba(0,0,0,.035);
@@ -384,7 +384,7 @@
     position: relative;
     height: 300px;
     overflow: hidden;
-    background: linear-gradient( 135deg, #dbe8b5, #54762a );
+    background: linear-gradient( 135deg, #ff9a52, #ff6500 );
 }
 
     .tenis-profesor-card__foto img {
@@ -437,7 +437,7 @@
     }
 
 .tenis-profesor-card__experiencia {
-    color: var(--tenis-verde-oscuro);
+    color: var(--tenis-naranja);
     font-size: 12px;
     font-weight: 800;
 }
@@ -475,7 +475,7 @@
     }
 
     .tenis-profesor-card__precio span {
-        color: #bfc8b8;
+        color: #c5beb8;
         font-size: 10px;
         font-weight: 800;
         letter-spacing: 1.3px;
@@ -518,7 +518,7 @@
     justify-content: space-between;
     gap: 12px;
     padding: 15px 0;
-    border-bottom: 1px solid #e9ece5;
+    border-bottom: 1px solid #ece9e6;
 }
 
 .tenis-horario__dia {
@@ -557,7 +557,7 @@
 .tenis-calendario__contenedor {
     width: 100%;
     overflow-x: auto;
-    border: 1px solid #e2e7d9;
+    border: 1px solid #e7e2dd;
     border-radius: 20px;
     background: #fff;
     box-shadow: 0 12px 35px rgba(0,0,0,.035);
@@ -598,7 +598,7 @@
     .tenis-calendario__tabla tbody th,
     .tenis-calendario__tabla tbody td {
         padding: 23px 14px;
-        border-bottom: 1px solid #e9ece6;
+        border-bottom: 1px solid #ece9e6;
         font-size: 12px;
         vertical-align: middle;
     }
@@ -609,16 +609,16 @@
     }
 
     .tenis-calendario__tabla tbody td {
-        color: #949b90;
+        color: #9b9590;
         text-align: center;
     }
 
     .tenis-calendario__tabla tbody tr:nth-child(even) {
-        background: #f8faf5;
+        background: #faf8f6;
     }
 
     .tenis-calendario__tabla tbody tr:hover {
-        background: #f0f6e7;
+        background: #fff5ee;
     }
 
 /* Bloque que identifica una clase */
@@ -626,10 +626,10 @@
 .tenis-calendario__clase {
     display: inline-block;
     padding: 12px 10px;
-    border: 1px solid #dce8c9;
+    border: 1px solid rgba(255, 101, 0, .35);
     border-radius: 9px;
-    background: #eff6e4;
-    color: #466d17;
+    background: rgba(255, 101, 0, .12);
+    color: #d94e00;
     font-size: 11px;
     font-weight: 800;
     line-height: 1.6;
@@ -650,7 +650,7 @@
 
 .tenis-cta {
     padding: 90px 0;
-    background: radial-gradient( circle at 90% 20%, rgba(184, 237, 56, .16), transparent 35% ), var(--tenis-negro);
+    background: radial-gradient( circle at 90% 20%, rgba(255, 101, 0, .18), transparent 38% ), var(--tenis-negro);
     color: #fff;
 }
 
@@ -662,7 +662,7 @@
 }
 
 .tenis-cta .tenis-etiqueta {
-    color: var(--tenis-verde);
+    color: var(--tenis-naranja);
 }
 
 .tenis-cta h2 {
@@ -672,13 +672,13 @@
 }
 
     .tenis-cta h2 span {
-        color: var(--tenis-verde);
+        color: var(--tenis-naranja);
     }
 
 .tenis-cta p {
     max-width: 530px;
     margin-bottom: 0;
-    color: #c8d1c2;
+    color: #cfc9c3;
     font-size: 15px;
     line-height: 1.85;
 }
@@ -894,7 +894,7 @@
 }
 
 
-/* ================================================
+/* ===============================================
    15. ACCESIBILIDAD
 ================================================ */
 

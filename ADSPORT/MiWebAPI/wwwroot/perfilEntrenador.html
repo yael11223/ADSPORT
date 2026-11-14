@@ -33,15 +33,14 @@
             <div class="col-12 col-lg-4">
                 <div class="profile-card text-center">
                     <div class="avatar-wrapper">
-                        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=500&q=80" alt="Foto Entrenador" class="profile-avatar">
+                        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=500&q=80" alt="Foto Entrenador" class="profile-avatar" id="imgAvatarEntrenador">
                         <span class="status-badge active"><i class="status-dot"></i> Activo</span>
                     </div>
-                    <h2 class="user-name mt-3" id="lblNombreEntrenador">Valeria Gómez</h2>
+                    <h2 class="user-name mt-3" id="lblNombreEntrenador">Marco Contreras</h2>
                     <p class="user-role">ENTRENADOR ADSPORT</p>
 
-                    <div class="disciplines-container mt-2">
-                        <span class="discipline-tag">Tenis</span>
-                        <span class="discipline-tag">Boxeo</span>
+                    <div class="disciplines-container mt-2" id="contenedorDisciplinas">
+                        <span class="discipline-tag">Cargando...</span>
                     </div>
                 </div>
             </div>
@@ -56,27 +55,13 @@
                         </button>
                     </div>
 
-                    <!-- CLASE 1 -->
-                    <div class="class-item active-class-box">
-                        <div class="class-info">
-                            <span class="class-name">🎾 Tenis Avanzado</span>
-                            <span class="class-time">Lun y Mié | 5:00 - 7:00 p.m.</span>
-                        </div>
-                        <span class="badge-count">12 Alumnos</span>
-                    </div>
-
-                    <!-- CLASE 2 -->
-                    <div class="class-item active-class-box mt-3">
-                        <div class="class-info">
-                            <span class="class-name">🥊 Boxeo Intermedio</span>
-                            <span class="class-time">Mar y Jue | 7:00 - 9:00 p.m.</span>
-                        </div>
-                        <span class="badge-count">8 Alumnos</span>
+                    <div id="listaClasesEntrenador">
+                        <p class="text-secondary small mb-0">Cargando clases impartidas...</p>
                     </div>
 
                     <div class="total-students-banner mt-4">
-                        <span>TOTAL ALUMNOS ACTIVOS:</span>
-                        <strong class="students-count">20 personas</strong>
+                        <span>TOTAL CLASES ACTIVAS:</span>
+                        <strong class="students-count" id="lblTotalClases">0 clases</strong>
                     </div>
                 </div>
             </div>
@@ -98,14 +83,12 @@
                     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
                         <h3 class="section-title mb-0">LISTA DE ASISTENCIA</h3>
 
-                        <!-- FILTRO POR DEPORTE -->
                         <div class="class-selector-tabs">
-                            <button class="tab-btn active" onclick="filtrarAsistencia('tenis')">🎾 Tenis (5 p.m.)</button>
-                            <button class="tab-btn" onclick="filtrarAsistencia('boxeo')">🥊 Boxeo (7 p.m.)</button>
+                            <button class="tab-btn active" onclick="filtrarAsistencia(event, 'tenis')">🎾 Tenis (5 p.m.)</button>
+                            <button class="tab-btn" onclick="filtrarAsistencia(event, 'boxeo')">🥊 Boxeo (7 p.m.)</button>
                         </div>
                     </div>
 
-                    <!-- ASISTENCIA CLASE TENIS -->
                     <div id="asistenciaTenis" class="attendance-group">
                         <div class="d-flex justify-content-between align-items-center time-header">
                             <span class="time-label">Hoy - Tenis Cancha 1</span>
@@ -119,7 +102,6 @@
                         </ul>
                     </div>
 
-                    <!-- ASISTENCIA CLASE BOXEO -->
                     <div id="asistenciaBoxeo" class="attendance-group d-none">
                         <div class="d-flex justify-content-between align-items-center time-header">
                             <span class="time-label">Hoy - Ring Principal</span>
@@ -152,30 +134,50 @@
 
                         <div class="mb-3">
                             <label class="form-label modal-label">Nombre de la Clase</label>
-                            <input type="text" class="form-control modal-input" placeholder="Ej. Tenis Principiantes" required>
+                            <input type="text" id="nombreNuevaClase" class="form-control modal-input" placeholder="Ej. Tenis Principiantes" required>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label modal-label">Deporte</label>
-                            <select class="form-select modal-input" required>
-                                <option value="1">Tenis</option>
-                                <option value="2">Boxeo</option>
-                                <option value="3">Baloncesto</option>
+                            <select class="form-select modal-input" id="selectDeporteClase" required>
+                                <option value="">Cargando deportes...</option>
                             </select>
                         </div>
 
                         <div class="row">
                             <div class="col-6 mb-3">
-                                <label class="form-label modal-label">Cupo Máximo</label>
-                                <input type="number" class="form-control modal-input" value="15" required>
+                                <label class="form-label modal-label">Fecha de Sesión</label>
+                                <input type="date" id="fechaNuevaClase" class="form-control modal-input" required>
                             </div>
                             <div class="col-6 mb-3">
-                                <label class="form-label modal-label">Precio ($)</label>
-                                <input type="number" step="0.01" class="form-control modal-input" value="250.00" required>
+                                <label class="form-label modal-label">Cancha / Área</label>
+                                <input type="text" id="canchaNuevaClase" class="form-control modal-input" placeholder="Ej. Cancha 1" required>
                             </div>
                         </div>
 
-                        <button type="submit" class="btn-modal-submit mt-3">
+                        <div class="row">
+                            <div class="col-6 mb-3">
+                                <label class="form-label modal-label">Hora Inicio</label>
+                                <input type="time" id="horaInicioNuevaClase" class="form-control modal-input" value="16:00" required>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <label class="form-label modal-label">Hora Fin</label>
+                                <input type="time" id="horaFinNuevaClase" class="form-control modal-input" value="17:00" required>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-6 mb-3">
+                                <label class="form-label modal-label">Cupo Máximo</label>
+                                <input type="number" id="cupoNuevaClase" class="form-control modal-input" value="10" min="1" required>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <label class="form-label modal-label">Precio ($ MXN)</label>
+                                <input type="number" step="0.01" id="precioNuevaClase" class="form-control modal-input" value="250.00" min="0" required>
+                            </div>
+                        </div>
+
+                        <button type="submit" id="btnGuardarClase" class="btn-modal-submit mt-3">
                             GUARDAR CLASE
                         </button>
 
@@ -185,31 +187,216 @@
             </div>
         </div>
     </div>
+
     <div id="contenedor-footer"></div>
 
     <!-- BOOTSTRAP JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        function filtrarAsistencia(deporte) {
-            const tabs = document.querySelectorAll('.tab-btn');
-            tabs.forEach(t => t.classList.remove('active'));
-
-            const tabSeleccionada = event.target;
-            tabSeleccionada.classList.add('active');
-
-            if (deporte === 'tenis') {
-                document.getElementById('asistenciaTenis').classList.remove('d-none');
-                document.getElementById('asistenciaBoxeo').classList.add('d-none');
-            } else {
-                document.getElementById('asistenciaTenis').classList.add('d-none');
-                document.getElementById('asistenciaBoxeo').classList.remove('d-none');
-            }
-        }
-    </script>
-
-
-    <!-- Conserva los scripts que ya utiliza la página -->
     <script src="/js/layout.js?v=1"></script>
+    <script src="/js/auth.js"></script>
+
+    <script>
+                let idEntrenadorActual = 3; // ID_USUARIO = 3 (Marco)
+                const diasSemanaNombres = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+
+                function filtrarAsistencia(e, deporte) {
+                    const tabs = document.querySelectorAll('.tab-btn');
+                    tabs.forEach(t => t.classList.remove('active'));
+                    e.target.classList.add('active');
+
+                    if (deporte === 'tenis') {
+                        document.getElementById('asistenciaTenis').classList.remove('d-none');
+                        document.getElementById('asistenciaBoxeo').classList.add('d-none');
+                    } else {
+                        document.getElementById('asistenciaTenis').classList.add('d-none');
+                        document.getElementById('asistenciaBoxeo').classList.remove('d-none');
+                    }
+                }
+
+                async function obtenerSesionEntrenador() {
+                    try {
+                        const res = await fetch("/api/LoginUsuario/sesion", { cache: "no-store" });
+                        if (res.ok) {
+                            const data = await res.json();
+                            const usuario = data.usuario || data;
+                            if (usuario && usuario.idUsuario) {
+                                idEntrenadorActual = usuario.idUsuario;
+                                const nombreCompleto = [usuario.nombre, usuario.apellidoPaterno, usuario.apellidoMaterno]
+                                    .filter(Boolean).join(" ");
+                                if (nombreCompleto) {
+                                    document.getElementById("lblNombreEntrenador").textContent = nombreCompleto;
+                                }
+                            }
+                        }
+                    } catch (err) {
+                        console.warn("Usando entrenador por defecto:", err);
+                    }
+                }
+
+                async function cargarDeportesEntrenador() {
+                    const select = document.getElementById("selectDeporteClase");
+                    const contDisciplinas = document.getElementById("contenedorDisciplinas");
+
+                    try {
+                        const res = await fetch("/api/Deporte", { cache: "no-store" });
+                        const deportes = await res.json();
+
+                        if (!deportes || deportes.length === 0) {
+                            select.innerHTML = `<option value="">No hay deportes registrados</option>`;
+                            contDisciplinas.innerHTML = `<span class="discipline-tag">Sin disciplinas</span>`;
+                            return;
+                        }
+
+                        select.innerHTML = `<option value="">Selecciona un deporte...</option>` +
+                            deportes.map(d => `<option value="${d.idDeporte}">${d.nombreDeporte}</option>`).join("");
+
+                        contDisciplinas.innerHTML = deportes
+                            .map(d => `<span class="discipline-tag">${d.nombreDeporte}</span>`)
+                            .join("");
+                    } catch (err) {
+                        select.innerHTML = `<option value="">Error al cargar deportes</option>`;
+                        contDisciplinas.innerHTML = `<span class="discipline-tag">Error de conexión</span>`;
+                    }
+                }
+
+                async function cargarClasesEntrenador() {
+                    const lista = document.getElementById("listaClasesEntrenador");
+                    const lblTotal = document.getElementById("lblTotalClases");
+
+                    try {
+                        const res = await fetch(`/api/Clase/PorEntrenador/${idEntrenadorActual}`, { cache: "no-store" });
+                        if (!res.ok) throw new Error("No se pudieron obtener las clases");
+
+                        const clases = await res.json();
+                        lblTotal.textContent = `${clases.length} ${clases.length === 1 ? "clase" : "clases"}`;
+
+                        if (!clases || clases.length === 0) {
+                            lista.innerHTML = `
+                                <p class="text-secondary small mb-0">
+                                    Aún no has registrado clases. Haz clic en <strong>+ Nueva Clase</strong> para crear una.
+                                </p>`;
+                            return;
+                        }
+
+                        lista.innerHTML = clases.map((c, index) => {
+                            let diaTexto = "";
+                            if (c.diaSemana) {
+                                const f = new Date(c.diaSemana);
+                                if (!isNaN(f.getTime())) {
+                                    diaTexto = `${diasSemanaNombres[f.getDay()]} (${f.toLocaleDateString("es-MX")})`;
+                                }
+                            }
+
+                            const horarioTexto = [
+                                diaTexto,
+                                (c.horaInicio && c.horaFin) ? `${c.horaInicio} - ${c.horaFin}` : "",
+                                c.cancha || ""
+                            ].filter(Boolean).join(" | ");
+
+                            return `
+                                <div class="class-item active-class-box ${index > 0 ? "mt-3" : ""}">
+                                    <div class="class-info">
+                                        <span class="class-name">🏅 ${c.nombreClase} <small class="text-secondary">(${c.nombreDeporte})</small></span>
+                                        <span class="class-time">${horarioTexto} · $${Number(c.precio).toFixed(2)} MXN</span>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="badge-count">Cupo: ${c.cupoMaximo}</span>
+                                        <button type="button"
+                                                class="btn btn-sm btn-outline-danger"
+                                                title="Eliminar clase"
+                                                onclick="eliminarClase(${c.idClase}, '${c.nombreClase.replace(/'/g, "\\'")}')">
+                                            ✕
+                                        </button>
+                                    </div>
+                                </div>
+                            `;
+                        }).join("");
+                    } catch (err) {
+                        console.error("Error cargando clases del entrenador:", err);
+                        lista.innerHTML = `<p class="text-danger small mb-0">Error al cargar las clases.</p>`;
+                    }
+                }
+
+                async function eliminarClase(idClase, nombreClase) {
+                    if (!confirm(`¿Seguro que deseas eliminar la clase "${nombreClase}"?`)) return;
+
+                    try {
+                        const res = await fetch(`/api/Clase/${idClase}`, { method: "DELETE" });
+                        const data = await res.json();
+
+                        if (!res.ok) {
+                            alert(data.respuesta || "No se pudo eliminar la clase.");
+                            return;
+                        }
+
+                        await cargarClasesEntrenador();
+                    } catch (err) {
+                        alert("Error de conexión al eliminar la clase.");
+                    }
+                }
+
+                document.getElementById("formNuevaClase")?.addEventListener("submit", async (e) => {
+                    e.preventDefault();
+
+                    const btnGuardar = document.getElementById("btnGuardarClase");
+                    const payload = {
+                        idDeporte: Number(document.getElementById("selectDeporteClase").value),
+                        idEntrenador: Number(idEntrenadorActual),
+                        nombreClase: document.getElementById("nombreNuevaClase").value.trim(),
+                        precio: Number(document.getElementById("precioNuevaClase").value),
+                        cupoMaximo: Number(document.getElementById("cupoNuevaClase").value),
+                        diaSemana: document.getElementById("fechaNuevaClase").value,
+                        horaInicio: document.getElementById("horaInicioNuevaClase").value,
+                        horaFin: document.getElementById("horaFinNuevaClase").value,
+                        cancha: document.getElementById("canchaNuevaClase").value.trim()
+                    };
+
+                    if (!payload.idDeporte || !payload.nombreClase || !payload.diaSemana) {
+                        alert("Completa todos los campos obligatorios.");
+                        return;
+                    }
+
+                    btnGuardar.disabled = true;
+                    btnGuardar.textContent = "GUARDANDO...";
+
+                    try {
+                        const res = await fetch("/api/Clase", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify(payload)
+                        });
+
+                        const data = await res.json();
+                        if (!res.ok) {
+                            alert(data.respuesta || "No se pudo registrar la clase.");
+                            return;
+                        }
+
+                        e.target.reset();
+                        document.getElementById("fechaNuevaClase").value = new Date().toISOString().split("T")[0];
+                        bootstrap.Modal.getInstance(document.getElementById("modalNuevaClase"))?.hide();
+                        await cargarClasesEntrenador();
+                    } catch (err) {
+                        alert("Error de conexión al guardar la clase.");
+                    } finally {
+                        btnGuardar.disabled = false;
+                        btnGuardar.textContent = "GUARDAR CLASE";
+                    }
+                });
+
+                document.addEventListener("DOMContentLoaded", async () => {
+                    const inputFecha = document.getElementById("fechaNuevaClase");
+                    if (inputFecha) {
+                        inputFecha.value = new Date().toISOString().split("T")[0];
+                    }
+
+                    await obtenerSesionEntrenador();
+                    await Promise.all([
+                        cargarDeportesEntrenador(),
+                        cargarClasesEntrenador()
+                    ]);
+                });
+    </script>
 </body>
 
 </html>

@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="es">
 <head>
@@ -12,7 +11,6 @@
 
     <link rel="stylesheet" href="/css/styles.css">
 </head>
-
 <body class="adsport-dashboard">
 
     <!-- BARRA SUPERIOR -->
@@ -65,10 +63,17 @@
                     desde un solo lugar.
                 </p>
 
-                <a href="empleados.html" class="btn-orange">
-                    <span>Administrar empleados</span>
-                    <span class="button-arrow" aria-hidden="true">→</span>
-                </a>
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="empleados.html" class="btn-orange">
+                        <span>Administrar empleados</span>
+                        <span class="button-arrow" aria-hidden="true">→</span>
+                    </a>
+
+                    <a href="deportes.html" id="btnHeroDeportes" class="btn-orange" style="display: none;">
+                        <span>Administrar deportes</span>
+                        <span class="button-arrow" aria-hidden="true">→</span>
+                    </a>
+                </div>
             </div>
 
             <div class="hero-side-info">
@@ -93,7 +98,7 @@
                 </div>
 
                 <div class="module-count">
-                    <span>03</span>
+                    <span id="contadorModulos">03</span>
                     <small>MÓDULOS</small>
                 </div>
             </div>
@@ -124,14 +129,36 @@
                     </a>
                 </article>
 
+                <!-- DEPORTES (EXCLUSIVO ADMINISTRADOR) -->
+                <article id="moduloDeportesAdmin" class="dashboard-card employee-card" style="display: none;">
+                    <div class="card-topline">
+                        <span class="card-number">02 / CATÁLOGO</span>
+                        <span class="card-icon" aria-hidden="true">★</span>
+                    </div>
+
+                    <div class="card-symbol employee-symbol">D</div>
+
+                    <h3>Deportes</h3>
+
+                    <p>
+                        Administra el catálogo maestro de disciplinas deportivas
+                        del club (altas, modificaciones y bajas).
+                    </p>
+
+                    <a href="deportes.html" class="card-link">
+                        Abrir módulo
+                        <span aria-hidden="true">↗</span>
+                    </a>
+                </article>
+
                 <!-- API -->
                 <article class="dashboard-card api-card">
                     <div class="card-topline">
-                        <span class="card-number">02 / DESARROLLO</span>
-                        <span class="card-icon" aria-hidden="true">&lt;/&gt;</span>
+                        <span class="card-number">03 / DESARROLLO</span>
+                        <span class="card-icon" aria-hidden="true"></></span>
                     </div>
 
-                    <div class="card-symbol api-symbol">&lt;/&gt;</div>
+                    <div class="card-symbol api-symbol"></></div>
 
                     <h3>API y servicios</h3>
 
@@ -149,7 +176,7 @@
                 <!-- BASE DE DATOS -->
                 <article class="dashboard-card database-card">
                     <div class="card-topline">
-                        <span class="card-number">03 / INFRAESTRUCTURA</span>
+                        <span class="card-number">04 / INFRAESTRUCTURA</span>
                         <span class="card-icon" aria-hidden="true">▤</span>
                     </div>
 
@@ -182,9 +209,37 @@
     <!-- AUTENTICACIÓN ORIGINAL -->
     <script src="/js/auth.js"></script>
     <script>
-        protegerPagina();
-        mostrarUsuario("nombreUsuario");
-    </script>
+                protegerPagina();
+                mostrarUsuario("nombreUsuario");
 
+                function verificarYMostrarDeportes() {
+                    let todoElAlmacen = "";
+
+                    for (let i = 0; i < sessionStorage.length; i++) {
+                        const k = sessionStorage.key(i);
+                        todoElAlmacen += " " + k + " " + sessionStorage.getItem(k);
+                    }
+                    for (let i = 0; i < localStorage.length; i++) {
+                        const k = localStorage.key(i);
+                        todoElAlmacen += " " + k + " " + localStorage.getItem(k);
+                    }
+
+                    const nombreEnPantalla = (document.getElementById("nombreUsuario")?.textContent || "").toUpperCase();
+                    const textoCompleto = (todoElAlmacen + " " + nombreEnPantalla).toUpperCase();
+
+                    if (textoCompleto.includes("ADMIN") && !textoCompleto.includes("ENTRENADOR")) {
+                        const cardDeportes = document.getElementById("moduloDeportesAdmin");
+                        const btnHero = document.getElementById("btnHeroDeportes");
+                        const contador = document.getElementById("contadorModulos");
+
+                        if (cardDeportes) cardDeportes.style.display = "flex";
+                        if (btnHero) btnHero.style.display = "inline-flex";
+                        if (contador) contador.textContent = "04";
+                    }
+                }
+
+                verificarYMostrarDeportes();
+                document.addEventListener("DOMContentLoaded", verificarYMostrarDeportes);
+    </script>
 </body>
 </html>

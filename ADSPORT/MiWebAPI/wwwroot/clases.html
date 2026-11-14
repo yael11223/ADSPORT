@@ -1,0 +1,513 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Conoce las clases de ADSPORT, nuestros entrenadores, precios y horarios disponibles.">
+    <title id="pageTitle">Disciplina | ADSPORT</title>
+
+    <!-- ESTILOS DE COMPONENTES -->
+    <link rel="stylesheet" href="/css/componentes.css">
+
+    <!-- ESTILOS DE LA PLANTILLA DE DEPORTE -->
+    <link rel="stylesheet" href="/css/tenis.css">
+</head>
+
+<body>
+
+    <!-- HEADER COMPARTIDO -->
+    <div id="contenedor-header"></div>
+
+    <main class="tenis-page">
+
+        <!-- 1. PORTADA PRINCIPAL DINÁMICA -->
+        <section class="tenis-hero" aria-labelledby="titulo-deporte">
+
+            <img id="heroImagenDeporte"
+                 src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=1600&q=85"
+                 alt="Portada de disciplina deportiva"
+                 class="tenis-hero__imagen">
+
+            <div class="tenis-hero__overlay"></div>
+
+            <div class="tenis-hero__contenido">
+
+                <span class="tenis-hero__etiqueta">
+                    ADSPORT / DEPORTES
+                </span>
+
+                <h1 id="titulo-deporte">
+                    DISCIPLINA
+                </h1>
+
+                <p id="heroDescripcionDeporte">
+                    Entrena, aprende y supera tus límites con nuestras clases especializadas.
+                </p>
+
+                <a href="#entrenadores" class="tenis-btn tenis-btn--principal">
+                    EXPLORAR CLASES
+                    <span aria-hidden="true">↗</span>
+                </a>
+
+            </div>
+
+            <div class="tenis-hero__inferior">
+                <span>DISCIPLINA Y PRECISIÓN</span>
+                <span>ADSPORT</span>
+            </div>
+
+        </section>
+
+        <!-- 2. INFORMACIÓN DEL DEPORTE -->
+        <section class="tenis-info" id="informacion">
+
+            <div class="tenis-container">
+
+                <div class="tenis-info__encabezado">
+
+                    <div>
+                        <span class="tenis-etiqueta">
+                            CONOCE EL DEPORTE
+                        </span>
+
+                        <h2>
+                            DESCUBRE
+                            <span id="subtituloDeporte">LA DISCIPLINA.</span>
+                        </h2>
+                    </div>
+
+                    <p id="infoDescripcionDeporte">
+                        En ADSPORT podrás conocer diferentes entrenadores y encontrar clases que se adapten a tus necesidades, nivel y disponibilidad horaria.
+                    </p>
+
+                </div>
+
+                <div class="tenis-beneficios">
+
+                    <article class="tenis-beneficio">
+                        <span class="tenis-beneficio__numero">01</span>
+                        <h3>TÉCNICA</h3>
+                        <p>
+                            Desarrolla precisión, control y coordinación durante tus entrenamientos.
+                        </p>
+                    </article>
+
+                    <article class="tenis-beneficio">
+                        <span class="tenis-beneficio__numero">02</span>
+                        <h3>CONDICIÓN FÍSICA</h3>
+                        <p>
+                            Mejora tu resistencia, velocidad y agilidad con sesiones estructuradas.
+                        </p>
+                    </article>
+
+                    <article class="tenis-beneficio">
+                        <span class="tenis-beneficio__numero">03</span>
+                        <h3>APRENDIZAJE</h3>
+                        <p>
+                            Aprende a tu ritmo con el acompañamiento personalizado de un entrenador.
+                        </p>
+                    </article>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- 3. CATÁLOGO DE ENTRENADORES -->
+        <section class="tenis-entrenadores" id="entrenadores">
+
+            <div class="tenis-container">
+
+                <div class="tenis-seccion-header">
+
+                    <div>
+                        <span class="tenis-etiqueta">
+                            ENCUENTRA TU ENTRENADOR
+                        </span>
+
+                        <h2>
+                            NUESTROS
+                            <span>ENTRENADORES.</span>
+                        </h2>
+                    </div>
+
+                    <p>
+                        Consulta sus perfiles, precios por clase y horarios disponibles durante la semana.
+                    </p>
+
+                </div>
+
+                <div class="tenis-entrenadores__grid" id="gridEntrenadores">
+
+                    <!-- ENTRENADOR 1 -->
+                    <article class="tenis-profesor-card">
+
+                        <div class="tenis-profesor-card__foto">
+                            <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=600&q=80"
+                                 alt="Fotografía de Valeria Gómez"
+                                 loading="lazy">
+                            <span class="tenis-profesor-card__categoria" id="badgeCategoria1">
+                                ENTRENADOR ADSPORT
+                            </span>
+                        </div>
+
+                        <div class="tenis-profesor-card__contenido">
+
+                            <div class="tenis-profesor-card__encabezado">
+                                <div>
+                                    <h3>Valeria Gómez</h3>
+                                    <span class="tenis-profesor-card__experiencia">
+                                        5 años de experiencia
+                                    </span>
+                                </div>
+                            </div>
+
+                            <p class="tenis-profesor-card__descripcion">
+                                Aprende los fundamentos de la disciplina y mejora tu técnica con entrenamientos orientados al desarrollo de tus habilidades.
+                            </p>
+
+                            <div class="tenis-profesor-card__precio">
+                                <div>
+                                    <span>PRECIO POR CLASE</span>
+                                    <strong>$250</strong>
+                                </div>
+                                <small>MXN</small>
+                            </div>
+
+                            <div class="tenis-profesor-card__horarios">
+                                <h4>Horarios publicados</h4>
+
+                                <div class="tenis-horario">
+                                    <span class="tenis-horario__dia">Lunes y Miércoles</span>
+                                    <span class="tenis-horario__hora">5:00 - 7:00 p. m.</span>
+                                </div>
+
+                                <p class="tenis-profesor-card__nota">
+                                    Cupos sujetos a confirmación.
+                                </p>
+                            </div>
+
+                            <a href="/registro.html" class="tenis-btn tenis-btn--reservar">
+                                RESERVAR CLASE
+                                <span aria-hidden="true">↗</span>
+                            </a>
+
+                        </div>
+
+                    </article>
+
+                    <!-- ENTRENADOR 2 -->
+                    <article class="tenis-profesor-card">
+
+                        <div class="tenis-profesor-card__foto">
+                            <img src="https://images.unsplash.com/photo-1567013127542-490d757e51fc?auto=format&fit=crop&w=600&q=80"
+                                 alt="Fotografía de Marco Contreras"
+                                 loading="lazy">
+                            <span class="tenis-profesor-card__categoria" id="badgeCategoria2">
+                                ENTRENADOR ADSPORT
+                            </span>
+                        </div>
+
+                        <div class="tenis-profesor-card__contenido">
+
+                            <div class="tenis-profesor-card__encabezado">
+                                <div>
+                                    <h3>Marco Contreras</h3>
+                                    <span class="tenis-profesor-card__experiencia">
+                                        4 años de experiencia
+                                    </span>
+                                </div>
+                            </div>
+
+                            <p class="tenis-profesor-card__descripcion">
+                                Sesiones enfocadas en acondicionamiento físico, técnica intermedia y preparación competitiva.
+                            </p>
+
+                            <div class="tenis-profesor-card__precio">
+                                <div>
+                                    <span>PRECIO POR CLASE</span>
+                                    <strong>$300</strong>
+                                </div>
+                                <small>MXN</small>
+                            </div>
+
+                            <div class="tenis-profesor-card__horarios">
+                                <h4>Horarios disponibles</h4>
+
+                                <div class="tenis-horario">
+                                    <span class="tenis-horario__dia">Martes y Jueves</span>
+                                    <span class="tenis-horario__hora">4:00 - 6:00 p. m.</span>
+                                </div>
+
+                                <p class="tenis-profesor-card__nota">
+                                    Cupos sujetos a confirmación.
+                                </p>
+                            </div>
+
+                            <a href="/registro.html" class="tenis-btn tenis-btn--reservar">
+                                RESERVAR CLASE
+                                <span aria-hidden="true">↗</span>
+                            </a>
+
+                        </div>
+
+                    </article>
+
+                    <!-- ENTRENADOR 3 -->
+                    <article class="tenis-profesor-card">
+
+                        <div class="tenis-profesor-card__foto">
+                            <img src="https://images.unsplash.com/photo-1594381898411-846e7d193883?auto=format&fit=crop&w=600&q=80"
+                                 alt="Fotografía de Sofía Ramírez"
+                                 loading="lazy">
+                            <span class="tenis-profesor-card__categoria" id="badgeCategoria3">
+                                ENTRENADOR ADSPORT
+                            </span>
+                        </div>
+
+                        <div class="tenis-profesor-card__contenido">
+
+                            <div class="tenis-profesor-card__encabezado">
+                                <div>
+                                    <h3>Sofía Ramírez</h3>
+                                    <span class="tenis-profesor-card__experiencia">
+                                        6 años de experiencia
+                                    </span>
+                                </div>
+                            </div>
+
+                            <p class="tenis-profesor-card__descripcion">
+                                Entrenamientos personalizados para principiantes y avanzados con seguimiento continuo.
+                            </p>
+
+                            <div class="tenis-profesor-card__precio">
+                                <div>
+                                    <span>PRECIO POR CLASE</span>
+                                    <strong>$280</strong>
+                                </div>
+                                <small>MXN</small>
+                            </div>
+
+                            <div class="tenis-profesor-card__horarios">
+                                <h4>Horarios disponibles</h4>
+
+                                <div class="tenis-horario">
+                                    <span class="tenis-horario__dia">Viernes y Sábado</span>
+                                    <span class="tenis-horario__hora">9:00 - 11:00 a. m.</span>
+                                </div>
+
+                                <p class="tenis-profesor-card__nota">
+                                    Cupos sujetos a confirmación.
+                                </p>
+                            </div>
+
+                            <a href="/registro.html" class="tenis-btn tenis-btn--reservar">
+                                RESERVAR CLASE
+                                <span aria-hidden="true">↗</span>
+                            </a>
+
+                        </div>
+
+                    </article>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- 4. HORARIOS SEMANALES -->
+        <section class="tenis-calendario" id="horarios">
+
+            <div class="tenis-container">
+
+                <div class="tenis-seccion-header">
+
+                    <div>
+                        <span class="tenis-etiqueta">
+                            PLANIFICA TU ENTRENAMIENTO
+                        </span>
+
+                        <h2>
+                            HORARIOS
+                            <span>SEMANALES.</span>
+                        </h2>
+                    </div>
+
+                    <p>
+                        Consulta los días y las horas de clase de cada entrenador.
+                    </p>
+
+                </div>
+
+                <div class="tenis-calendario__contenedor">
+
+                    <table class="tenis-calendario__tabla">
+
+                        <caption>
+                            Vista de horarios semanales disponibles en ADSPORT.
+                        </caption>
+
+                        <thead>
+                            <tr>
+                                <th scope="col">Entrenador</th>
+                                <th scope="col">Lunes</th>
+                                <th scope="col">Martes</th>
+                                <th scope="col">Miércoles</th>
+                                <th scope="col">Jueves</th>
+                                <th scope="col">Viernes</th>
+                                <th scope="col">Sábado</th>
+                                <th scope="col">Domingo</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <th scope="row">Valeria Gómez</th>
+                                <td><span class="tenis-calendario__clase">5:00 - 7:00 p. m.</span></td>
+                                <td>—</td>
+                                <td><span class="tenis-calendario__clase">5:00 - 7:00 p. m.</span></td>
+                                <td>—</td>
+                                <td>—</td>
+                                <td>—</td>
+                                <td>—</td>
+                            </tr>
+
+                            <tr>
+                                <th scope="row">Marco Contreras</th>
+                                <td>—</td>
+                                <td><span class="tenis-calendario__clase">4:00 - 6:00 p. m.</span></td>
+                                <td>—</td>
+                                <td><span class="tenis-calendario__clase">4:00 - 6:00 p. m.</span></td>
+                                <td>—</td>
+                                <td>—</td>
+                                <td>—</td>
+                            </tr>
+
+                            <tr>
+                                <th scope="row">Sofía Ramírez</th>
+                                <td>—</td>
+                                <td>—</td>
+                                <td>—</td>
+                                <td>—</td>
+                                <td><span class="tenis-calendario__clase">9:00 - 11:00 a. m.</span></td>
+                                <td><span class="tenis-calendario__clase">9:00 - 11:00 a. m.</span></td>
+                                <td>—</td>
+                            </tr>
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                <p class="tenis-calendario__aviso">
+                    Los horarios publicados pueden cambiar. Consulta con ADSPORT para confirmar precios, cupos y disponibilidad.
+                </p>
+
+            </div>
+
+        </section>
+
+        <!-- 5. SECCIÓN FINAL -->
+        <section class="tenis-cta">
+
+            <div class="tenis-container tenis-cta__contenido">
+
+                <div>
+                    <span class="tenis-etiqueta">
+                        COMIENZA TU ENTRENAMIENTO
+                    </span>
+
+                    <h2>
+                        TU PRÓXIMO
+                        <span>RETO TE ESPERA.</span>
+                    </h2>
+
+                    <p>
+                        Descubre nuevas habilidades, conoce a nuestros entrenadores y encuentra tu próxima clase.
+                    </p>
+                </div>
+
+                <a href="/registro.html" class="tenis-btn tenis-btn--principal">
+                    ÚNETE A ADSPORT
+                    <span aria-hidden="true">↗</span>
+                </a>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- FOOTER COMPARTIDO -->
+    <div id="contenedor-footer"></div>
+
+    <script src="/js/layout.js?v=4"></script>
+    <script>
+                document.addEventListener("DOMContentLoaded", async () => {
+                    const params = new URLSearchParams(window.location.search);
+                    const idDeporte = params.get("idDeporte");
+                    const nombreParam = params.get("deporte");
+
+                    const tituloEl = document.getElementById("titulo-deporte");
+                    const subtituloEl = document.getElementById("subtituloDeporte");
+                    const heroDescEl = document.getElementById("heroDescripcionDeporte");
+                    const infoDescEl = document.getElementById("infoDescripcionDeporte");
+                    const heroImgEl = document.getElementById("heroImagenDeporte");
+                    const pageTitleEl = document.getElementById("pageTitle");
+
+                    function aplicarDatosDeporte(nombre, descripcion, imagenUrl) {
+                        const nombreMayus = nombre.toUpperCase();
+                        tituloEl.textContent = nombreMayus;
+                        subtituloEl.textContent = `${nombreMayus}.`;
+                        pageTitleEl.textContent = `Clases de ${nombre} | ADSPORT`;
+
+                        if (descripcion) {
+                            heroDescEl.textContent = descripcion;
+                            infoDescEl.textContent = descripcion;
+                        } else {
+                            heroDescEl.textContent = `Entrena, aprende y supera tus límites con nuestras clases de ${nombre.toLowerCase()}.`;
+                        }
+
+                        if (imagenUrl) {
+                            heroImgEl.src = imagenUrl;
+                        }
+
+                        ["badgeCategoria1", "badgeCategoria2", "badgeCategoria3"].forEach(id => {
+                            const el = document.getElementById(id);
+                            if (el) el.textContent = `ENTRENADOR DE ${nombreMayus}`;
+                        });
+                    }
+
+                    if (nombreParam) {
+                        aplicarDatosDeporte(nombreParam, null, null);
+                    }
+
+                    try {
+                        if (idDeporte) {
+                            const res = await fetch(`/api/Deporte/${idDeporte}`, { cache: "no-store" });
+                            if (res.ok) {
+                                const dep = await res.json();
+                                aplicarDatosDeporte(dep.nombreDeporte, dep.descripcion, dep.imagenUrl);
+                                return;
+                            }
+                        }
+
+                        // Si entró a /clases.html sin parámetro, carga el primer deporte registrado
+                        const resLista = await fetch("/api/Deporte", { cache: "no-store" });
+                        if (resLista.ok) {
+                            const lista = await resLista.json();
+                            if (lista && lista.length > 0) {
+                                aplicarDatosDeporte(lista[0].nombreDeporte, lista[0].descripcion, lista[0].imagenUrl);
+                            }
+                        }
+                    } catch (err) {
+                        console.error("Error cargando detalle del deporte:", err);
+                    }
+                });
+    </script>
+
+</body>
+</html>

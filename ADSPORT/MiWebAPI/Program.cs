@@ -18,6 +18,8 @@ builder.Services.AddSingleton<UsuarioData>();
 builder.Services.AddScoped<RolData>();
 builder.Services.AddScoped<VerificacionData>();
 builder.Services.AddScoped<LoginUsuarioData>();
+builder.Services.AddScoped<DeporteData>();
+builder.Services.AddScoped<ClaseData>();
 
 builder.Services.AddCors(options =>
 {

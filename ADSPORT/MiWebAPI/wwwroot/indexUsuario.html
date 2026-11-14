@@ -23,17 +23,10 @@
 
 <body>
 
-    <!-- ========================================
-         ADSPORT - HEADER COMPARTIDO
-         ======================================== -->
-
+    <!-- HEADER COMPARTIDO -->
     <div id="contenedor-header"></div>
 
-
-    <!-- =====================================================
-         1. PANTALLA DE CARGA
-         ===================================================== -->
-
+    <!-- 1. PANTALLA DE CARGA -->
     <div id="introLoader"
          class="intro-loader"
          role="status"
@@ -63,33 +56,22 @@
 
     </div>
 
-
-    <!-- =====================================================
-         CONTENIDO PRINCIPAL
-         ===================================================== -->
-
+    <!-- CONTENIDO PRINCIPAL -->
     <main class="adsport-home">
 
-
-        <!-- =================================================
-        2. CARRUSEL PRINCIPAL
-        ================================================= -->
-
+        <!-- 2. CARRUSEL PRINCIPAL -->
         <section class="hero-carousel" id="inicio">
 
-            <!-- BALONCESTO -->
             <div class="hero-slide active"
                  data-slide="0"
                  data-name="Baloncesto"
                  style="background-image: url('https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=2000&q=85');"></div>
 
-            <!-- TENIS -->
             <div class="hero-slide"
                  data-slide="1"
                  data-name="Tenis"
                  style="background-image: url('https://images.unsplash.com/photo-1622279457486-62dcc4a431d6?auto=format&fit=crop&w=2000&q=85');"></div>
 
-            <!-- BOXEO -->
             <div class="hero-slide"
                  data-slide="2"
                  data-name="Boxeo"
@@ -97,7 +79,6 @@
 
             <div class="hero-shade"></div>
 
-            <!-- TEXTO PRINCIPAL -->
             <div class="hero-content">
 
                 <p class="hero-kicker">
@@ -130,7 +111,6 @@
 
             </div>
 
-            <!-- INDICADORES -->
             <div class="carousel-indicators">
 
                 <button type="button"
@@ -164,10 +144,7 @@
 
         </section>
 
-
-        <!-- =================================================
-         3. BIENVENIDA
-         ================================================= -->
+        <!-- 3. BIENVENIDA -->
         <section class="intro-section" id="bienvenida">
 
             <div class="intro-content">
@@ -194,18 +171,13 @@
 
         </section>
 
-
-        <!-- =================================================
-            4. EXPERIENCIA CINEMATOGRÁFICA (IMÁGENES AL SCROLL)
-            ================================================= -->
+        <!-- 4. EXPERIENCIA CINEMATOGRÁFICA -->
         <section class="video-scroll-section"
                  id="experiencia"
                  aria-label="Experiencia deportiva interactiva">
 
-            <!-- CONTENEDOR QUE PERMANECE FIJO AL HACER SCROLL -->
             <div class="video-sticky-container">
 
-                <!-- CONTENEDOR DE IMÁGENES DE FONDO -->
                 <div class="experience-images-container">
                     <img src="img/home/escena1.jpg"
                          class="exp-image active" data-img-scene="1" alt="Escena 1 - El esfuerzo define tu camino">
@@ -220,20 +192,16 @@
                          class="exp-image" data-img-scene="4" alt="Escena 4 - Es tu momento">
                 </div>
 
-                <!-- CAPAS CINEMATOGRÁFICAS -->
                 <div class="video-overlay"></div>
                 <div class="video-vignette"></div>
 
-                <!-- LÍNEAS DECORATIVAS -->
                 <div class="video-decoration" aria-hidden="true">
                     <span class="decoration-line"></span>
                     <span class="decoration-text">ADSPORT EXPERIENCE</span>
                 </div>
 
-                <!-- ESCENAS (TEXTOS) -->
                 <div class="video-scenes-container">
 
-                    <!-- ESCENA 1 -->
                     <div class="video-scene active" data-scene="1" aria-hidden="false">
                         <div class="video-scene-content">
                             <span class="video-scene-number">01 / 04</span>
@@ -243,7 +211,6 @@
                         </div>
                     </div>
 
-                    <!-- ESCENA 2 -->
                     <div class="video-scene" data-scene="2" aria-hidden="true">
                         <div class="video-scene-content">
                             <span class="video-scene-number">02 / 04</span>
@@ -253,7 +220,6 @@
                         </div>
                     </div>
 
-                    <!-- ESCENA 3 -->
                     <div class="video-scene" data-scene="3" aria-hidden="true">
                         <div class="video-scene-content">
                             <span class="video-scene-number">03 / 04</span>
@@ -263,7 +229,6 @@
                         </div>
                     </div>
 
-                    <!-- ESCENA 4 -->
                     <div class="video-scene" data-scene="4" aria-hidden="true">
                         <div class="video-scene-content">
                             <span class="video-scene-number">04 / 04</span>
@@ -275,7 +240,6 @@
 
                 </div>
 
-                <!-- INDICADOR LATERAL DE ESCENAS -->
                 <div class="video-scene-indicators" aria-label="Progreso de escenas">
                     <span class="scene-indicator active" data-scene-index="0"></span>
                     <span class="scene-indicator" data-scene-index="1"></span>
@@ -283,7 +247,6 @@
                     <span class="scene-indicator" data-scene-index="3"></span>
                 </div>
 
-                <!-- BARRA DE PROGRESO -->
                 <div class="video-progress-container">
                     <span class="video-progress-label">TU EXPERIENCIA</span>
                     <div class="video-progress-track">
@@ -292,7 +255,6 @@
                     <span class="video-progress-percent" id="videoProgressPercent">0%</span>
                 </div>
 
-                <!-- BOTONES DE NAVEGACIÓN -->
                 <div class="video-navigation">
                     <button type="button" class="video-nav-button" id="videoAnterior" aria-label="Escena anterior">←</button>
                     <button type="button" class="video-nav-button" id="videoSiguiente" aria-label="Escena siguiente">→</button>
@@ -302,11 +264,7 @@
 
         </section>
 
-
-        <!-- =================================================
-        5. RESERVA INMEDIATA
-        ================================================= -->
-
+        <!-- 5. RESERVA INMEDIATA -->
         <section class="reserva-section" id="reservas">
 
             <div class="reserva-container">
@@ -325,17 +283,14 @@
                     <p class="reserva-description">
                         Encuentra actividades deportivas disponibles
                         y reserva tu lugar de manera rápida y sencilla.
-
                         Descubre nuestros horarios y comienza
                         tu próximo reto.
                     </p>
 
-                    <button type="button"
-                            class="reserva-button"
-                            id="btnVerHorarios">
+                    <a href="/clases.html" class="reserva-button" style="text-decoration: none;">
                         VER HORARIOS DISPONIBLES
                         <span aria-hidden="true">→</span>
-                    </button>
+                    </a>
 
                 </div>
 
@@ -362,15 +317,9 @@
 
         </section>
 
-
-        <!-- =================================================
-        6. CLASES DISPONIBLES
-        EFECTO DE TARJETAS SUPERPUESTAS
-        ================================================= -->
-
+        <!-- 6. CLASES DISPONIBLES (CATÁLOGO DINÁMICO DESDE BD) -->
         <section class="clases-section" id="clases">
 
-            <!-- TÍTULO -->
             <div class="clases-header">
 
                 <p class="section-label">
@@ -384,287 +333,23 @@
 
                 <p>
                     Explora nuestras actividades deportivas.
-                    Desliza para descubrir cada experiencia.
+                    Selecciona una disciplina para ver sus clases y horarios disponibles.
                 </p>
 
             </div>
 
+            <div class="clases-stack" id="clasesContainer"></div>
 
-            <!-- CONTENEDOR DE TARJETAS APILADAS -->
-            <div class="clases-stack"
-                 id="clasesContainer">
-
-                <!-- =========================================
-                TARJETA 1: BALONCESTO
-                ========================================= -->
-
-                <article class="clase-card stack-card"
-                         data-card="1"
-                         style="--card-index: 0;">
-
-                    <div class="stack-card-inner">
-
-                        <!-- IMAGEN -->
-                        <div class="clase-image">
-
-                            <img src="https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=1200&q=85"
-                                 alt="Jugadores de baloncesto"
-                                 loading="lazy">
-
-                            <span class="clase-badge">
-                                DISPONIBLE
-                            </span>
-
-                            <span class="card-number">
-                                01 / 03
-                            </span>
-
-                        </div>
-
-
-                        <!-- INFORMACIÓN -->
-                        <div class="clase-content">
-
-                            <span class="clase-category">
-                                DEPORTE DE EQUIPO
-                            </span>
-
-                            <h3>BALONCESTO</h3>
-
-                            <p class="clase-description">
-                                Mejora tu coordinación, velocidad
-                                y trabajo en equipo mientras
-                                disfrutas de cada entrenamiento.
-                            </p>
-
-                            <p class="clase-entrenador">
-                                Entrenador: Por asignar
-                            </p>
-
-                            <div class="clase-details">
-
-                                <div class="clase-detail">
-                                    <span>📅</span>
-                                    <span>Martes</span>
-                                </div>
-
-                                <div class="clase-detail">
-                                    <span>🕒</span>
-                                    <span>10:00 AM</span>
-                                </div>
-
-                                <div class="clase-detail">
-                                    <span>👥</span>
-                                    <span>8 lugares disponibles</span>
-                                </div>
-
-                            </div>
-
-                            <button type="button"
-                                    class="clase-button"
-                                    data-clase="baloncesto">
-                                RESERVAR AHORA
-                                <span aria-hidden="true">→</span>
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                </article>
-
-
-                <!-- =========================================
-                TARJETA 2: BOXEO
-                ========================================= -->
-
-                <article class="clase-card stack-card"
-                         data-card="2"
-                         style="--card-index: 1;">
-
-                    <div class="stack-card-inner">
-
-                        <!-- IMAGEN -->
-                        <div class="clase-image">
-
-                            <img src="https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?auto=format&fit=crop&w=1200&q=85"
-                                 alt="Entrenamiento de boxeo"
-                                 loading="lazy">
-
-                            <span class="clase-badge">
-                                DISPONIBLE
-                            </span>
-
-                            <span class="card-number">
-                                02 / 03
-                            </span>
-
-                        </div>
-
-
-                        <!-- INFORMACIÓN -->
-                        <div class="clase-content">
-
-                            <span class="clase-category">
-                                DEPORTE DE CONTACTO
-                            </span>
-
-                            <h3>BOXEO</h3>
-
-                            <p class="clase-description">
-                                Desarrolla fuerza, resistencia
-                                y disciplina con entrenamientos
-                                diseñados para superar tus límites.
-                            </p>
-
-                            <p class="clase-entrenador">
-                                Entrenador: Por asignar
-                            </p>
-
-                            <div class="clase-details">
-
-                                <div class="clase-detail">
-                                    <span>📅</span>
-                                    <span>Miércoles</span>
-                                </div>
-
-                                <div class="clase-detail">
-                                    <span>🕒</span>
-                                    <span>12:00 PM</span>
-                                </div>
-
-                                <div class="clase-detail">
-                                    <span>👥</span>
-                                    <span>5 lugares disponibles</span>
-                                </div>
-
-                            </div>
-
-                            <button type="button"
-                                    class="clase-button"
-                                    data-clase="boxeo">
-                                RESERVAR AHORA
-                                <span aria-hidden="true">→</span>
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                </article>
-
-
-                <!-- =========================================
-                TARJETA 3: TENIS
-                ========================================= -->
-
-                <article class="clase-card stack-card"
-                         data-card="3"
-                         style="--card-index: 2;">
-
-                    <div class="stack-card-inner">
-
-                        <!-- IMAGEN -->
-                        <div class="clase-image">
-
-                            <img src="https://images.unsplash.com/photo-1622279457486-62dcc4a431d6?auto=format&fit=crop&w=1200&q=85"
-                                 alt="Partido de tenis"
-                                 loading="lazy">
-
-                            <span class="clase-badge">
-                                DISPONIBLE
-                            </span>
-
-                            <span class="card-number">
-                                03 / 03
-                            </span>
-
-                        </div>
-
-
-                        <!-- INFORMACIÓN -->
-                        <div class="clase-content">
-
-                            <span class="clase-category">
-                                DEPORTE INDIVIDUAL
-                            </span>
-
-                            <h3>TENIS</h3>
-
-                            <p class="clase-description">
-                                Perfecciona tu técnica,
-                                mejora tus reflejos y disfruta
-                                de una experiencia deportiva dinámica.
-                            </p>
-
-                            <p class="clase-entrenador">
-                                Entrenador: Por asignar
-                            </p>
-
-                            <div class="clase-details">
-
-                                <div class="clase-detail">
-                                    <span>📅</span>
-                                    <span>Jueves</span>
-                                </div>
-
-                                <div class="clase-detail">
-                                    <span>🕒</span>
-                                    <span>4:00 PM</span>
-                                </div>
-
-                                <div class="clase-detail">
-                                    <span>👥</span>
-                                    <span>3 lugares disponibles</span>
-                                </div>
-
-                            </div>
-
-                            <button type="button"
-                                    class="clase-button"
-                                    data-clase="tenis">
-                                RESERVAR AHORA
-                                <span aria-hidden="true">→</span>
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                </article>
-
-            </div>
-
-
-            <!-- INDICADOR FINAL -->
             <div class="clases-end">
-
                 <span class="clases-end-line"></span>
-
-                <p>
-                    TU PRÓXIMA EXPERIENCIA TE ESPERA
-                </p>
-
+                <p>TU PRÓXIMA EXPERIENCIA TE ESPERA</p>
                 <span class="clases-end-line"></span>
-
             </div>
-
-
-            <p class="clases-nota">
-                * Los horarios y lugares mostrados son ejemplos
-                de diseño. La disponibilidad real se consultará
-                posteriormente mediante la API de ADSPORT.
-            </p>
 
         </section>
 
-
-        <!-- =================================================
-        7. INSTALACIONES DEPORTIVAS
-        ================================================= -->
-
-        <section class="instalaciones-section"
-                 id="instalaciones">
+        <!-- 7. INSTALACIONES DEPORTIVAS -->
+        <section class="instalaciones-section" id="instalaciones">
 
             <div class="instalaciones-header">
 
@@ -684,66 +369,36 @@
 
             </div>
 
-
             <div class="instalaciones-grid">
 
-                <!-- INSTALACIÓN 1 -->
                 <article class="instalacion-card">
-
                     <img src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=1200&q=85"
                          alt="Zona de entrenamiento deportivo"
                          loading="lazy">
-
                     <div class="instalacion-overlay">
-
                         <span>01</span>
-
-                        <h3>
-                            ZONA DE ENTRENAMIENTO
-                        </h3>
-
+                        <h3>ZONA DE ENTRENAMIENTO</h3>
                     </div>
-
                 </article>
 
-
-                <!-- INSTALACIÓN 2 -->
                 <article class="instalacion-card">
-
                     <img src="https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=1200&q=85"
                          alt="Área de entrenamiento físico"
                          loading="lazy">
-
                     <div class="instalacion-overlay">
-
                         <span>02</span>
-
-                        <h3>
-                            ENTRENAMIENTO FUNCIONAL
-                        </h3>
-
+                        <h3>ENTRENAMIENTO FUNCIONAL</h3>
                     </div>
-
                 </article>
 
-
-                <!-- INSTALACIÓN 3 -->
                 <article class="instalacion-card">
-
                     <img src="https://images.unsplash.com/photo-1540497077202-7c8a3999166f?auto=format&fit=crop&w=1200&q=85"
                          alt="Instalaciones deportivas"
                          loading="lazy">
-
                     <div class="instalacion-overlay">
-
                         <span>03</span>
-
-                        <h3>
-                            INSTALACIONES DEPORTIVAS
-                        </h3>
-
+                        <h3>INSTALACIONES DEPORTIVAS</h3>
                     </div>
-
                 </article>
 
             </div>
@@ -757,6 +412,70 @@
     <!-- JAVASCRIPT -->
     <script src="js/Home.js"></script>
     <script src="/js/layout.js"></script>
+    <script>
+                document.addEventListener("DOMContentLoaded", async () => {
+                    const contenedor = document.getElementById("clasesContainer");
+                    if (!contenedor) return;
+
+                    const imagenesPorDeporte = {
+                        "BALONCESTO": "https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=1200&q=85",
+                        "BOXEO": "https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?auto=format&fit=crop&w=1200&q=85",
+                        "TENIS": "https://images.unsplash.com/photo-1622279457486-62dcc4a431d6?auto=format&fit=crop&w=1200&q=85",
+                        "NATACION": "https://images.unsplash.com/photo-1530549387789-4c1017266635?auto=format&fit=crop&w=1200&q=85",
+                        "FUTBOL": "https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=1200&q=85",
+                        "GOLF": "https://images.unsplash.com/photo-1535131749006-b7f58c99034b?auto=format&fit=crop&w=1200&q=85"
+                    };
+
+                    const respaldoVariado = [
+                        "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=1200&q=85",
+                        "https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=1200&q=85",
+                        "https://images.unsplash.com/photo-1540497077202-7c8a3999166f?auto=format&fit=crop&w=1200&q=85",
+                        "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1200&q=85"
+                    ];
+
+                    try {
+                        const res = await fetch("/api/Deporte", { cache: "no-store" });
+                        const deportes = await res.json();
+
+                        if (!deportes || deportes.length === 0) {
+                            contenedor.innerHTML = `<p class="text-center text-muted">Aún no hay disciplinas registradas.</p>`;
+                            return;
+                        }
+
+                        contenedor.innerHTML = deportes.map((dep, index) => {
+                            const clave = dep.nombreDeporte.toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                            const img = dep.imagenUrl
+                                || imagenesPorDeporte[clave]
+                                || respaldoVariado[index % respaldoVariado.length];
+                            const num = String(index + 1).padStart(2, "0");
+                            const total = String(deportes.length).padStart(2, "0");
+                            const destinoClases = `/tenis.html?idDeporte=${dep.idDeporte}&deporte=${encodeURIComponent(dep.nombreDeporte)}`;
+
+                            return `
+                                <article class="clase-card stack-card" data-card="${index + 1}" style="--card-index: ${index};">
+                                    <div class="stack-card-inner">
+                                        <div class="clase-image">
+                                            <img src="${img}" alt="${dep.nombreDeporte}" loading="lazy">
+                                            <span class="clase-badge">DISPONIBLE</span>
+                                            <span class="card-number">${num} / ${total}</span>
+                                        </div>
+                                        <div class="clase-content">
+                                            <span class="clase-category">CATÁLOGO ADSPORT</span>
+                                            <h3>${dep.nombreDeporte.toUpperCase()}</h3>
+                                            <p class="clase-description">${dep.descripcion || "Disciplina deportiva disponible en nuestras instalaciones."}</p>
+                                            <a href="${destinoClases}" class="clase-button" style="text-decoration: none; display: inline-flex; align-items: center; justify-content: space-between;">
+                                                EXPLORAR DISCIPLINA <span aria-hidden="true">→</span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </article>
+                            `;
+                        }).join("");
+                    } catch (error) {
+                        console.error("Error cargando catálogo de deportes:", error);
+                    }
+                });
+    </script>
 
 </body>
 </html>
