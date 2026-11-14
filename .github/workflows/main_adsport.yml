@@ -52,4 +52,4 @@ jobs:
           app-name: 'ADSPORT'
           slot-name: 'Production'
           package: .
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_E8CF6D3596974810BCECD06E6033795B }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_787429D73B9D49BF9A2A10A799A762C9 }}
