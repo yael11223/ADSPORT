@@ -38,7 +38,7 @@ btnRecargar?.addEventListener("click", obtenerUsuarios);
 // ========================================
 
 async function solicitar(url, opciones = {}) {
-    const respuesta = await fetch(url, opciones);
+    const respuesta = await solicitarAdmin(url, opciones);
 
     if (!respuesta.ok) {
         const detalle = await respuesta.text();
@@ -143,6 +143,9 @@ async function cargarEmpleado(id) {
         document.getElementById("entrenadorRol").value = empleado.idRol ?? "";
         document.getElementById("entrenadorEstatus").value = empleado.estatus ?? "";
         document.getElementById("entrenadorQR").value = empleado.codigoQr ?? "";
+        document.getElementById("entrenadorPassword").required = false;
+        document.getElementById("entrenadorPassword").value = "";
+        document.getElementById("campoPasswordInicial").hidden = true;
 
         tituloFormulario.textContent = "Editar empleado";
         btnGuardar.textContent = "Actualizar";
@@ -193,7 +196,7 @@ async function guardarUsuario(evento) {
             ? "Guardando..."
             : "Actualizando...";
 
-        const resultado = await solicitar(API_URL, {
+        const resultado = await solicitar(esNuevo ? API_URL : `${API_URL}/${usuario.idUsuario}`, {
             method: esNuevo ? "POST" : "PUT",
             headers: {
                 "Content-Type": "application/json"
@@ -290,7 +293,8 @@ function leerFormulario() {
 
         estatus: document.getElementById("entrenadorEstatus").value,
 
-        codigoQr: document.getElementById("entrenadorQR").value.trim()
+        codigoQr: document.getElementById("entrenadorQR").value.trim(),
+        passwordInicial: document.getElementById("entrenadorPassword").value
     };
 }
 
@@ -303,6 +307,8 @@ function limpiarFormulario() {
     formulario.classList.remove("was-validated");
 
     document.getElementById("idEntrenador").value = "0";
+    document.getElementById("entrenadorPassword").required = true;
+    document.getElementById("campoPasswordInicial").hidden = false;
 
     tituloFormulario.textContent = "Nuevo empleado";
     btnGuardar.textContent = "Guardar";

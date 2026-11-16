@@ -278,3 +278,8 @@ coverage.cobertura.xml
 
 # Local dotnet CLI home generated for sandbox/local runs
 .dotnet-home/
+appsettings.Local.json
+**/appsettings.Local.json
+.local-backups/
+tatus
+

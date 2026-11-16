@@ -15,7 +15,58 @@ document.addEventListener("DOMContentLoaded", () => {
     const API_DEPORTE = "/api/Deporte";
 
     const FOTO_DEFAULT = "/Accet/perfil.png";
+    let esEntrenador = false;
+
     const PAGINA_LOGIN = "/loginUsuario.html";
+
+    const PAGINAS_DEPORTES = [
+        "tenis.html",
+        "futbol.html",
+        "baloncesto.html",
+        "natacion.html"
+    ];
+
+    async function cargarDeportesEnMenu() {
+        const menu = document.querySelector(".nav-dropdown__menu");
+        if (!menu) return;
+        try {
+            const respuesta = await fetch("/api/Deporte", { cache: "no-store" });
+            if (!respuesta.ok) throw new Error("No fue posible consultar los deportes.");
+            const deportes = await respuesta.json();
+            const titulo = document.createElement("span");
+            titulo.className = "nav-dropdown__titulo";
+            titulo.textContent = "EXPLORA LOS DEPORTES";
+            menu.replaceChildren(titulo);
+            for (const deporte of deportes) {
+                const enlace = document.createElement("a");
+                enlace.className = "nav-dropdown__item";
+                enlace.dataset.deporteId = String(deporte.idDeporte);
+                enlace.href = "/tenis.html?" + new URLSearchParams({
+                    idDeporte: deporte.idDeporte, deporte: deporte.nombreDeporte
+                });
+                enlace.textContent = deporte.nombreDeporte;
+                menu.append(enlace);
+            }
+            if (!deportes.length) {
+                const vacio = document.createElement("span");
+                vacio.className = "nav-dropdown__item";
+                vacio.textContent = "Sin deportes disponibles";
+                menu.append(vacio);
+            }
+            const todos = document.createElement("a");
+            todos.className = "nav-dropdown__todos";
+            todos.href = "/tenis.html?deporte=todos";
+            todos.textContent = "VER TODAS LAS CLASES →";
+            menu.append(todos);
+        } catch (error) {
+            console.error("ADSPORT - Error al cargar deportes:", error);
+        }
+    }
+
+
+    // ========================================
+    // 1. CARGAR COMPONENTES
+    // ========================================
 
     async function cargarComponente(ruta, idContenedor) {
         const contenedor = document.getElementById(idContenedor);
@@ -111,6 +162,34 @@ document.addEventListener("DOMContentLoaded", () => {
                     enlaceActivo.setAttribute("aria-current", "page");
                 }
             }
+        }
+
+        // Marcar el deporte seleccionado.
+        if (PAGINAS_DEPORTES.includes(paginaActual)) {
+
+            enlacesDeportes.forEach(enlace => {
+
+                const ruta = enlace.getAttribute("href");
+
+                if (!ruta) return;
+
+                const destino = new URL(ruta, window.location.origin);
+                const parametros = new URLSearchParams(window.location.search);
+                const idActual = parametros.get("idDeporte");
+                const nombreActual = parametros.get("deporte") || "Tenis";
+                const coincide = idActual ? destino.searchParams.get("idDeporte") === idActual :
+                    (destino.searchParams.get("deporte") || "Tenis").localeCompare(nombreActual, "es", { sensitivity: "base" }) === 0;
+
+                if (destino.pathname.toLowerCase() === "/" + paginaActual && coincide) {
+
+                    enlace.classList.add("activo");
+
+                    enlace.setAttribute(
+                        "aria-current",
+                        "page"
+                    );
+                }
+            });
         }
     }
 
@@ -213,8 +292,9 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             const usuario = await respuesta.json();
-            const nombreCompleto = (usuario.nombreCompleto || usuario.nombre || "MI CUENTA").trim();
-            const primerNombre = (usuario.nombre || nombreCompleto).trim();
+            esEntrenador = (usuario.nombreRol || "").trim().toUpperCase() === "ENTRENADOR";
+            const enlacePerfil = document.getElementById("enlaceMiPerfil");
+            if (enlacePerfil) enlacePerfil.href = esEntrenador ? "/perfilEntrenador.html" : "/perfilCliente.html";
 
             const nombreHeader = document.getElementById("nombreUsuarioHeader");
             if (nombreHeader) nombreHeader.textContent = primerNombre;
@@ -278,10 +358,17 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         try {
-            const respuesta = await fetch(API_LOGOUT, {
+
+            const csrf = await fetch("/api/Entrenador/csrf", { cache: "no-store" }).then(r => r.json());
+            const respuesta = await fetch(esEntrenador ? "/api/Entrenador/logout" : API_LOGOUT, {
+
                 method: "POST",
                 credentials: "same-origin",
-                headers: { "Accept": "application/json" }
+
+                headers: {
+                    "Accept": "application/json",
+                    "X-CSRF-TOKEN": csrf.token
+                }
             });
 
             if (!respuesta.ok) {
@@ -289,7 +376,9 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             actualizarMenuSesion(false);
-            window.location.replace(PAGINA_LOGIN);
+
+            window.location.replace(esEntrenador ? "/loginEntrenador.html" : PAGINA_LOGIN);
+
         } catch (error) {
             console.error("ADSPORT - Error al cerrar sesión:", error);
             alert("No fue posible cerrar sesión. Inténtalo nuevamente.");
@@ -307,11 +396,16 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!cargado) return;
 
         await cargarDeportesEnMenu();
+
         marcarPaginaActiva();
         configurarMenus();
         establecerPerfilPredeterminado();
 
-        window.addEventListener("hashchange", marcarPaginaActiva);
+        window.addEventListener(
+            "hashchange",
+            marcarPaginaActiva
+        );
+        window.addEventListener("adsport:deporte-cambiado", marcarPaginaActiva);
 
         const botonCerrar = document.getElementById("btnCerrarSesion");
         botonCerrar?.addEventListener("click", cerrarSesion);

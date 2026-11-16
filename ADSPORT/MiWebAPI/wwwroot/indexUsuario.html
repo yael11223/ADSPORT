@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 
 <head>
@@ -17,6 +17,7 @@
 
     <!-- ESTILOS -->
     <link rel="stylesheet" href="css/indexUsuario.css">
+    <link rel="stylesheet" href="/css/deportes-home.css">
     <!-- ESTILOS DEL HEADER Y FOOTER -->
     <link rel="stylesheet" href="/css/componentes.css">
 </head>
@@ -276,8 +277,8 @@
                     </p>
 
                     <h2>
-                        RESERVA<br>
-                        <span>INMEDIATA.</span>
+                        TU SIGUIENTE<br>
+                        <span>ENTRENAMIENTO.</span>
                     </h2>
 
                     <p class="reserva-description">
@@ -287,7 +288,7 @@
                         tu próximo reto.
                     </p>
 
-                    <a href="/clases.html" class="reserva-button" style="text-decoration: none;">
+                    <a href="/tenis.html?deporte=todos" class="reserva-button" id="btnVerHorarios">
                         VER HORARIOS DISPONIBLES
                         <span aria-hidden="true">→</span>
                     </a>
@@ -333,18 +334,30 @@
 
                 <p>
                     Explora nuestras actividades deportivas.
-                    Selecciona una disciplina para ver sus clases y horarios disponibles.
+                    Selecciona una disciplina para consultar sus clases y horarios.
                 </p>
 
             </div>
 
             <div class="clases-stack" id="clasesContainer"></div>
 
+            <div class="deportes-home-heading">
+                <p id="estadoDeportesHome" role="status" aria-live="polite">Consultando disciplinas de ADSPORT?</p>
+                <button type="button" class="deportes-home-refresh" id="recargarDeportesHome">Actualizar disciplinas ?</button>
+            </div>
+            <!-- Las disciplinas se consultan desde el cat?logo; se conserva el efecto de tarjetas de Home.js. -->
+            <div class="clases-stack deportes-home-catalogo deportes-home-catalogo--vacio" id="clasesContainer" aria-busy="true"></div>
+            <noscript><p class="clases-nota">Activa JavaScript para consultar las disciplinas de ADSPORT.</p></noscript>
+
+            <!-- INDICADOR FINAL -->
             <div class="clases-end">
                 <span class="clases-end-line"></span>
                 <p>TU PRÓXIMA EXPERIENCIA TE ESPERA</p>
                 <span class="clases-end-line"></span>
             </div>
+
+
+            <p class="clases-nota">Consulta en cada disciplina sus clases, entrenadores y horarios publicados.</p>
 
         </section>
 
@@ -412,70 +425,7 @@
     <!-- JAVASCRIPT -->
     <script src="js/Home.js"></script>
     <script src="/js/layout.js"></script>
-    <script>
-                document.addEventListener("DOMContentLoaded", async () => {
-                    const contenedor = document.getElementById("clasesContainer");
-                    if (!contenedor) return;
-
-                    const imagenesPorDeporte = {
-                        "BALONCESTO": "https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=1200&q=85",
-                        "BOXEO": "https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?auto=format&fit=crop&w=1200&q=85",
-                        "TENIS": "https://images.unsplash.com/photo-1622279457486-62dcc4a431d6?auto=format&fit=crop&w=1200&q=85",
-                        "NATACION": "https://images.unsplash.com/photo-1530549387789-4c1017266635?auto=format&fit=crop&w=1200&q=85",
-                        "FUTBOL": "https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=1200&q=85",
-                        "GOLF": "https://images.unsplash.com/photo-1535131749006-b7f58c99034b?auto=format&fit=crop&w=1200&q=85"
-                    };
-
-                    const respaldoVariado = [
-                        "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=1200&q=85",
-                        "https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=1200&q=85",
-                        "https://images.unsplash.com/photo-1540497077202-7c8a3999166f?auto=format&fit=crop&w=1200&q=85",
-                        "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1200&q=85"
-                    ];
-
-                    try {
-                        const res = await fetch("/api/Deporte", { cache: "no-store" });
-                        const deportes = await res.json();
-
-                        if (!deportes || deportes.length === 0) {
-                            contenedor.innerHTML = `<p class="text-center text-muted">Aún no hay disciplinas registradas.</p>`;
-                            return;
-                        }
-
-                        contenedor.innerHTML = deportes.map((dep, index) => {
-                            const clave = dep.nombreDeporte.toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-                            const img = dep.imagenUrl
-                                || imagenesPorDeporte[clave]
-                                || respaldoVariado[index % respaldoVariado.length];
-                            const num = String(index + 1).padStart(2, "0");
-                            const total = String(deportes.length).padStart(2, "0");
-                            const destinoClases = `/tenis.html?idDeporte=${dep.idDeporte}&deporte=${encodeURIComponent(dep.nombreDeporte)}`;
-
-                            return `
-                                <article class="clase-card stack-card" data-card="${index + 1}" style="--card-index: ${index};">
-                                    <div class="stack-card-inner">
-                                        <div class="clase-image">
-                                            <img src="${img}" alt="${dep.nombreDeporte}" loading="lazy">
-                                            <span class="clase-badge">DISPONIBLE</span>
-                                            <span class="card-number">${num} / ${total}</span>
-                                        </div>
-                                        <div class="clase-content">
-                                            <span class="clase-category">CATÁLOGO ADSPORT</span>
-                                            <h3>${dep.nombreDeporte.toUpperCase()}</h3>
-                                            <p class="clase-description">${dep.descripcion || "Disciplina deportiva disponible en nuestras instalaciones."}</p>
-                                            <a href="${destinoClases}" class="clase-button" style="text-decoration: none; display: inline-flex; align-items: center; justify-content: space-between;">
-                                                EXPLORAR DISCIPLINA <span aria-hidden="true">→</span>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </article>
-                            `;
-                        }).join("");
-                    } catch (error) {
-                        console.error("Error cargando catálogo de deportes:", error);
-                    }
-                });
-    </script>
+    <script src="/js/deportes-home.js"></script>
 
 </body>
 </html>

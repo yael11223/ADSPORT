@@ -168,6 +168,7 @@ namespace MiWebAPI.Controllers
         // ========================================
 
         [HttpPost("logout")]
+        [ValidateAntiForgeryToken]
         [Authorize(
             AuthenticationSchemes =
                 CookieAuthenticationDefaults.AuthenticationScheme

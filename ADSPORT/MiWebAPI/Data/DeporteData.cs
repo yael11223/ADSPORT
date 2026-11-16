@@ -1,218 +1,120 @@
-﻿using ADSPORT.Models;
-using MiWebAPI.Models;
+using ADSPORT.Models;
 using System.Data;
 using System.Data.SqlClient;
 
-namespace ADSPORT.Data
+namespace ADSPORT.Data;
+
+public sealed class DeporteData
 {
-    public class DeporteData
+    private readonly string _conexion;
+    public DeporteData(IConfiguration configuration)
     {
-        private readonly string conexion;
+        _conexion = configuration.GetConnectionString("CadenaSQL")
+            ?? throw new InvalidOperationException("Falta configurar CadenaSQL.");
+    }
 
-        public DeporteData(IConfiguration configuration)
+    public async Task<List<Deporte>> Lista(bool incluirInactivos = false)
+    {
+        using var conexion = new SqlConnection(_conexion);
+        using var comando = CrearComando("DEPORTE_LISTA", conexion);
+        comando.Parameters.Add("@incluir_inactivos", SqlDbType.Bit).Value = incluirInactivos;
+        var resultado = SqlResultadoProcedimiento.Agregar(comando);
+        await conexion.OpenAsync();
+        using var reader = await comando.ExecuteReaderAsync();
+        var lista = new List<Deporte>();
+        while (await reader.ReadAsync()) lista.Add(LeerDeporte(reader));
+        await reader.CloseAsync();
+        resultado.Comprobar();
+        return lista;
+    }
+
+    public async Task<Deporte?> Obtener(long id, bool incluirInactivos = false)
+    {
+        using var conexion = new SqlConnection(_conexion);
+        using var comando = CrearComando("DEPORTE_OBTENER", conexion);
+        comando.Parameters.Add("@id_deporte", SqlDbType.BigInt).Value = id;
+        comando.Parameters.Add("@incluir_inactivos", SqlDbType.Bit).Value = incluirInactivos;
+        var resultado = SqlResultadoProcedimiento.Agregar(comando);
+        await conexion.OpenAsync();
+        using var reader = await comando.ExecuteReaderAsync();
+        var deporte = await reader.ReadAsync() ? LeerDeporte(reader) : null;
+        await reader.CloseAsync();
+        resultado.Comprobar();
+        return deporte;
+    }
+
+    public async Task<long> Guardar(long? id, GuardarDeporteSolicitud solicitud)
+    {
+        using var conexion = new SqlConnection(_conexion);
+        using var comando = CrearComando("DEPORTE_GUARDAR", conexion);
+        comando.Parameters.Add("@id_deporte", SqlDbType.BigInt).Value = (object?)id ?? DBNull.Value;
+        comando.Parameters.Add("@nombre_deporte", SqlDbType.NVarChar, -1).Value = solicitud.NombreDeporte.Trim();
+        comando.Parameters.Add("@descripcion", SqlDbType.NVarChar, -1).Value = string.IsNullOrWhiteSpace(solicitud.Descripcion) ? DBNull.Value : solicitud.Descripcion.Trim();
+        comando.Parameters.Add("@activo", SqlDbType.Bit).Value = solicitud.Activo!.Value;
+        var resultado = SqlResultadoProcedimiento.Agregar(comando);
+        await conexion.OpenAsync();
+        var idGuardado = await comando.ExecuteScalarAsync();
+        resultado.Comprobar();
+        return Convert.ToInt64(idGuardado);
+    }
+
+    public async Task Desactivar(long id)
+    {
+        using var conexion = new SqlConnection(_conexion);
+        using var comando = CrearComando("DEPORTE_DESACTIVAR", conexion);
+        comando.Parameters.Add("@id_deporte", SqlDbType.BigInt).Value = id;
+        var resultado = SqlResultadoProcedimiento.Agregar(comando);
+        await conexion.OpenAsync();
+        await comando.ExecuteNonQueryAsync();
+        resultado.Comprobar();
+    }
+
+    public async Task GuardarImagen(long id, byte[] imagen, string tipo)
+    {
+        using var conexion = new SqlConnection(_conexion);
+        using var comando = CrearComando("DEPORTE_IMAGEN_GUARDAR", conexion);
+        comando.Parameters.Add("@id_deporte", SqlDbType.BigInt).Value = id;
+        comando.Parameters.Add("@imagen", SqlDbType.VarBinary, -1).Value = imagen;
+        comando.Parameters.Add("@imagen_tipo", SqlDbType.VarChar, 50).Value = tipo;
+        var resultado = SqlResultadoProcedimiento.Agregar(comando);
+        await conexion.OpenAsync();
+        await comando.ExecuteNonQueryAsync();
+        resultado.Comprobar();
+    }
+
+    public async Task<(byte[] Datos, string Tipo)?> ObtenerImagen(long id, bool incluirInactivos = false)
+    {
+        using var conexion = new SqlConnection(_conexion);
+        using var comando = CrearComando("DEPORTE_IMAGEN_OBTENER", conexion);
+        comando.Parameters.Add("@id_deporte", SqlDbType.BigInt).Value = id;
+        comando.Parameters.Add("@incluir_inactivos", SqlDbType.Bit).Value = incluirInactivos;
+        var resultado = SqlResultadoProcedimiento.Agregar(comando);
+        await conexion.OpenAsync();
+        using var reader = await comando.ExecuteReaderAsync();
+        (byte[] Datos, string Tipo)? imagen = null;
+        if (await reader.ReadAsync() && reader["IMAGEN"] is byte[] datos)
+            imagen = (datos, reader["IMAGEN_TIPO"].ToString() ?? string.Empty);
+        await reader.CloseAsync();
+        resultado.Comprobar();
+        return imagen;
+    }
+
+    private static SqlCommand CrearComando(string nombre, SqlConnection conexion) =>
+        new(nombre, conexion) { CommandType = CommandType.StoredProcedure };
+
+    private static Deporte LeerDeporte(SqlDataReader reader)
+    {
+        var id = Convert.ToInt64(reader["ID_DEPORTE"]);
+        var fecha = reader["FECHA_UTIMA_MODIFICACION"] is DBNull ? (DateTime?)null : Convert.ToDateTime(reader["FECHA_UTIMA_MODIFICACION"]);
+        return new Deporte
         {
-            conexion = configuration.GetConnectionString("CadenaSQL")!;
-        }
-
-        // 1. LISTAR DEPORTES
-        public async Task<List<Deporte>> Lista()
-        {
-            List<Deporte> lista = new List<Deporte>();
-
-            using (var con = new SqlConnection(conexion))
-            {
-                await con.OpenAsync();
-                using var cmd = new SqlCommand("DEPORTE_LISTA", con)
-                {
-                    CommandType = CommandType.StoredProcedure
-                };
-
-                using var reader = await cmd.ExecuteReaderAsync();
-                while (await reader.ReadAsync())
-                {
-                    lista.Add(new Deporte
-                    {
-                        IdDeporte = Convert.ToInt32(reader["ID_DEPORTE"]),
-                        NombreDeporte = reader["NOMBRE_DEPORTE"]?.ToString() ?? string.Empty,
-                        Descripcion = reader["DESCRIPCION"]?.ToString(),
-                        FechaUltimaModificacion = reader["FECHA_UTIMA_MODIFICACION"]?.ToString()
-                    });
-                }
-            }
-
-            return lista;
-        }
-
-        // 2. OBTENER DEPORTE POR ID
-        public async Task<Deporte?> Obtener(int id)
-        {
-            Deporte? objeto = null;
-
-            using (var con = new SqlConnection(conexion))
-            {
-                await con.OpenAsync();
-                using var cmd = new SqlCommand("DEPORTE_BUSCAR_POR_ID", con)
-                {
-                    CommandType = CommandType.StoredProcedure
-                };
-
-                cmd.Parameters.Add("@id_deporte", SqlDbType.BigInt).Value = id;
-
-                using var reader = await cmd.ExecuteReaderAsync();
-                if (await reader.ReadAsync())
-                {
-                    objeto = new Deporte
-                    {
-                        IdDeporte = Convert.ToInt32(reader["ID_DEPORTE"]),
-                        NombreDeporte = reader["NOMBRE_DEPORTE"]?.ToString() ?? string.Empty,
-                        Descripcion = reader["DESCRIPCION"]?.ToString(),
-                        FechaUltimaModificacion = reader["FECHA_UTIMA_MODIFICACION"]?.ToString()
-                    };
-                }
-            }
-
-            return objeto;
-        }
-
-        // 3. CREAR DEPORTE
-        public async Task<RespuestaOperacion> Crear(Deporte objeto)
-        {
-            using (var con = new SqlConnection(conexion))
-            {
-                using var cmd = new SqlCommand("DEPORTE_AGREGAR", con)
-                {
-                    CommandType = CommandType.StoredProcedure
-                };
-
-                cmd.Parameters.AddWithValue("@nombre_deporte", objeto.NombreDeporte);
-                cmd.Parameters.AddWithValue("@descripcion", (object?)objeto.Descripcion ?? DBNull.Value);
-
-                var numeroError = new SqlParameter("@numeroError", SqlDbType.Int)
-                {
-                    Direction = ParameterDirection.Output
-                };
-                var respuesta = new SqlParameter("@respuesta", SqlDbType.VarChar, 1000)
-                {
-                    Direction = ParameterDirection.Output
-                };
-
-                cmd.Parameters.Add(numeroError);
-                cmd.Parameters.Add(respuesta);
-
-                try
-                {
-                    await con.OpenAsync();
-                    await cmd.ExecuteNonQueryAsync();
-
-                    return new RespuestaOperacion
-                    {
-                        NumeroError = Convert.ToInt32(numeroError.Value),
-                        Respuesta = respuesta.Value?.ToString() ?? string.Empty
-                    };
-                }
-                catch (Exception ex)
-                {
-                    return new RespuestaOperacion
-                    {
-                        NumeroError = -1,
-                        Respuesta = ex.Message
-                    };
-                }
-            }
-        }
-
-        // 4. EDITAR DEPORTE
-        public async Task<RespuestaOperacion> Editar(Deporte objeto)
-        {
-            using (var con = new SqlConnection(conexion))
-            {
-                using var cmd = new SqlCommand("DEPORTE_ACTUALIZA", con)
-                {
-                    CommandType = CommandType.StoredProcedure
-                };
-
-                cmd.Parameters.Add("@id_deporte", SqlDbType.BigInt).Value = objeto.IdDeporte;
-                cmd.Parameters.AddWithValue("@nombre_deporte", objeto.NombreDeporte);
-                cmd.Parameters.AddWithValue("@descripcion", (object?)objeto.Descripcion ?? DBNull.Value);
-
-                var numeroError = new SqlParameter("@numeroError", SqlDbType.Int)
-                {
-                    Direction = ParameterDirection.Output
-                };
-                var respuesta = new SqlParameter("@respuesta", SqlDbType.VarChar, 1000)
-                {
-                    Direction = ParameterDirection.Output
-                };
-
-                cmd.Parameters.Add(numeroError);
-                cmd.Parameters.Add(respuesta);
-
-                try
-                {
-                    await con.OpenAsync();
-                    await cmd.ExecuteNonQueryAsync();
-
-                    return new RespuestaOperacion
-                    {
-                        NumeroError = Convert.ToInt32(numeroError.Value),
-                        Respuesta = respuesta.Value?.ToString() ?? string.Empty
-                    };
-                }
-                catch (Exception ex)
-                {
-                    return new RespuestaOperacion
-                    {
-                        NumeroError = -1,
-                        Respuesta = ex.Message
-                    };
-                }
-            }
-        }
-
-        // 5. ELIMINAR DEPORTE
-        public async Task<RespuestaOperacion> Eliminar(int id)
-        {
-            using (var con = new SqlConnection(conexion))
-            {
-                using var cmd = new SqlCommand("DEPORTE_ELIMINA", con)
-                {
-                    CommandType = CommandType.StoredProcedure
-                };
-
-                cmd.Parameters.Add("@id_deporte", SqlDbType.BigInt).Value = id;
-
-                var numeroError = new SqlParameter("@numeroError", SqlDbType.Int)
-                {
-                    Direction = ParameterDirection.Output
-                };
-                var respuesta = new SqlParameter("@respuesta", SqlDbType.VarChar, 1000)
-                {
-                    Direction = ParameterDirection.Output
-                };
-
-                cmd.Parameters.Add(numeroError);
-                cmd.Parameters.Add(respuesta);
-
-                try
-                {
-                    await con.OpenAsync();
-                    await cmd.ExecuteNonQueryAsync();
-
-                    return new RespuestaOperacion
-                    {
-                        NumeroError = Convert.ToInt32(numeroError.Value),
-                        Respuesta = respuesta.Value?.ToString() ?? string.Empty
-                    };
-                }
-                catch (Exception ex)
-                {
-                    return new RespuestaOperacion
-                    {
-                        NumeroError = -1,
-                        Respuesta = ex.Message
-                    };
-                }
-            }
-        }
+            IdDeporte = id,
+            NombreDeporte = reader["NOMBRE_DEPORTE"].ToString() ?? string.Empty,
+            Descripcion = reader["DESCRIPCION"] is DBNull ? null : reader["DESCRIPCION"].ToString(),
+            Activo = Convert.ToBoolean(reader["ACTIVO"]),
+            FechaUltimaModificacion = fecha,
+            ImagenUrl = Convert.ToBoolean(reader["TIENE_IMAGEN"])
+                ? $"/api/Deporte/{id}/imagen?v={fecha?.Ticks ?? 0}" : null
+        };
     }
 }

@@ -7,11 +7,27 @@
     <meta name="description" content="Conoce las clases de ADSPORT, nuestros entrenadores, precios y horarios disponibles.">
     <title id="pageTitle">Disciplina | ADSPORT</title>
 
-    <link rel="stylesheet" href="/css/componentes.css">
-    <link rel="stylesheet" href="/css/tenis.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <meta name="description"
+          content="Conoce las clases de tenis de ADSPORT, nuestros entrenadores, precios y horarios disponibles.">
+
+    <title>Clases de Tenis | ADSPORT</title>
+
+    <!-- =====================================
+         ESTILOS DE COMPONENTES
+         ===================================== -->
+    <link rel="stylesheet"
+          href="/css/componentes.css">
+
+    <!-- =====================================
+         ESTILOS DE LA PÁGINA
+         ===================================== -->
+    <link rel="stylesheet"
+          href="/css/tenis.css">
+
+    <link rel="stylesheet" href="/css/clases.css">
 </head>
 
 <body>
@@ -23,9 +39,19 @@
         <!-- 1. PORTADA PRINCIPAL -->
         <section class="tenis-hero" aria-labelledby="titulo-tenis">
 
-            <img id="heroImagenDeporte"
-                 src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=1600&q=85"
-                 alt="Portada de disciplina deportiva"
+        <!-- =====================================
+             1. PORTADA PRINCIPAL
+             ===================================== -->
+
+        <section class="tenis-hero"
+                 aria-labelledby="titulo-tenis">
+
+            <!--
+                REEMPLAZAR LA RUTA CON TU
+                IMAGEN REAL DE TENIS
+            -->
+            <img src="/img/nosotros/tenis.png"
+                 alt="Pelota de tenis sobre una cancha"
                  class="tenis-hero__imagen">
 
             <div class="tenis-hero__overlay"></div>
@@ -105,74 +131,40 @@
 
         </section>
 
-        <!-- 3. CATÁLOGO DE ENTRENADORES Y CLASES (DINÁMICO) -->
-        <section class="tenis-entrenadores" id="entrenadores">
 
+        <!-- =====================================
+             3. CATÁLOGO DE ENTRENADORES
+             ===================================== -->
+
+        <section class="tenis-entrenadores" id="entrenadores" aria-labelledby="tituloCatalogo">
             <div class="tenis-container">
-
                 <div class="tenis-seccion-header">
-                    <div>
-                        <span class="tenis-etiqueta">ENCUENTRA TU ENTRENADOR</span>
-                        <h2>NUESTROS <span>ENTRENADORES.</span></h2>
-                    </div>
-                    <p>Consulta sus perfiles, precios por clase y horarios disponibles durante la semana.</p>
+                    <div><span class="tenis-etiqueta">ENCUENTRA TU CLASE</span>
+                        <h2 id="tituloCatalogo">CLASES <span>DISPONIBLES.</span></h2></div>
+                    <p>Conoce a los entrenadores, sus precios y horarios publicados.</p>
                 </div>
-
-                <div class="tenis-entrenadores__grid" id="gridEntrenadoresClases">
-                    <p style="grid-column: 1 / -1; text-align: center; padding: 2rem 0;">
-                        Cargando clases y entrenadores disponibles...
-                    </p>
+                <div class="catalogo-filtros">
+                    <label for="filtroDeporte">Deporte</label>
+                    <select id="filtroDeporte"><option value="">Todos los deportes</option></select>
+                    <button id="recargarClases" type="button" class="tenis-btn tenis-btn--secundario">Actualizar</button>
                 </div>
-
+                <p id="estadoCatalogo" role="status" aria-live="polite">Cargando clases disponibles…</p>
+                <div class="tenis-entrenadores__grid" id="catalogoClases" aria-busy="true"></div>
             </div>
-
         </section>
-
-        <!-- 4. HORARIOS SEMANALES (DINÁMICO) -->
-        <section class="tenis-calendario" id="horarios">
-
+        <section class="tenis-calendario" id="horarios" aria-labelledby="tituloHorarios">
             <div class="tenis-container">
-
-                <div class="tenis-seccion-header">
-                    <div>
-                        <span class="tenis-etiqueta">PLANIFICA TU ENTRENAMIENTO</span>
-                        <h2>HORARIOS <span>SEMANALES.</span></h2>
-                    </div>
-                    <p>Consulta los días y las horas de clase de cada entrenador.</p>
-                </div>
-
+                <div class="tenis-seccion-header"><h2 id="tituloHorarios">HORARIOS <span>SEMANALES.</span></h2></div>
                 <div class="tenis-calendario__contenedor">
                     <table class="tenis-calendario__tabla">
-                        <caption>Vista de horarios semanales disponibles en ADSPORT.</caption>
-                        <thead>
-                            <tr>
-                                <th scope="col">Entrenador</th>
-                                <th scope="col">Lunes</th>
-                                <th scope="col">Martes</th>
-                                <th scope="col">Miércoles</th>
-                                <th scope="col">Jueves</th>
-                                <th scope="col">Viernes</th>
-                                <th scope="col">Sábado</th>
-                                <th scope="col">Domingo</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tbodyHorariosSemanales">
-                            <tr>
-                                <td colspan="8" style="text-align: center;">Cargando horarios...</td>
-                            </tr>
-                        </tbody>
+                        <caption>Horarios de las clases disponibles en el catálogo.</caption>
+                        <thead><tr><th scope="col">Clase / entrenador</th><th scope="col">Lunes</th><th scope="col">Martes</th><th scope="col">Miércoles</th><th scope="col">Jueves</th><th scope="col">Viernes</th><th scope="col">Sábado</th><th scope="col">Domingo</th></tr></thead>
+                        <tbody id="horariosPublicos"></tbody>
                     </table>
                 </div>
-
-                <p class="tenis-calendario__aviso">
-                    Los horarios publicados pueden cambiar. Consulta con ADSPORT para confirmar precios, cupos y disponibilidad.
-                </p>
-
+                <p class="tenis-calendario__aviso">Consulta con ADSPORT para inscripciones. Los precios y cupos corresponden a las clases publicadas.</p>
             </div>
-
         </section>
-
-        <!-- 5. SECCIÓN FINAL -->
         <section class="tenis-cta">
             <div class="tenis-container tenis-cta__contenido">
                 <div>
@@ -180,8 +172,17 @@
                     <h2>TU PRÓXIMO <span>RETO TE ESPERA.</span></h2>
                     <p>Descubre nuevas habilidades, conoce a nuestros entrenadores y encuentra tu próxima clase.</p>
                 </div>
-                <a href="/registro.html" class="tenis-btn tenis-btn--principal">
-                    ÚNETE A ADSPORT <span aria-hidden="true">↗</span>
+
+
+                <a href="/Registro.html"
+                   class="tenis-btn tenis-btn--principal">
+
+                    ÚNETE A ADSPORT
+
+                    <span aria-hidden="true">
+                        ↗
+                    </span>
+
                 </a>
             </div>
         </section>
@@ -387,5 +388,6 @@
                 }
     </script>
 
+    <script src="/js/clases.js" defer></script>
 </body>
 </html>

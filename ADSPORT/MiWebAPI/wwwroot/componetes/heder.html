@@ -82,37 +82,37 @@
 
                         <!-- FÚTBOL -->
 
-                        <span class="nav-dropdown__item nav-dropdown__item--disabled">
+                        <a href="/tenis.html?deporte=F%C3%BAtbol" class="nav-dropdown__item">
 
                             <span>⚽ FÚTBOL</span>
-                            <small>Próximamente</small>
+                            <span>↗</span>
 
-                        </span>
+                        </a>
 
 
                         <!-- BALONCESTO -->
 
-                        <span class="nav-dropdown__item nav-dropdown__item--disabled">
+                        <a href="/tenis.html?deporte=Baloncesto" class="nav-dropdown__item">
 
                             <span>🏀 BALONCESTO</span>
-                            <small>Próximamente</small>
+                            <span>↗</span>
 
-                        </span>
+                        </a>
 
 
                         <!-- NATACIÓN -->
 
-                        <span class="nav-dropdown__item nav-dropdown__item--disabled">
+                        <a href="/tenis.html?deporte=Nataci%C3%B3n" class="nav-dropdown__item">
 
                             <span>🏊 NATACIÓN</span>
-                            <small>Próximamente</small>
+                            <span>↗</span>
 
-                        </span>
+                        </a>
 
 
                         <!-- VER TODAS LAS CLASES -->
 
-                        <a href="/indexUsuario.html#clases"
+                        <a href="/tenis.html?deporte=todos"
                            class="nav-dropdown__todos">
 
                             VER TODAS LAS CLASES
@@ -140,6 +140,8 @@
 
                 </a>
 
+
+                <a href="/loginEntrenador.html" class="btn-login" data-auth="guest" hidden>ENTRENADORES</a>
 
                 <a href="/Registro.html"
                    class="btn-logout"
@@ -171,7 +173,7 @@
 
                         <!-- FOTO DEL USUARIO -->
 
-                        <img src="/img/perfiles/default.png"
+                        <img src="/Accet/perfil.png"
                              alt="Foto de perfil"
                              id="fotoUsuarioHeader"
                              class="user-dropdown__avatar"
@@ -214,7 +216,7 @@
                         <div class="user-dropdown__perfil">
 
 
-                            <img src="/img/perfiles/default.png"
+                            <img src="/Accet/perfil.png"
                                  alt="Foto de perfil"
                                  id="fotoUsuarioMenu"
                                  class="user-dropdown__avatar-grande"
@@ -245,30 +247,19 @@
 
 
                         <!-- =================================
-                             MI PERFIL
-                             ================================= -->
+         MI PERFIL
+         ================================= -->
+                        <!-- ACCESO AL PERFIL DEL USUARIO -->
+                        <a href="/perfilCliente.html" id="enlaceMiPerfil" class="user-dropdown__item">
+                            <span>👤 MI PERFIL</span>
+                        </a>
 
-                        <span class="user-dropdown__item user-dropdown__item--disabled"
-                              aria-disabled="true"
-                              title="Próximamente">
-
-                            <span class="user-dropdown__icono">
-                                👤
-                            </span>
-
-                            <span>
-                                MI PERFIL
-                            </span>
-
-                            <small>Próximamente</small>
-
-                        </span>
 
 
 
                         <!-- =================================
-                             CONFIGURACIÓN
-                             ================================= -->
+         CONFIGURACIÓN
+         ================================= -->
 
                         <span class="user-dropdown__item user-dropdown__item--disabled"
                               aria-disabled="true"
@@ -295,8 +286,8 @@
 
 
                         <!-- =================================
-                             CERRAR SESIÓN
-                             ================================= -->
+         CERRAR SESIÓN
+         ================================= -->
 
                         <a href="#"
                            id="btnCerrarSesion"

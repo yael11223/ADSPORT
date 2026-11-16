@@ -19,7 +19,7 @@
             <div class="adsport-brand-icon">A</div>
             <div>
                 <span class="adsport-brand-name">ADSPORT</span>
-                <span class="adsport-brand-subtitle">GESTIÓN DE PERSONAL</span>
+                <span class="adsport-brand-subtitle">ADMINISTRACIÓN DEL CLUB</span>
             </div>
         </div>
 
@@ -59,21 +59,18 @@
 
                 <p>
                     Gestiona la información de tus colaboradores,
-                    consulta los registros y mantén tu operación organizada
+                    organiza tus deportes y mantén tu operación organizada
                     desde un solo lugar.
                 </p>
 
-                <div class="d-flex flex-wrap gap-3">
-                    <a href="empleados.html" class="btn-orange">
-                        <span>Administrar empleados</span>
-                        <span class="button-arrow" aria-hidden="true">→</span>
-                    </a>
-
-                    <a href="deportes.html" id="btnHeroDeportes" class="btn-orange" style="display: none;">
-                        <span>Administrar deportes</span>
-                        <span class="button-arrow" aria-hidden="true">→</span>
-                    </a>
-                </div>
+                <a href="empleados.html" class="btn-orange">
+                    <span>Administrar empleados</span>
+                    <span class="button-arrow" aria-hidden="true">→</span>
+                </a>
+                <a href="deportes.html" class="btn-orange" style="margin-top: 12px;">
+                    <span>Administrar deportes</span>
+                    <span class="button-arrow" aria-hidden="true">→</span>
+                </a>
             </div>
 
             <div class="hero-side-info">
@@ -98,7 +95,7 @@
                 </div>
 
                 <div class="module-count">
-                    <span id="contadorModulos">03</span>
+                    <span>04</span>
                     <small>MÓDULOS</small>
                 </div>
             </div>
@@ -129,33 +126,23 @@
                     </a>
                 </article>
 
-                <!-- DEPORTES (EXCLUSIVO ADMINISTRADOR) -->
-                <article id="moduloDeportesAdmin" class="dashboard-card employee-card" style="display: none;">
+                <!-- DEPORTES: los permisos se comprueban en la API administrativa. -->
+                <article class="dashboard-card employee-card">
                     <div class="card-topline">
                         <span class="card-number">02 / CATÁLOGO</span>
-                        <span class="card-icon" aria-hidden="true">★</span>
+                        <span class="card-icon" aria-hidden="true">◇</span>
                     </div>
-
                     <div class="card-symbol employee-symbol">D</div>
-
                     <h3>Deportes</h3>
-
-                    <p>
-                        Administra el catálogo maestro de disciplinas deportivas
-                        del club (altas, modificaciones y bajas).
-                    </p>
-
-                    <a href="deportes.html" class="card-link">
-                        Abrir módulo
-                        <span aria-hidden="true">↗</span>
-                    </a>
+                    <p>Registra disciplinas, administra sus imágenes y organiza los deportes del catálogo público.</p>
+                    <a href="deportes.html" class="card-link">Abrir módulo <span aria-hidden="true">↗</span></a>
                 </article>
 
                 <!-- API -->
                 <article class="dashboard-card api-card">
                     <div class="card-topline">
                         <span class="card-number">03 / DESARROLLO</span>
-                        <span class="card-icon" aria-hidden="true"></></span>
+                        <span class="card-icon" aria-hidden="true">&lt;/&gt;</span>
                     </div>
 
                     <div class="card-symbol api-symbol"></></div>

@@ -1,250 +1,241 @@
-﻿const API_DEPORTE = "/api/Deporte";
+"use strict";
 
-const formDeporte = document.getElementById("formDeporte");
-const idDeporteInput = document.getElementById("idDeporte");
-const nombreDeporteInput = document.getElementById("nombreDeporte");
-const descripcionInput = document.getElementById("descripcion");
-const imagenDeporteInput = document.getElementById("imagenDeporte");
-const contenedorPreview = document.getElementById("contenedorPreview");
-const previewImagenDeporte = document.getElementById("previewImagenDeporte");
-const alertaApi = document.getElementById("alertaApi");
-const tablaBody = document.getElementById("tablaDeportesBody");
-const totalRegistros = document.getElementById("totalRegistros");
-const tituloFormulario = document.getElementById("tituloFormulario");
-const btnGuardar = document.getElementById("btnGuardar");
-const btnCancelar = document.getElementById("btnCancelar");
+document.addEventListener("DOMContentLoaded", async () => {
+    const porId = (id) => document.getElementById(id);
+    const form = porId("formDeporte");
+    const tabla = porId("tablaDeportesBody");
+    const imagen = porId("imagenDeporte");
+    let deportes = [];
+    let ocupado = false;
+    let previewLocal = null;
+    let imagenActual = null;
 
-const IMAGEN_PLACEHOLDER = "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=200&q=60";
+    function nodo(tag, clase, texto) {
+        const item = document.createElement(tag);
+        if (clase) item.className = clase;
+        if (texto !== undefined) item.textContent = String(texto);
+        return item;
+    }
 
-function leerSesionAdmin() {
-    const llaves = ["empleados_usuario", "usuario", "admin_usuario", "user"];
-    for (const key of llaves) {
-        const raw = sessionStorage.getItem(key) || localStorage.getItem(key);
-        if (raw) {
-            try {
-                return JSON.parse(raw);
-            } catch {
-                return { rol: raw };
-            }
+    function aviso(texto, error = false) {
+        const item = porId("alertaApi");
+        item.textContent = texto;
+        item.hidden = !texto;
+        item.classList.toggle("sports-notice--error", error);
+    }
+
+    async function solicitar(ruta, opciones = {}) {
+        const response = await solicitarAdmin(ruta, { cache: "no-store", ...opciones });
+        const data = await response.json().catch(() => null);
+        if (response.status === 401) { window.location.replace("/login.html"); throw new Error("Inicia sesión como administrador."); }
+        if (response.status === 403) { deportes = []; renderizar(); }
+        if (!response.ok || (typeof data?.numeroError === "number" && data.numeroError !== 0)) {
+            const validacion = data?.errors ? Object.values(data.errors).flat().join(" ") : "";
+            throw new Error(data?.respuesta || validacion || (response.status === 403
+                ? "Esta operación requiere una sesión administrativa activa."
+                : "No fue posible completar la solicitud. Intenta nuevamente."));
         }
-    }
-    return null;
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-    const usuario = leerSesionAdmin();
-    if (!usuario) {
-        window.location.replace("login.html");
-        return;
+        if (!data) throw new Error("ADSPORT no devolvió una respuesta válida.");
+        return data;
     }
 
-    const rol = (usuario.nombreRol || usuario.rol || "").toUpperCase().trim();
-    if (rol === "USUARIO" || rol === "CLIENTE") {
-        window.location.replace("indexUsuario.html");
-        return;
+    function bloquear(estado) {
+        ocupado = estado;
+        form.querySelectorAll("input,textarea,button").forEach((campo) => { campo.disabled = estado; });
+        porId("btnActualizarDeportes").disabled = estado;
+        tabla.querySelectorAll("button").forEach((boton) => { boton.disabled = estado; });
     }
 
-    listarDeportes();
-});
-
-imagenDeporteInput?.addEventListener("change", () => {
-    const archivo = imagenDeporteInput.files?.[0];
-    if (!archivo) {
-        contenedorPreview.classList.add("d-none");
-        return;
-    }
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        previewImagenDeporte.src = e.target.result;
-        contenedorPreview.classList.remove("d-none");
-    };
-    reader.readAsDataURL(archivo);
-});
-
-function mostrarRespuestaApi(numeroError, respuesta) {
-    alertaApi.classList.remove("d-none", "alert-success", "alert-danger");
-    alertaApi.classList.add(numeroError === 0 ? "alert-success" : "alert-danger");
-    alertaApi.innerHTML = `
-        <strong>numeroError:</strong> ${numeroError} — <strong>respuesta:</strong> ${respuesta}
-    `;
-}
-
-function limpiarFormulario() {
-    formDeporte.reset();
-    formDeporte.classList.remove("was-validated");
-    idDeporteInput.value = "0";
-    contenedorPreview.classList.add("d-none");
-    previewImagenDeporte.src = "";
-    tituloFormulario.textContent = "REGISTRAR DEPORTE";
-    btnGuardar.textContent = "GUARDAR DEPORTE";
-    btnCancelar.classList.add("d-none");
-}
-
-btnCancelar.addEventListener("click", () => {
-    limpiarFormulario();
-    alertaApi.classList.add("d-none");
-});
-
-async function subirImagenDeporte(idDeporte, archivo) {
-    const formData = new FormData();
-    formData.append("archivo", archivo);
-
-    const res = await fetch(`${API_DEPORTE}/${idDeporte}/imagen`, {
-        method: "POST",
-        body: formData
-    });
-    return await res.json();
-}
-
-formDeporte.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const nombreVal = nombreDeporteInput.value.trim();
-    const descVal = descripcionInput.value.trim();
-    const archivoImagen = imagenDeporteInput.files?.[0] || null;
-
-    if (!nombreVal || !descVal) {
-        formDeporte.classList.add("was-validated");
-        mostrarRespuestaApi(1, "Todos los campos marcados con * son obligatorios.");
-        return;
+    function mostrarPreview(ruta) {
+        if (previewLocal) { URL.revokeObjectURL(previewLocal); previewLocal = null; }
+        const preview = porId("previewImagenDeporte");
+        preview.onerror = () => { preview.onerror = null; preview.src = "/Accet/Inicio.jpg"; };
+        if (ruta) preview.src = ruta;
+        else preview.removeAttribute("src");
+        porId("contenedorPreview").hidden = !ruta;
     }
 
-    const id = parseInt(idDeporteInput.value, 10) || 0;
-    const esEdicion = id > 0;
+    function limpiarFormulario() {
+        form.reset();
+        porId("idDeporte").value = "0";
+        porId("deporteActivo").checked = true;
+        porId("tituloFormulario").textContent = "REGISTRAR DEPORTE";
+        porId("btnGuardar").textContent = "Guardar deporte";
+        porId("btnCancelar").hidden = true;
+        porId("btnReintentarImagen").hidden = true;
+        imagenActual = null;
+        mostrarPreview(null);
+    }
 
-    try {
-        const url = esEdicion ? `${API_DEPORTE}/${id}` : API_DEPORTE;
-        const metodo = esEdicion ? "PUT" : "POST";
+    function editar(deporte) {
+        if (ocupado) return;
+        limpiarFormulario();
+        porId("idDeporte").value = String(deporte.idDeporte);
+        porId("nombreDeporte").value = deporte.nombreDeporte || "";
+        porId("descripcion").value = deporte.descripcion || "";
+        porId("deporteActivo").checked = deporte.activo;
+        porId("tituloFormulario").textContent = "EDITAR DEPORTE";
+        porId("btnGuardar").textContent = "Guardar cambios";
+        porId("btnCancelar").hidden = false;
+        imagenActual = deporte.imagenUrl || null;
+        mostrarPreview(imagenActual);
+        aviso("");
+        porId("nombreDeporte").focus();
+        form.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
 
-        const response = await fetch(url, {
-            method: metodo,
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                idDeporte: id,
-                nombreDeporte: nombreVal,
-                descripcion: descVal
-            })
+    function renderizar() {
+        tabla.replaceChildren();
+        const visibles = deportes.filter((deporte) => porId("mostrarInactivos").checked || deporte.activo);
+        porId("totalRegistros").textContent = visibles.length + " de " + deportes.length + " deportes";
+        if (!visibles.length) {
+            const fila = nodo("tr");
+            const celda = nodo("td", "", "No hay deportes para mostrar con este filtro.");
+            celda.colSpan = 4; fila.append(celda); tabla.append(fila); return;
+        }
+        visibles.forEach((deporte) => {
+            const fila = nodo("tr");
+            const datos = nodo("td");
+            const registro = nodo("div", "sports-record");
+            const foto = nodo("img"); foto.src = deporte.imagenUrl || "/Accet/Inicio.jpg"; foto.alt = "Imagen de " + deporte.nombreDeporte; foto.loading = "lazy";
+            foto.addEventListener("error", () => { foto.src = "/Accet/Inicio.jpg"; }, { once: true });
+            const texto = nodo("div"); texto.append(nodo("strong", "", deporte.nombreDeporte), nodo("p", "", deporte.descripcion || "Sin descripción"));
+            registro.append(foto, texto); datos.append(registro);
+            const estado = nodo("td"); estado.append(nodo("span", "sports-state" + (deporte.activo ? "" : " sports-state--inactive"), deporte.activo ? "Activo" : "Inactivo"));
+            const fecha = nodo("td", "", fechaTexto(deporte.fechaUltimaModificacion));
+            const acciones = nodo("td"); const grupo = nodo("div", "sports-row-actions");
+            const btnEditar = nodo("button", "sports-button sports-button--quiet", "Editar"); btnEditar.type = "button"; btnEditar.addEventListener("click", () => editar(deporte));
+            const btnEstado = nodo("button", "sports-button sports-button--quiet", deporte.activo ? "Desactivar" : "Reactivar"); btnEstado.type = "button"; btnEstado.addEventListener("click", () => cambiarEstado(deporte));
+            grupo.append(btnEditar, btnEstado); acciones.append(grupo); fila.append(datos, estado, fecha, acciones); tabla.append(fila);
         });
+        if (ocupado) tabla.querySelectorAll("button").forEach((boton) => { boton.disabled = true; });
+    }
 
-        const data = await response.json();
+    function fechaTexto(valor) {
+        if (!valor) return "No registrada";
+        const fecha = new Date(valor);
+        return Number.isNaN(fecha.getTime()) ? "No registrada" : fecha.toLocaleString("es-MX", { dateStyle: "short", timeStyle: "short" });
+    }
 
-        if (data.numeroError === 0) {
-            let idDestino = id;
+    async function cargarDeportes() {
+        const lista = await solicitar("/api/Deporte?incluirInactivos=true");
+        if (!Array.isArray(lista)) throw new Error("No fue posible leer el catálogo.");
+        deportes = lista;
+        renderizar();
+    }
 
-            // Si fue registro nuevo, obtener el ID recién creado para vincular su imagen
-            if (!esEdicion && archivoImagen) {
-                const resLista = await fetch(API_DEPORTE, { cache: "no-store" });
-                const listaActual = await resLista.json();
-                const creado = listaActual
-                    .filter(d => d.nombreDeporte.trim().toLowerCase() === nombreVal.toLowerCase())
-                    .sort((a, b) => b.idDeporte - a.idDeporte)[0];
-                if (creado) {
-                    idDestino = creado.idDeporte;
-                }
+    function mostrarErrorCarga(error) {
+        aviso(error.message || "No fue posible cargar el catálogo.", true);
+        if (!deportes.length) {
+            const fila = nodo("tr");
+            const celda = nodo("td", "", "No fue posible consultar los deportes. Intenta Actualizar catálogo.");
+            celda.colSpan = 4;
+            fila.append(celda);
+            tabla.replaceChildren(fila);
+            porId("totalRegistros").textContent = "No disponible";
+        }
+    }
+
+    async function subirImagen(id, archivo) {
+        const data = new FormData(); data.append("archivo", archivo);
+        return solicitar("/api/Deporte/" + encodeURIComponent(id) + "/imagen", { method: "POST", body: data });
+    }
+
+    async function cambiarEstado(deporte) {
+        if (ocupado) return;
+        if (deporte.activo && !window.confirm("¿Desactivar " + deporte.nombreDeporte + "? Se ocultará del catálogo público y se conservarán sus datos y clases.")) return;
+        bloquear(true);
+        try {
+            await solicitar("/api/Deporte/" + encodeURIComponent(deporte.idDeporte), deporte.activo ? { method: "DELETE" } : {
+                method: "PUT", headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ nombreDeporte: deporte.nombreDeporte, descripcion: deporte.descripcion, activo: true })
+            });
+            if (String(porId("idDeporte").value) === String(deporte.idDeporte)) limpiarFormulario();
+            await cargarDeportes();
+            aviso(deporte.activo ? "Deporte desactivado. Su información y clases se conservaron." : "Deporte reactivado en el catálogo.");
+        } catch (error) { aviso(error.message || "No fue posible actualizar el deporte.", true); }
+        finally { bloquear(false); }
+    }
+
+    imagen.addEventListener("change", () => {
+        const archivo = imagen.files?.[0];
+        porId("btnReintentarImagen").hidden = true;
+        if (!archivo) { mostrarPreview(imagenActual); return; }
+        if (archivo.size > 5 * 1024 * 1024 || !["image/jpeg", "image/png", "image/webp"].includes(archivo.type)) {
+            aviso("Elige una imagen JPG, PNG o WEBP de máximo 5 MB.", true);
+            imagen.value = ""; mostrarPreview(imagenActual); return;
+        }
+        mostrarPreview(null);
+        previewLocal = URL.createObjectURL(archivo);
+        porId("previewImagenDeporte").src = previewLocal;
+        porId("contenedorPreview").hidden = false;
+    });
+
+    form.addEventListener("submit", async (evento) => {
+        evento.preventDefault();
+        if (ocupado || !form.reportValidity()) return;
+        const nombre = porId("nombreDeporte").value.trim();
+        const descripcion = porId("descripcion").value.trim();
+        if (!nombre || !descripcion) { aviso("Completa el nombre y la descripción del deporte.", true); return; }
+        const archivo = imagen.files?.[0] || null;
+        let id = porId("idDeporte").value;
+        let guardado = false;
+        let imagenPendiente = false;
+        bloquear(true);
+        aviso("");
+        try {
+            const nuevo = id === "0";
+            const resultado = await solicitar("/api/Deporte" + (nuevo ? "" : "/" + encodeURIComponent(id)), {
+                method: nuevo ? "POST" : "PUT", headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ nombreDeporte: nombre, descripcion, activo: porId("deporteActivo").checked })
+            });
+            if (nuevo) {
+                if (!resultado.idDeporte) throw new Error("El servidor no indicó el identificador del deporte guardado. Actualiza el catálogo antes de continuar.");
+                id = String(resultado.idDeporte);
+                // Se conserva el ID antes de subir la imagen: un reintento nunca crea otro deporte.
+                porId("idDeporte").value = id;
+                porId("tituloFormulario").textContent = "EDITAR DEPORTE";
+                porId("btnCancelar").hidden = false;
+                porId("btnGuardar").textContent = "Guardar cambios";
             }
-
-            if (archivoImagen && idDestino > 0) {
-                const resImg = await subirImagenDeporte(idDestino, archivoImagen);
-                if (resImg.numeroError !== 0) {
-                    mostrarRespuestaApi(resImg.numeroError, `${data.respuesta} (Aviso imagen: ${resImg.respuesta})`);
-                } else {
-                    mostrarRespuestaApi(0, `${data.respuesta} e imagen cargada.`);
-                }
-            } else {
-                mostrarRespuestaApi(data.numeroError, data.respuesta);
-            }
-
+            guardado = true;
+            if (archivo) { imagenPendiente = true; await subirImagen(id, archivo); imagenPendiente = false; }
             limpiarFormulario();
-            await listarDeportes();
-        } else {
-            mostrarRespuestaApi(data.numeroError, data.respuesta);
-        }
-    } catch (error) {
-        mostrarRespuestaApi(-1, "Error de conexión con la API: " + error.message);
-    }
+            await cargarDeportes();
+            aviso(resultado.respuesta || "Deporte guardado correctamente.");
+        } catch (error) {
+            if (guardado && imagenPendiente) {
+                porId("btnReintentarImagen").hidden = false;
+                aviso("El deporte se guardó, pero su imagen no pudo cargarse. " + error.message + " Usa Reintentar imagen; se conservará el mismo deporte.", true);
+                await cargarDeportes().catch(() => {});
+            } else aviso(guardado ? "El deporte se guardó, pero no fue posible actualizar el catálogo. Usa Actualizar catálogo." : error.message || "No fue posible guardar el deporte.", true);
+        } finally { bloquear(false); }
+    });
+
+    porId("btnReintentarImagen").addEventListener("click", async () => {
+        const archivo = imagen.files?.[0]; const id = porId("idDeporte").value;
+        if (ocupado || !archivo || id === "0") return;
+        bloquear(true);
+        try {
+            await subirImagen(id, archivo);
+            limpiarFormulario();
+            await cargarDeportes();
+            aviso("La imagen se cargó correctamente para el deporte guardado.");
+        } catch (error) { aviso("El deporte sigue guardado. No fue posible cargar su imagen: " + error.message, true); }
+        finally { bloquear(false); }
+    });
+    porId("btnCancelar").addEventListener("click", () => { if (!ocupado) { limpiarFormulario(); aviso(""); } });
+    porId("mostrarInactivos").addEventListener("change", renderizar);
+    porId("btnCerrarSesion").addEventListener("click", cerrarSesion);
+    porId("btnActualizarDeportes").addEventListener("click", async () => {
+        if (ocupado) return;
+        bloquear(true);
+        try { await cargarDeportes(); aviso(""); } catch (error) { mostrarErrorCarga(error); }
+        finally { bloquear(false); }
+    });
+    window.addEventListener("pagehide", () => { if (previewLocal) URL.revokeObjectURL(previewLocal); });
+    await protegerPagina();
+    bloquear(true);
+    try { await cargarDeportes(); } catch (error) { mostrarErrorCarga(error); }
+    finally { bloquear(false); }
 });
-
-async function listarDeportes() {
-    try {
-        const response = await fetch(API_DEPORTE, { cache: "no-store" });
-        const lista = await response.json();
-
-        totalRegistros.textContent = `${lista.length} registro(s)`;
-
-        if (!lista || lista.length === 0) {
-            tablaBody.innerHTML = `
-                <tr>
-                    <td colspan="6" class="text-center text-muted">No hay deportes registrados todavía.</td>
-                </tr>
-            `;
-            return;
-        }
-
-        tablaBody.innerHTML = lista.map(item => `
-            <tr>
-                <td>${item.idDeporte}</td>
-                <td>
-                    <img src="${item.imagenUrl || IMAGEN_PLACEHOLDER}"
-                         alt="${item.nombreDeporte}"
-                         style="width: 56px; height: 40px; object-fit: cover; border-radius: 6px; border: 1px solid #333;">
-                </td>
-                <td class="fw-bold">${item.nombreDeporte}</td>
-                <td>${item.descripcion || "-"}</td>
-                <td>${item.fechaUltimaModificacion || "-"}</td>
-                <td class="text-center">
-                    <button type="button" class="btn btn-sm btn-warning me-1" onclick="cargarParaEditar(${item.idDeporte})">Editar</button>
-                    <button type="button" class="btn btn-sm btn-danger" onclick="eliminarDeporte(${item.idDeporte})">Eliminar</button>
-                </td>
-            </tr>
-        `).join("");
-    } catch (error) {
-        tablaBody.innerHTML = `
-            <tr>
-                <td colspan="6" class="text-center text-danger">Error al cargar los datos: ${error.message}</td>
-            </tr>
-        `;
-    }
-}
-
-async function cargarParaEditar(id) {
-    try {
-        const response = await fetch(`${API_DEPORTE}/${id}`, { cache: "no-store" });
-        const deporte = await response.json();
-
-        idDeporteInput.value = deporte.idDeporte;
-        nombreDeporteInput.value = deporte.nombreDeporte;
-        descripcionInput.value = deporte.descripcion || "";
-        imagenDeporteInput.value = "";
-
-        if (deporte.imagenUrl) {
-            previewImagenDeporte.src = deporte.imagenUrl;
-            contenedorPreview.classList.remove("d-none");
-        } else {
-            contenedorPreview.classList.add("d-none");
-        }
-
-        tituloFormulario.textContent = `EDITAR DEPORTE #${deporte.idDeporte}`;
-        btnGuardar.textContent = "ACTUALIZAR DEPORTE";
-        btnCancelar.classList.remove("d-none");
-        alertaApi.classList.add("d-none");
-    } catch (error) {
-        mostrarRespuestaApi(-1, "No se pudo cargar el deporte: " + error.message);
-    }
-}
-
-async function eliminarDeporte(id) {
-    if (!confirm("¿Seguro que deseas eliminar este deporte del catálogo?")) return;
-
-    try {
-        const response = await fetch(`${API_DEPORTE}/${id}`, { method: "DELETE" });
-        const data = await response.json();
-
-        mostrarRespuestaApi(data.numeroError, data.respuesta);
-
-        if (data.numeroError === 0) {
-            await listarDeportes();
-        }
-    } catch (error) {
-        mostrarRespuestaApi(-1, "Error al eliminar: " + error.message);
-    }
-}

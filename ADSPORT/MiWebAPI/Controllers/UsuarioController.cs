@@ -15,10 +15,12 @@ namespace ADSPORT.Controllers
     public class UsuarioController : ControllerBase
     {
         private readonly UsuarioData _usuarioData;
+        private readonly ILogger<UsuarioController> _logger;
 
-        public UsuarioController(UsuarioData usuarioData)
+        public UsuarioController(UsuarioData usuarioData, ILogger<UsuarioController> logger)
         {
             _usuarioData = usuarioData;
+            _logger = logger;
         }
 
         // ========================================
@@ -26,6 +28,7 @@ namespace ADSPORT.Controllers
         // ========================================
 
         [HttpGet]
+        [Authorize(Policy = "SoloAdministrador")]
         public async Task<IActionResult> Lista()
         {
             List<Usuario> lista =
@@ -42,6 +45,7 @@ namespace ADSPORT.Controllers
         // ========================================
 
         [HttpGet("{id}")]
+        [Authorize(Policy = "SoloAdministrador")]
         public async Task<IActionResult> Obtener(int id)
         {
             Usuario? objeto =
@@ -67,11 +71,30 @@ namespace ADSPORT.Controllers
         // ========================================
 
         [HttpPost]
+        [Authorize(Policy = "SoloAdministrador")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Crear(
-            [FromBody] Usuario objeto)
+            [FromBody] AltaEmpleadoRequest objeto)
         {
+            if (objeto.IdRol <= 0 || string.IsNullOrWhiteSpace(objeto.Nombre) ||
+                string.IsNullOrWhiteSpace(objeto.ApellidoPaterno) ||
+                string.IsNullOrWhiteSpace(objeto.Telefono) ||
+                !new System.ComponentModel.DataAnnotations.EmailAddressAttribute().IsValid(objeto.Correo))
+                return BadRequest(new RespuestaOperacion { NumeroError = 400, Respuesta = "Completa los datos obligatorios del empleado." });
+
+            string? errorPassword = ADSPORT.Security.PoliticaPassword.Validar(objeto.PasswordInicial);
+            if (errorPassword != null)
+                return BadRequest(new RespuestaOperacion { NumeroError = 400, Respuesta = errorPassword });
+
+            string hash = BCrypt.Net.BCrypt.HashPassword(objeto.PasswordInicial, workFactor: 12);
             RespuestaOperacion resultado =
-                await _usuarioData.Crear(objeto);
+                await _usuarioData.Crear(objeto, hash);
+
+            if (resultado.NumeroError != 0 && resultado.NumeroError is not (400 or 51001 or 51002))
+            {
+                _logger.LogError("USUARIO_AGREGA devolvió {NumeroError}: {Respuesta}", resultado.NumeroError, resultado.Respuesta);
+                resultado.Respuesta = "No fue posible registrar al empleado. Revisa la conexión y las migraciones SQL.";
+            }
 
             return StatusCode(
                 StatusCodes.Status200OK,
@@ -84,6 +107,8 @@ namespace ADSPORT.Controllers
         // ========================================
 
         [HttpPut("{id}")]
+        [Authorize(Policy = "SoloAdministrador")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Editar(
             int id,
             [FromBody] Usuario objeto)
@@ -104,6 +129,8 @@ namespace ADSPORT.Controllers
         // ========================================
 
         [HttpDelete("{id}")]
+        [Authorize(Policy = "SoloAdministrador")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Eliminar(int id)
         {
             RespuestaOperacion resultado =
@@ -171,14 +198,27 @@ namespace ADSPORT.Controllers
 
             // Devolver solamente los datos
             // necesarios para el Header.
+
             return Ok(new
             {
                 idUsuario = usuario.IdUsuario,
+
                 nombre = usuario.Nombre,
                 nombreCompleto = nombreCompleto,
+
+                apellidoPaterno = usuario.ApellidoPaterno,
+                apellidoMaterno = usuario.ApellidoMaterno,
+
+                correo = usuario.Correo,
+                telefono = usuario.Telefono,
+
+                nombreRol = usuario.NombreRol,
+                estatus = usuario.Estatus,
+
                 tieneFoto = usuario.Foto != null
                     && usuario.Foto.Length > 0
             });
+
         }
 
         // ========================================
