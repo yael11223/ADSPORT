@@ -1,5 +1,6 @@
 """Pruebas HTTP reales. Ejecutar mediante run-trainer-integration.ps1 (SQL aislado)."""
 import copy
+import base64
 import http.client
 import http.cookies
 import json
@@ -8,6 +9,7 @@ from pathlib import Path
 import subprocess
 import sys
 import time
+from urllib.parse import quote
 
 ROOT = Path(__file__).resolve().parents[1]
 PORT = int(os.environ['ADSPORT_TEST_PORT'])
@@ -34,8 +36,10 @@ class Client:
     def __init__(self):
         self.cookies = {}
         self.token = None
+        self.last_raw = b''
+        self.last_headers = {}
 
-    def call(self, method, path, data=None, csrf=True):
+    def call(self, method, path, data=None, csrf=True, raw_payload=None, content_type=None):
         conn = http.client.HTTPConnection('localhost', PORT, timeout=30)
         headers = {'Accept': 'application/json'}
         if self.cookies:
@@ -46,9 +50,14 @@ class Client:
         if data is not None:
             headers['Content-Type'] = 'application/json'
             payload = json.dumps(data).encode()
+        if raw_payload is not None:
+            payload = raw_payload
+            headers['Content-Type'] = content_type
         conn.request(method, path, payload, headers)
         response = conn.getresponse()
         raw = response.read()
+        self.last_raw = raw
+        self.last_headers = dict(response.getheaders())
         for key, value in response.getheaders():
             if key.lower() == 'set-cookie':
                 parsed = http.cookies.SimpleCookie()
@@ -62,6 +71,14 @@ class Client:
         except (json.JSONDecodeError, UnicodeDecodeError):
             body = None
         return status, body
+
+    def upload(self, path, contents, filename='prueba.png', mime='image/png', csrf=True):
+        boundary = 'ADSPORTIntegrationBoundary97bb'
+        payload = (('--' + boundary + '\r\nContent-Disposition: form-data; name="archivo"; filename="'
+                    + filename + '"\r\nContent-Type: ' + mime + '\r\n\r\n').encode()
+                   + contents + ('\r\n--' + boundary + '--\r\n').encode())
+        return self.call('POST', path, csrf=csrf, raw_payload=payload,
+                         content_type='multipart/form-data; boundary=' + boundary)
 
     def refresh(self, admin=False):
         status, body = self.call('GET', '/api/Auth/csrf' if admin else '/api/Entrenador/csrf')
@@ -84,6 +101,104 @@ def fixture(operation, **values):
         args.extend(['-' + key, str(value)])
     result = subprocess.run(args, capture_output=True, text=True, check=True)
     return int(result.stdout.strip())
+
+
+def sports_flow(admin, trainer, client, anonymous):
+    """La gestión recuperada debe utilizar permisos y datos del módulo actual."""
+    status, catalog = anonymous.call('GET', '/api/Deporte')
+    fields = {'idDeporte', 'nombreDeporte', 'descripcion', 'activo', 'imagenUrl', 'fechaUltimaModificacion'}
+    check('Public sport catalog returns compatible metadata', status == 200 and catalog
+          and all(fields <= set(s) and s['activo'] is True for s in catalog))
+    check('Anonymous cannot request inactive sport administration', anonymous.call('GET', '/api/Deporte?incluirInactivos=true')[0] == 401)
+    for label, actor in [('Trainer', trainer), ('Client', client)]:
+        check(label + ' cannot request inactive sport administration', actor.call('GET', '/api/Deporte?incluirInactivos=true')[0] == 403)
+        check(label + ' cannot create sports', actor.call('POST', '/api/Deporte', {'nombreDeporte': 'No autorizado', 'activo': True})[0] == 403)
+    sport = {'nombreDeporte': 'Escalada de integración', 'descripcion': 'Disciplina de prueba con ' + 'detalle ' * 30, 'activo': True}
+    check('Anonymous cannot create sports', anonymous.call('POST', '/api/Deporte', sport)[0] == 401)
+    check('Sport creation requires CSRF', admin.call('POST', '/api/Deporte', sport, csrf=False)[0] == 400)
+    status, result = admin.call('POST', '/api/Deporte', sport)
+    check('Admin creates sport in SQL Server', status in (200, 201) and result.get('isSuccess') is True
+          and result.get('numeroError') == 0 and result.get('idDeporte', 0) > 0)
+    sport_id = result['idDeporte']
+    url = '/api/Deporte/' + str(sport_id)
+    image_url = url + '/imagen'
+    check('Duplicate sport names return SQL business error', business_error(admin.call('POST', '/api/Deporte',
+          dict(sport, nombreDeporte='  ' + sport['nombreDeporte'].upper() + '  ')), 409, 51009))
+    check('Empty sport name rejected', admin.call('POST', '/api/Deporte', dict(sport, nombreDeporte=' '))[0] == 400)
+    check('Sport description maximum enforced', admin.call('POST', '/api/Deporte', dict(sport, descripcion='x' * 2001))[0] == 400)
+    check('Unknown sport id returns SQL business error', business_error(admin.call('PUT', '/api/Deporte/9223372036854775807', sport), 404, 51004))
+    check('Sport modification requires CSRF', admin.call('PUT', url, sport, csrf=False)[0] == 400)
+    check('Sport deactivation requires CSRF', admin.call('DELETE', url, csrf=False)[0] == 400)
+    for label, actor in [('Trainer', trainer), ('Client', client)]:
+        check(label + ' cannot edit or deactivate sports', actor.call('PUT', url, sport)[0] == 403
+              and actor.call('DELETE', url)[0] == 403)
+
+    png = base64.b64decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+a6BsAAAAASUVORK5CYII=')
+    check('Image upload requires CSRF', admin.upload(image_url, png, csrf=False)[0] == 400)
+    check('Trainer cannot upload sport images', trainer.upload(image_url, png)[0] == 403)
+    check('Client cannot upload sport images', client.upload(image_url, png)[0] == 403)
+    check('Anonymous cannot upload sport images', anonymous.upload(image_url, png)[0] == 401)
+    check('Image upload rejects empty files', admin.upload(image_url, b'')[0] == 400)
+    check('Image upload validates binary signature', admin.upload(image_url, b'<html>not an image</html>')[0] in (400, 415))
+    check('Image upload rejects unsupported GIF format', admin.upload(image_url, b'GIF89a' + b'\0' * 32, 'prueba.gif', 'image/gif')[0] in (400, 415))
+    check('Image upload enforces 5 MB limit', admin.upload(image_url, png + b'\0' * (5 * 1024 * 1024 + 1))[0] in (400, 413))
+    status, result = admin.upload(image_url, png)
+    check('Admin stores validated image in SQL Server', status == 200 and result.get('isSuccess') is True and result.get('numeroError') == 0)
+    check('Image response identifies the same sport', result.get('idDeporte') == sport_id and '/api/Deporte/' + str(sport_id) + '/imagen' in result.get('imagenUrl', ''))
+    status, _ = anonymous.call('GET', image_url)
+    check('Public image serves the stored bytes and MIME', status == 200 and anonymous.last_raw == png
+          and anonymous.last_headers.get('Content-Type', '').startswith('image/png'))
+    check('Public sport image disables MIME sniffing', anonymous.last_headers.get('X-Content-Type-Options', '').lower() == 'nosniff')
+
+    class_data = {'idDeporte': sport_id, 'nombreClase': 'Clase de escalada de integración', 'descripcion': 'Prueba del catálogo integrado.',
+                  'precio': 123.45, 'cupoMaximo': 4, 'disponible': True, 'ubicacion': 'Muro de prueba',
+                  'horarios': [{'diaSemana': 2, 'horaInicio': '13:00', 'horaFin': '14:00'}]}
+    status, created_class = trainer.call('POST', '/api/Entrenador/clases', class_data)
+    check('Trainer publishes a class under newly administered sport', status == 200 and created_class.get('numeroError') == 0)
+    class_id = created_class['idClase']
+    sport['nombreDeporte'] = 'Escalada renombrada'
+    sport['descripcion'] = 'Descripción larga conservada: ' + 'x' * 1000
+    status, result = admin.call('PUT', url, sport)
+    check('Admin renames sport without replacing its id', status == 200 and result.get('idDeporte') == sport_id)
+    status, stored = anonymous.call('GET', url)
+    check('Sport metadata and long description persist after edit', status == 200 and stored['idDeporte'] == sport_id
+          and stored['nombreDeporte'] == sport['nombreDeporte'] and stored['descripcion'] == sport['descripcion'])
+    anonymous.call('GET', image_url)
+    check('Editing sport metadata preserves its stored image', anonymous.last_raw == png)
+    status, by_id = anonymous.call('GET', '/api/Clases?idDeporte=' + str(sport_id))
+    check('Class filtering by sport id survives sport rename', status == 200 and len(by_id) == 1
+          and by_id[0]['idClase'] == class_id and by_id[0]['nombreDeporte'] == sport['nombreDeporte'])
+    check('Invalid sport filter rejected', anonymous.call('GET', '/api/Clases?idDeporte=-1')[0] == 400)
+    check('Admin soft-deactivates sport', admin.call('DELETE', url)[0] == 200)
+    _, active = anonymous.call('GET', '/api/Deporte')
+    check('Inactive sport disappears from public sports catalog', not any(s['idDeporte'] == sport_id for s in active))
+    check('Inactive sport detail and image hidden publicly', anonymous.call('GET', url)[0] == 404
+          and anonymous.call('GET', image_url)[0] == 404)
+    status, all_sports = admin.call('GET', '/api/Deporte?incluirInactivos=true')
+    check('Admin can still read deactivated sport history', status == 200
+          and next(s for s in all_sports if s['idDeporte'] == sport_id)['activo'] is False)
+    _, available = anonymous.call('GET', '/api/Clases/deportes')
+    check('Inactive sport removed from trainer sport choices', not any(s['idDeporte'] == sport_id for s in available))
+    _, public = anonymous.call('GET', '/api/Clases?idDeporte=' + str(sport_id))
+    check('Deactivating sport hides its published classes', public == [])
+    _, private = trainer.call('GET', '/api/Entrenador/clases')
+    check('Sport deactivation preserves private class identity and history', any(c['idClase'] == class_id and c['disponible'] for c in private))
+    inactive_class = copy.deepcopy(class_data)
+    inactive_class['horarios'][0].update(horaInicio='15:00', horaFin='16:00')
+    check('Cannot publish a new class under inactive sport', business_error(trainer.call('POST', '/api/Entrenador/clases', inactive_class), 400, 51000))
+    check('Admin reactivates same sport id', admin.call('PUT', url, sport)[0] == 200)
+    _, public = anonymous.call('GET', '/api/Clases?idDeporte=' + str(sport_id))
+    check('Sport reactivation restores published class automatically', any(c['idClase'] == class_id for c in public))
+    status, _ = anonymous.call('GET', image_url)
+    check('Reactivation preserves existing image bytes', status == 200 and anonymous.last_raw == png)
+
+    for path, marker in [('/deportes.html', 'formDeporte'), ('/js/deportes.js', '/api/Deporte'),
+                         ('/css/deportes.css', ''), ('/indexUsuario.html', 'clasesContainer'),
+                         ('/js/deportes-home.js', '/api/Deporte'), ('/tenis.html?idDeporte=' + str(sport_id), 'tenis-page'),
+                         ('/loginEntrenador.html', 'formLoginEntrenador')]:
+        status, _ = anonymous.call('GET', path)
+        content = anonymous.last_raw.decode('utf-8-sig', errors='replace')
+        check('Integrated static resource served: ' + path.split('?')[0], status == 200 and marker in content)
 
 
 def main():
@@ -238,6 +353,11 @@ def main():
     check('Deactivation preserves private class/history', own_class['disponible'] is False and own_class['alumnosInscritos'] == 2)
     check('Owner republishes saved class', trainer.call('PUT', class_url + '/disponibilidad', {'disponible': True})[0] == 200)
 
+    check('Client can reopen existing session before sports permission checks', client.call('POST', '/api/LoginUsuario/login',
+          {'correo': emails['client'], 'password': initial})[0] == 200)
+    client.refresh()
+    sports_flow(admin, trainer, client, anonymous)
+
     new_password = 'EntrenaNueva2026!'
     password_change = {'passwordActual': initial, 'passwordNueva': new_password, 'confirmarPassword': new_password}
     check('Password change requires CSRF', trainer.call('PUT', '/api/Entrenador/password', password_change, csrf=False)[0] == 400)
@@ -273,6 +393,21 @@ def main():
     check('Trainer logout requires CSRF', trainer_b.call('POST', '/api/Entrenador/logout', csrf=False)[0] == 400)
     check('Trainer logout succeeds', trainer_b.call('POST', '/api/Entrenador/logout')[0] == 200)
     check('Logged out trainer session denied', trainer_b.call('GET', '/api/Entrenador/perfil')[0] == 401)
+
+    # Renombrar una disciplina del seed detecta migraciones que intenten sembrarla otra vez.
+    # El runner repetirá los cuatro scripts después y verificará todo DEPORTE, incluidas imágenes.
+    status, seeded_tennis = admin.call('GET', '/api/Deporte/' + str(tennis))
+    assert status == 200
+    rename_seed = {'nombreDeporte': 'Tenis integrado', 'descripcion': seeded_tennis['descripcion'], 'activo': True}
+    status, renamed = admin.call('PUT', '/api/Deporte/' + str(tennis), rename_seed)
+    check('Admin renames seeded sport preserving original id', status == 200 and renamed.get('idDeporte') == tennis)
+    status, by_id = anonymous.call('GET', '/api/Clases?idDeporte=' + str(tennis))
+    check('Seeded sport id filter remains authoritative after rename', status == 200
+          and any(c['idClase'] == class_id and c['nombreDeporte'] == 'Tenis integrado' for c in by_id))
+    status, by_old_name = anonymous.call('GET', '/api/Clases?deporte=Tenis')
+    check('Old sport name does not resolve after rename', status == 200 and by_old_name == [])
+    status, by_new_name = anonymous.call('GET', '/api/Clases?deporte=' + quote('Tenis integrado'))
+    check('Backward-compatible name filter resolves renamed sport', status == 200 and any(c['idClase'] == class_id for c in by_new_name))
 
 
 if __name__ == '__main__':

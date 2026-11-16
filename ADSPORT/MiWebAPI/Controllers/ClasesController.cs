@@ -16,10 +16,12 @@ public sealed class ClasesController : ControllerBase
 
     [HttpGet]
     [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
-    public async Task<IActionResult> Consultar([FromQuery] string? deporte = null)
+    public async Task<IActionResult> Consultar([FromQuery] string? deporte = null, [FromQuery] long? idDeporte = null)
     {
-        if (deporte?.Length > 50) return BadRequest(new { isSuccess = false, numeroError = 400, respuesta = "El deporte admite hasta 50 caracteres." });
-        try { return Ok(await _data.Consultar(null, deporte)); }
+        if (idDeporte.HasValue && idDeporte.Value <= 0)
+            return BadRequest(new { isSuccess = false, numeroError = 400, respuesta = "El identificador del deporte debe ser positivo." });
+        if (!idDeporte.HasValue && deporte?.Length > 50) return BadRequest(new { isSuccess = false, numeroError = 400, respuesta = "El deporte admite hasta 50 caracteres." });
+        try { return Ok(await _data.Consultar(null, deporte, idDeporte)); }
         catch (ProcedimientoException ex) { return ErrorProcedimiento(ex); }
         catch (SqlException ex) { return ErrorSql(ex); }
     }

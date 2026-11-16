@@ -75,7 +75,7 @@ INSERT dbo.HORARIO (ID_CLASE,DIA_SEMANA,HORA_INICIO,HORA_FIN,CANCHA) VALUES (@cl
 INSERT dbo.RESERVA (ID_USUARIO,ID_CLASE,ESTATUS_RESERVA) VALUES (@usuario,@clase,'CONFIRMADA');
 '@
     $null = Invoke-Sql $seed $env:ADSPORT_TEST_CONNECTION
-    $scripts = @('001_entrenadores_clases.sql','002_entrenadores_cuenta.sql','003_empleados_credenciales.sql')
+    $scripts = @('001_entrenadores_clases.sql','002_entrenadores_cuenta.sql','003_empleados_credenciales.sql','004_deportes_integrados.sql')
     for ($iteration = 0; $iteration -lt 2; $iteration++) {
         foreach ($script in $scripts) { Install-Script (Join-Path $root ('database\' + $script)) }
     }
@@ -115,6 +115,7 @@ AND h.DIA_ISO=1 AND rv.ESTATUS_RESERVA='CONFIRMADA';
     if ($LASTEXITCODE -ne 0) { throw 'Fallaron las pruebas HTTP. Revisa tests/artifacts/integration-report.json.' }
     $fingerprintSql = @'
 SELECT CONCAT(
+ (SELECT COUNT_BIG(*) FROM dbo.DEPORTE),':',(SELECT CHECKSUM_AGG(BINARY_CHECKSUM(*)) FROM dbo.DEPORTE), '|',
  (SELECT CHECKSUM_AGG(BINARY_CHECKSUM(*)) FROM dbo.CLASE), '|',
  (SELECT CHECKSUM_AGG(BINARY_CHECKSUM(*)) FROM dbo.HORARIO), '|',
  (SELECT CHECKSUM_AGG(BINARY_CHECKSUM(*)) FROM dbo.RESERVA), '|',
@@ -124,9 +125,12 @@ SELECT CONCAT(
     $beforeReplay = Invoke-Sql $fingerprintSql $env:ADSPORT_TEST_CONNECTION
     foreach ($script in $scripts) { Install-Script (Join-Path $root ('database\' + $script)) }
     if ((Invoke-Sql $fingerprintSql $env:ADSPORT_TEST_CONNECTION) -ne $beforeReplay) {
-        throw 'La reaplicación de migraciones modificó clases, reservas o cuentas existentes.'
+        throw 'La reaplicación de migraciones modificó deportes, imágenes, clases, reservas o cuentas existentes.'
     }
-    Write-Output 'PASS Reaplicación de migraciones conserva clases, reservas, usuarios y contraseñas creados por API.'
+    if ([int](Invoke-Sql "SELECT COUNT(*) FROM dbo.DEPORTE WHERE NOMBRE_DEPORTE='Tenis';" $env:ADSPORT_TEST_CONNECTION) -ne 0) {
+        throw 'La reaplicación del seed recreó un deporte que el administrador había renombrado.'
+    }
+    Write-Output 'PASS Reaplicación conserva deportes renombrados e imágenes, clases, reservas, usuarios y contraseñas creados por API.'
     if ($KeepForUi) {
         [pscustomobject]@{
             Database = $database

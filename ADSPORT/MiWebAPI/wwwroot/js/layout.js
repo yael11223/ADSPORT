@@ -38,6 +38,43 @@ document.addEventListener("DOMContentLoaded", () => {
         "natacion.html"
     ];
 
+    async function cargarDeportesEnMenu() {
+        const menu = document.querySelector(".nav-dropdown__menu");
+        if (!menu) return;
+        try {
+            const respuesta = await fetch("/api/Deporte", { cache: "no-store" });
+            if (!respuesta.ok) throw new Error("No fue posible consultar los deportes.");
+            const deportes = await respuesta.json();
+            const titulo = document.createElement("span");
+            titulo.className = "nav-dropdown__titulo";
+            titulo.textContent = "EXPLORA LOS DEPORTES";
+            menu.replaceChildren(titulo);
+            for (const deporte of deportes) {
+                const enlace = document.createElement("a");
+                enlace.className = "nav-dropdown__item";
+                enlace.dataset.deporteId = String(deporte.idDeporte);
+                enlace.href = "/tenis.html?" + new URLSearchParams({
+                    idDeporte: deporte.idDeporte, deporte: deporte.nombreDeporte
+                });
+                enlace.textContent = deporte.nombreDeporte;
+                menu.append(enlace);
+            }
+            if (!deportes.length) {
+                const vacio = document.createElement("span");
+                vacio.className = "nav-dropdown__item";
+                vacio.textContent = "Sin deportes disponibles";
+                menu.append(vacio);
+            }
+            const todos = document.createElement("a");
+            todos.className = "nav-dropdown__todos";
+            todos.href = "/tenis.html?deporte=todos";
+            todos.textContent = "VER TODAS LAS CLASES →";
+            menu.append(todos);
+        } catch (error) {
+            console.error("ADSPORT - Error al cargar deportes:", error);
+        }
+    }
+
 
     // ========================================
     // 1. CARGAR COMPONENTES
@@ -167,13 +204,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 if (!ruta) return;
 
-                const destino = ruta
-                    .split("#")[0]
-                    .split("/")
-                    .pop()
-                    .toLowerCase();
+                const destino = new URL(ruta, window.location.origin);
+                const parametros = new URLSearchParams(window.location.search);
+                const idActual = parametros.get("idDeporte");
+                const nombreActual = parametros.get("deporte") || "Tenis";
+                const coincide = idActual ? destino.searchParams.get("idDeporte") === idActual :
+                    (destino.searchParams.get("deporte") || "Tenis").localeCompare(nombreActual, "es", { sensitivity: "base" }) === 0;
 
-                if (destino === paginaActual) {
+                if (destino.pathname.toLowerCase() === "/" + paginaActual && coincide) {
 
                     enlace.classList.add("activo");
 
@@ -577,6 +615,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (!cargado) return;
 
+        await cargarDeportesEnMenu();
+
         marcarPaginaActiva();
 
         configurarMenus();
@@ -587,6 +627,7 @@ document.addEventListener("DOMContentLoaded", () => {
             "hashchange",
             marcarPaginaActiva
         );
+        window.addEventListener("adsport:deporte-cambiado", marcarPaginaActiva);
 
         const botonCerrar =
             document.getElementById("btnCerrarSesion");

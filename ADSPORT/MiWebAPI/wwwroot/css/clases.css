@@ -11,4 +11,7 @@
 .catalogo-horarios { padding-left: 20px; line-height: 1.8; margin: 0; }
 #estadoCatalogo { color: #ccc; margin-bottom: 20px; }
 .tenis-info[hidden] { display: none; }
+.tenis-beneficios[hidden] { display: none; }
+.tenis-hero__contenido p { max-height: 10em; overflow-y: auto; white-space: pre-wrap; overflow-wrap: anywhere; }
+.tenis-info__encabezado p { white-space: pre-wrap; overflow-wrap: anywhere; }
 @media (max-width: 600px) { .catalogo-filtros { align-items: stretch; flex-direction: column; } .catalogo-filtros select { width: 100%; } }

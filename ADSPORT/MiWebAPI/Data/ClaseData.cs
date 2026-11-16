@@ -16,12 +16,13 @@ public sealed class ClaseData
             ?? throw new InvalidOperationException("Falta configurar CadenaSQL.");
     }
 
-    public async Task<List<ClaseDeportiva>> Consultar(long? idEntrenador, string? deporte = null)
+    public async Task<List<ClaseDeportiva>> Consultar(long? idEntrenador, string? deporte = null, long? idDeporte = null)
     {
         using var conexion = new SqlConnection(_cadenaSql);
         using var comando = new SqlCommand("ENTRENADOR_CLASES_CONSULTAR", conexion) { CommandType = CommandType.StoredProcedure };
         comando.Parameters.Add("@IdEntrenador", SqlDbType.BigInt).Value = (object?)idEntrenador ?? DBNull.Value;
-        comando.Parameters.Add("@Deporte", SqlDbType.NVarChar, 50).Value = string.IsNullOrWhiteSpace(deporte) ? DBNull.Value : deporte.Trim();
+        comando.Parameters.Add("@Deporte", SqlDbType.NVarChar, 50).Value = idDeporte.HasValue || string.IsNullOrWhiteSpace(deporte) ? DBNull.Value : deporte.Trim();
+        comando.Parameters.Add("@IdDeporte", SqlDbType.BigInt).Value = (object?)idDeporte ?? DBNull.Value;
         var resultado = SqlResultadoProcedimiento.Agregar(comando);
         await conexion.OpenAsync();
         using var reader = await comando.ExecuteReaderAsync();
@@ -33,6 +34,7 @@ public sealed class ClaseData
                 IdClase = Convert.ToInt64(reader["ID_CLASE"]),
                 IdDeporte = reader["ID_DEPORTE"] is DBNull ? 0 : Convert.ToInt64(reader["ID_DEPORTE"]),
                 NombreDeporte = reader["NOMBRE_DEPORTE"].ToString() ?? "Sin disciplina",
+                DeporteActivo = Convert.ToBoolean(reader["DEPORTE_ACTIVO"]),
                 NombreClase = reader["NOMBRE_CLASE"].ToString() ?? string.Empty,
                 Descripcion = reader["DESCRIPCION"].ToString() ?? string.Empty,
                 Precio = reader["PRECIO"] is DBNull ? null : Convert.ToDecimal(reader["PRECIO"]),

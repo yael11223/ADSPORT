@@ -93,7 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const nombres = [...new Set(clases.map((clase) => clase.nombreDeporte).filter(Boolean))];
         nombres.forEach((nombre) => disciplinas.append(elemento("span", "discipline-tag", nombre)));
         if (!nombres.length) disciplinas.append(elemento("span", "trainer-muted", "Tus disciplinas aparecerán al agregar clases."));
-        porId("totalClasesDisponibles").textContent = clases.filter((clase) => clase.disponible).length;
+        porId("totalClasesDisponibles").textContent = clases.filter((clase) => clase.disponible && clase.deporteActivo !== false).length;
         porId("totalInscripciones").textContent = clases.reduce((total, clase) => total + (Number(clase.alumnosInscritos) || 0), 0);
     }
 
@@ -105,10 +105,11 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
         clases.forEach((clase) => {
-            const tarjeta = elemento("article", "trainer-class" + (clase.disponible ? "" : " trainer-class--inactive"));
+            const deporteActivo = clase.deporteActivo !== false;
+            const tarjeta = elemento("article", "trainer-class" + (clase.disponible && deporteActivo ? "" : " trainer-class--inactive"));
             const superior = elemento("div", "trainer-class__top");
             superior.append(elemento("span", "trainer-class__sport", clase.nombreDeporte || "Disciplina sin asignar"),
-                elemento("span", "trainer-class__status", clase.disponible ? "Disponible" : "No disponible"));
+                elemento("span", "trainer-class__status", !deporteActivo ? "Deporte inactivo" : clase.disponible ? "Disponible" : "No disponible"));
             tarjeta.append(superior, elemento("h3", "", clase.nombreClase || "Clase sin nombre"),
                 elemento("p", "trainer-class__description", clase.descripcion || "Agrega una descripción al editar esta clase."));
             const detalles = elemento("div", "trainer-class__details");
@@ -128,6 +129,11 @@ document.addEventListener("DOMContentLoaded", () => {
             editar.addEventListener("click", () => abrirEditor(clase));
             const disponibilidad = elemento("button", "trainer-button trainer-button--quiet", clase.disponible ? "Desactivar" : "Publicar clase");
             disponibilidad.type = "button";
+            if (!deporteActivo && !clase.disponible) {
+                disponibilidad.disabled = true;
+                disponibilidad.title = "Edita la clase para seleccionar un deporte activo antes de publicarla.";
+            }
+            if (!deporteActivo) tarjeta.append(elemento("p", "trainer-muted", "El administrador desactivó este deporte. La clase conserva sus datos y puedes editarla para cambiar de disciplina."));
             disponibilidad.addEventListener("click", async () => {
                 disponibilidad.disabled = true;
                 editar.disabled = true;
@@ -156,7 +162,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const agenda = porId("agendaEntrenador");
         agenda.replaceChildren();
         for (let dia = 1; dia <= 7; dia++) {
-            const sesiones = clases.filter((clase) => clase.disponible).flatMap((clase) =>
+            const sesiones = clases.filter((clase) => clase.disponible && clase.deporteActivo !== false).flatMap((clase) =>
                 (clase.horarios || []).filter((horario) => horario.diaSemana === dia).map((horario) => ({ clase, horario }))
             ).sort((a, b) => String(a.horario.horaInicio).localeCompare(String(b.horario.horaInicio)));
             if (!sesiones.length) continue;

@@ -11,10 +11,15 @@ En SQL Server Management Studio, conectado a tu instancia habitual, abre y ejecu
 1. `database/001_entrenadores_clases.sql`
 2. `database/002_entrenadores_cuenta.sql`
 3. `database/003_empleados_credenciales.sql`
+4. `database/004_deportes_integrados.sql`
 
 Los scripts seleccionan `ADSPORT`. Se pueden volver a ejecutar: no eliminan usuarios, contraseñas, clases, reservas ni horarios. Las clases antiguas se conservan como no publicadas hasta que el entrenador revise sus datos. Los horarios modificados se conservan como historial inactivo.
 
-No ejecutes de nuevo `BaceDeDatos.sql` sobre una base existente: es el esquema original, no una migración. Para una instalación nueva, instala primero ese esquema y después los tres scripts anteriores. Se requiere SQL Server 2016 SP1 o posterior y compatibilidad 130 o superior para `OPENJSON` y `CREATE OR ALTER`.
+No ejecutes de nuevo `BaceDeDatos.sql` sobre una base existente: es el esquema original, no una migración. Para una instalación nueva, instala primero ese esquema y después los cuatro scripts anteriores. Se requiere SQL Server 2016 SP1 o posterior y compatibilidad 130 o superior para `OPENJSON` y `CREATE OR ALTER`.
+
+La administración de deportes e imágenes y el catálogo dinámico de ambas versiones se explican en [INTEGRACION.md](INTEGRACION.md).
+
+La integración del 16 de noviembre de 2026 ya se aplicó a la instancia local configurada. Incluye el cuarto script, deportes activos, imágenes y consultas por ID; se conservaron los valores de todos los registros preexistentes.
 
 La migración agrega el rol `ENTRENADOR` si no existe y los deportes Tenis, Boxeo, Fútbol, Baloncesto y Natación que falten. Conserva los identificadores existentes. No crea usuarios ni contraseñas predefinidas.
 

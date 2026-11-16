@@ -77,6 +77,7 @@ public sealed class ClaseDeportiva
     public long IdClase { get; set; }
     public long IdDeporte { get; set; }
     public string NombreDeporte { get; set; } = string.Empty;
+    public bool DeporteActivo { get; set; }
     public string NombreClase { get; set; } = string.Empty;
     public string Descripcion { get; set; } = string.Empty;
     public decimal? Precio { get; set; }

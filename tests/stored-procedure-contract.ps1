@@ -11,7 +11,8 @@ $connection = New-Object System.Data.SqlClient.SqlConnection($builder.Connection
 $reportPath = Join-Path $PSScriptRoot 'artifacts\sql-contract-report.json'
 $procedures = @('DEPORTE_LISTAR','ENTRENADOR_CLASES_CONSULTAR','ENTRENADOR_CLASE_GUARDAR',
     'ENTRENADOR_CLASE_DISPONIBILIDAD','CLASE_FOTO_PUBLICA','ENTRENADOR_CUENTA_OBTENER',
-    'ENTRENADOR_FOTO_OBTENER','ENTRENADOR_PASSWORD_OBTENER','ENTRENADOR_PASSWORD_CAMBIAR','USUARIO_AGREGA')
+    'ENTRENADOR_FOTO_OBTENER','ENTRENADOR_PASSWORD_OBTENER','ENTRENADOR_PASSWORD_CAMBIAR','USUARIO_AGREGA',
+    'DEPORTE_LISTA','DEPORTE_OBTENER','DEPORTE_GUARDAR','DEPORTE_DESACTIVAR','DEPORTE_IMAGEN_OBTENER','DEPORTE_IMAGEN_GUARDAR')
 
 function Assert-Contract([string]$Name, [bool]$Condition) {
     if (-not $Condition) { throw $Name }
@@ -28,6 +29,7 @@ function Query-Scalar([string]$Sql) {
 function Fingerprint {
     return Query-Scalar @'
 SELECT CONCAT(
+ (SELECT COUNT_BIG(*) FROM dbo.DEPORTE),':',(SELECT CHECKSUM_AGG(BINARY_CHECKSUM(*)) FROM dbo.DEPORTE),'|',
  (SELECT COUNT_BIG(*) FROM dbo.USUARIO),':',(SELECT CHECKSUM_AGG(BINARY_CHECKSUM(*)) FROM dbo.USUARIO),'|',
  (SELECT COUNT_BIG(*) FROM dbo.[PASSWORD]),':',(SELECT CHECKSUM_AGG(BINARY_CHECKSUM(*)) FROM dbo.[PASSWORD]),'|',
  (SELECT COUNT_BIG(*) FROM dbo.CLASE),':',(SELECT CHECKSUM_AGG(BINARY_CHECKSUM(*)) FROM dbo.CLASE),'|',
@@ -101,6 +103,16 @@ try {
                 $response.Direction -in @([System.Data.ParameterDirection]::Output,[System.Data.ParameterDirection]::InputOutput))
         } finally { $command.Dispose() }
     }
+
+    $credentialCommand = $connection.CreateCommand()
+    try {
+        $credentialCommand.CommandType = [System.Data.CommandType]::StoredProcedure
+        $credentialCommand.CommandText = 'dbo.USUARIO_AGREGA'
+        [System.Data.SqlClient.SqlCommandBuilder]::DeriveParameters($credentialCommand)
+        $initialHash = $credentialCommand.Parameters['@password_hash']
+        Assert-Contract 'La integración conserva @password_hash VARCHAR(60) en el alta administrativa' (
+            $null -ne $initialHash -and $initialHash.SqlDbType -eq [System.Data.SqlDbType]::VarChar -and $initialHash.Size -eq 60)
+    } finally { $credentialCommand.Dispose() }
 
     # Cuentas independientes de las utilizadas por la prueba HTTP posterior.
     $trainerRole = [long](Query-Scalar "SELECT TOP(1) ID_ROL FROM dbo.ROL WHERE NOMBRE_ROL='ENTRENADOR'")
@@ -181,6 +193,49 @@ try {
     }
     # Mantiene las clases de contrato fuera del catálogo para la prueba HTTP posterior.
     $null = Expect-Success 'ENTRENADOR_CLASE_DISPONIBILIDAD' @{IdEntrenador=$owner; IdClase=$classId; Disponible=$false} 'Desactivar datos de contrato al terminar'
+
+    $null = Expect-Success 'DEPORTE_LISTA' @{incluir_inactivos=$false}
+    $sportValues = @{id_deporte=$null; nombre_deporte='Disciplina contrato integrado'; descripcion=('Detalle ' * 80); activo=$true}
+    $sportCreated = Expect-Success 'DEPORTE_GUARDAR' $sportValues 'Alta de deporte con OUTPUT'
+    $sportId = [long]$sportCreated.First
+    Assert-Contract 'El alta de deporte devuelve ID existente en SQL' ($sportId -gt 0 -and
+        [long](Query-Scalar "SELECT COUNT(*) FROM dbo.DEPORTE WHERE ID_DEPORTE=$sportId") -eq 1)
+    $null = Expect-Success 'DEPORTE_OBTENER' @{id_deporte=$sportId; incluir_inactivos=$false}
+    $sportValues.id_deporte=$sportId
+    $sportValues.nombre_deporte='Disciplina contrato actualizada'
+    $sportUpdated = Expect-Success 'DEPORTE_GUARDAR' $sportValues 'Edición de deporte con OUTPUT'
+    Assert-Contract 'La edición conserva identificador y descripción extensa' ([long]$sportUpdated.First -eq $sportId -and
+        [int](Query-Scalar "SELECT LEN(DESCRIPCION) FROM dbo.DEPORTE WHERE ID_DEPORTE=$sportId") -gt 100)
+    $image = [Convert]::FromBase64String('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+a6BsAAAAASUVORK5CYII=')
+    $imageValues = @{id_deporte=$sportId; imagen=$image; imagen_tipo='image/png'}
+    $null = Expect-Success 'DEPORTE_IMAGEN_GUARDAR' $imageValues
+    $imageRead = Expect-Success 'DEPORTE_IMAGEN_OBTENER' @{id_deporte=$sportId; incluir_inactivos=$false}
+    Assert-Contract 'La imagen se conserva como bytes exactos en SQL' ([Convert]::ToBase64String([byte[]]$imageRead.First) -ceq [Convert]::ToBase64String($image))
+    $null = Expect-Success 'DEPORTE_GUARDAR' $sportValues 'Edición posterior a carga de imagen'
+    Assert-Contract 'Editar metadatos del deporte conserva la imagen almacenada' ([int](Query-Scalar "SELECT DATALENGTH(IMAGEN) FROM dbo.DEPORTE WHERE ID_DEPORTE=$sportId") -eq $image.Length)
+    $null = Expect-Success 'DEPORTE_DESACTIVAR' @{id_deporte=$sportId}
+    Assert-Contract 'Desactivar deporte conserva fila y fotografía' ([int](Query-Scalar "SELECT COUNT(*) FROM dbo.DEPORTE WHERE ID_DEPORTE=$sportId AND ACTIVO=0 AND DATALENGTH(IMAGEN)>0") -eq 1)
+    $null = Expect-Success 'DEPORTE_OBTENER' @{id_deporte=$sportId; incluir_inactivos=$true} 'Consulta administrativa de deporte inactivo'
+    $inactiveSport = Expect-Success 'DEPORTE_OBTENER' @{id_deporte=$sportId; incluir_inactivos=$false} 'Consulta pública de deporte inactivo sin filas'
+    Assert-Contract 'El deporte inactivo no devuelve filas públicas' ($inactiveSport.Rows -eq 0)
+    $inactiveImage = Expect-Success 'DEPORTE_IMAGEN_OBTENER' @{id_deporte=$sportId; incluir_inactivos=$false} 'Consulta pública de imagen inactiva sin filas'
+    Assert-Contract 'La imagen del deporte inactivo no devuelve filas públicas' ($inactiveImage.Rows -eq 0)
+    $null = Expect-Success 'DEPORTE_IMAGEN_OBTENER' @{id_deporte=$sportId; incluir_inactivos=$true} 'Imagen de deporte inactivo consultable por administración'
+    $null = Expect-Success 'DEPORTE_GUARDAR' $sportValues 'Reactivar conserva ID de deporte'
+    $duplicateSport = $sportValues.Clone(); $duplicateSport.id_deporte=$null
+    $duplicateSport.nombre_deporte='  ' + $sportValues.nombre_deporte.ToUpperInvariant() + '  '
+    $null = Expect-Error 'DEPORTE_GUARDAR' $duplicateSport 51009 'Guardar deporte rechaza nombre duplicado normalizado'
+    $invalidSport = $sportValues.Clone(); $invalidSport.nombre_deporte=' '
+    $null = Expect-Error 'DEPORTE_GUARDAR' $invalidSport 51000 'Guardar deporte rechaza nombre vacío'
+    $invalidSport = $sportValues.Clone(); $invalidSport.id_deporte=9223372036854775807
+    $null = Expect-Error 'DEPORTE_GUARDAR' $invalidSport 51004 'Edición rechaza deporte inexistente'
+    $null = Expect-Error 'DEPORTE_DESACTIVAR' @{id_deporte=9223372036854775807} 51004 'Desactivación rechaza deporte inexistente'
+    $invalidImage=$imageValues.Clone(); $invalidImage.imagen=[byte[]]::new(0)
+    $null = Expect-Error 'DEPORTE_IMAGEN_GUARDAR' $invalidImage 51000 'Imagen SQL rechaza contenido vacío'
+    $invalidImage=$imageValues.Clone(); $invalidImage.imagen_tipo='image/gif'
+    $null = Expect-Error 'DEPORTE_IMAGEN_GUARDAR' $invalidImage 51000 'Imagen SQL rechaza tipo no permitido'
+    $invalidImage=$imageValues.Clone(); $invalidImage.imagen=[byte[]]::new(5242881)
+    $null = Expect-Error 'DEPORTE_IMAGEN_GUARDAR' $invalidImage 51000 'Imagen SQL rechaza tamaño excesivo'
 } catch {
     $failure = $_.Exception.Message
     Write-Error -Message ('FAIL SQL ' + $failure) -ErrorAction Continue

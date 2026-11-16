@@ -19,6 +19,8 @@ IF COL_LENGTH('dbo.HORARIO', 'DIA_ISO') IS NULL
     ALTER TABLE dbo.HORARIO ADD DIA_ISO tinyint NULL;
 IF COL_LENGTH('dbo.HORARIO', 'ACTIVO') IS NULL
     ALTER TABLE dbo.HORARIO ADD ACTIVO bit NOT NULL CONSTRAINT DF_HORARIO_ACTIVO DEFAULT (1) WITH VALUES;
+IF COL_LENGTH('dbo.DEPORTE', 'ACTIVO') IS NULL
+    ALTER TABLE dbo.DEPORTE ADD ACTIVO bit NOT NULL CONSTRAINT DF_DEPORTE_ACTIVO DEFAULT (1) WITH VALUES;
 COMMIT TRANSACTION;
 GO
 -- DIA_SEMANA original es datetime. Se conserva; el módulo nuevo usa lunes=1...domingo=7.
@@ -39,7 +41,13 @@ IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'IX_HORARIO_CLASE_ACTIVO' 
 IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'IX_RESERVA_CLASE' AND object_id = OBJECT_ID('dbo.RESERVA'))
     CREATE INDEX IX_RESERVA_CLASE ON dbo.RESERVA(ID_CLASE) INCLUDE (ID_USUARIO, ESTATUS_RESERVA);
 GO
--- Catálogo mínimo. Nunca sustituye registros ni identificadores existentes.
+-- Catálogo inicial una sola vez. Reaplicar no recrea deportes renombrados por el administrador.
+IF NOT EXISTS (SELECT 1 FROM sys.extended_properties WHERE class = 1 AND major_id = OBJECT_ID('dbo.DEPORTE')
+               AND minor_id = 0 AND name = 'ADSPORT_CatalogoInicial')
+BEGIN
+BEGIN TRANSACTION;
+-- Una instalación previa de 001 ya realizó su semilla: solo se registra el marcador.
+IF OBJECT_ID('dbo.ENTRENADOR_CLASE_GUARDAR', 'P') IS NULL
 INSERT dbo.DEPORTE (NOMBRE_DEPORTE, DESCRIPCION, FECHA_UTIMA_MODIFICACION)
 SELECT s.Nombre, s.Descripcion, GETDATE()
 FROM (VALUES
@@ -50,6 +58,10 @@ FROM (VALUES
     (N'Natación', N'Clases de natación')
 ) s(Nombre, Descripcion)
 WHERE NOT EXISTS (SELECT 1 FROM dbo.DEPORTE d WHERE UPPER(LTRIM(RTRIM(d.NOMBRE_DEPORTE))) = UPPER(s.Nombre));
+EXEC sys.sp_addextendedproperty @name = N'ADSPORT_CatalogoInicial', @value = 1,
+    @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N'DEPORTE';
+COMMIT TRANSACTION;
+END;
 GO
 CREATE OR ALTER PROCEDURE dbo.DEPORTE_LISTAR
     @numeroError int = 0 OUTPUT,
@@ -61,7 +73,7 @@ BEGIN
     SET @respuesta = 'Deportes consultados correctamente.';
     BEGIN TRY
         SELECT ID_DEPORTE, NOMBRE_DEPORTE FROM dbo.DEPORTE
-        WHERE NULLIF(LTRIM(RTRIM(NOMBRE_DEPORTE)), '') IS NOT NULL
+        WHERE ACTIVO = 1 AND NULLIF(LTRIM(RTRIM(NOMBRE_DEPORTE)), '') IS NOT NULL
         ORDER BY NOMBRE_DEPORTE, ID_DEPORTE;
     END TRY
     BEGIN CATCH
@@ -74,13 +86,16 @@ CREATE OR ALTER PROCEDURE dbo.ENTRENADOR_CLASES_CONSULTAR
     @IdEntrenador bigint = NULL,
     @Deporte nvarchar(50) = NULL,
     @numeroError int = 0 OUTPUT,
-    @respuesta varchar(1000) = NULL OUTPUT
+    @respuesta varchar(1000) = NULL OUTPUT,
+    @IdDeporte bigint = NULL
 AS
 BEGIN
     SET NOCOUNT ON;
     SET @numeroError = 0;
     SET @respuesta = 'Clases consultadas correctamente.';
     BEGIN TRY
+    IF @IdDeporte IS NOT NULL AND @IdDeporte <= 0
+        THROW 51000, N'El identificador del deporte debe ser positivo.', 1;
     -- NULL corresponde al catálogo público: solo clases publicadas de entrenadores activos.
     IF @IdEntrenador IS NOT NULL AND NOT EXISTS (
         SELECT 1 FROM dbo.USUARIO u JOIN dbo.ROL r ON r.ID_ROL = u.ID_ROL
@@ -88,7 +103,7 @@ BEGIN
           AND UPPER(LTRIM(RTRIM(u.ESTATUS))) = 'ACTIVO')
         THROW 51003, N'La cuenta no tiene acceso como entrenador activo.', 1;
 
-    SELECT c.ID_CLASE, c.ID_DEPORTE, d.NOMBRE_DEPORTE, c.NOMBRE_CLASE, c.DESCRIPCION,
+    SELECT c.ID_CLASE, c.ID_DEPORTE, d.NOMBRE_DEPORTE, CONVERT(bit, ISNULL(d.ACTIVO, 0)) AS DEPORTE_ACTIVO, c.NOMBRE_CLASE, c.DESCRIPCION,
            c.PRECIO, c.CUPO_MAXIMO, c.DISPONIBLE, c.UBICACION,
            LTRIM(RTRIM(CONCAT(u.NOMBRE, ' ', u.APELLIDO_PATERNO, ' ', u.APELLIDO_MATERNO))) AS ENTRENADOR_NOMBRE,
            CONVERT(bit, CASE WHEN DATALENGTH(u.FOTO) > 0 THEN 1 ELSE 0 END) AS TIENE_FOTO,
@@ -101,13 +116,14 @@ BEGIN
     JOIN dbo.ROL r ON r.ID_ROL = u.ID_ROL
     LEFT JOIN dbo.DEPORTE d ON d.ID_DEPORTE = c.ID_DEPORTE
     WHERE (@IdEntrenador IS NOT NULL AND c.ID_ENTRENADOR = @IdEntrenador
-           OR @IdEntrenador IS NULL AND c.DISPONIBLE = 1
+           OR @IdEntrenador IS NULL AND c.DISPONIBLE = 1 AND d.ACTIVO = 1
               AND UPPER(LTRIM(RTRIM(r.NOMBRE_ROL))) = 'ENTRENADOR'
               AND UPPER(LTRIM(RTRIM(u.ESTATUS))) = 'ACTIVO'
               AND c.PRECIO >= 0 AND c.CUPO_MAXIMO > 0
               AND EXISTS (SELECT 1 FROM dbo.HORARIO h WHERE h.ID_CLASE = c.ID_CLASE AND h.ACTIVO = 1
                           AND h.DIA_ISO BETWEEN 1 AND 7 AND h.HORA_INICIO < h.HORA_FIN))
-      AND (@Deporte IS NULL OR LTRIM(RTRIM(d.NOMBRE_DEPORTE)) = @Deporte);
+      AND (@IdDeporte IS NOT NULL AND c.ID_DEPORTE = @IdDeporte
+           OR @IdDeporte IS NULL AND (@Deporte IS NULL OR LTRIM(RTRIM(d.NOMBRE_DEPORTE)) = @Deporte));
 
     SELECT * FROM #Clases ORDER BY NOMBRE_DEPORTE, NOMBRE_CLASE, ID_CLASE;
     SELECT h.ID_CLASE, h.DIA_ISO, h.HORA_INICIO, h.HORA_FIN
@@ -170,6 +186,9 @@ BEGIN
             THROW 51004, N'La clase no está disponible en tu cuenta.', 1;
         IF NOT EXISTS (SELECT 1 FROM dbo.DEPORTE WHERE ID_DEPORTE = @IdDeporte)
             THROW 51000, N'Selecciona un deporte existente.', 1;
+        IF (@IdClase IS NULL OR @Disponible = 1) AND NOT EXISTS (
+            SELECT 1 FROM dbo.DEPORTE WITH (UPDLOCK, HOLDLOCK) WHERE ID_DEPORTE = @IdDeporte AND ACTIVO = 1)
+            THROW 51000, N'El deporte está inactivo. Selecciona un deporte activo para crear o publicar la clase.', 1;
         IF @IdClase IS NOT NULL AND @CupoMaximo < (
             SELECT COUNT(DISTINCT ID_USUARIO) FROM dbo.RESERVA WITH (UPDLOCK, HOLDLOCK)
             WHERE ID_CLASE = @IdClase AND UPPER(LTRIM(RTRIM(ESTATUS_RESERVA))) IN
@@ -235,6 +254,9 @@ BEGIN
             THROW 51004, N'La clase no está disponible en tu cuenta.', 1;
         IF @Disponible = 1
         BEGIN
+            IF NOT EXISTS (SELECT 1 FROM dbo.CLASE c JOIN dbo.DEPORTE d WITH (UPDLOCK, HOLDLOCK) ON d.ID_DEPORTE = c.ID_DEPORTE
+                           WHERE c.ID_CLASE = @IdClase AND d.ACTIVO = 1)
+                THROW 51000, N'El deporte está inactivo. Cambia la clase a un deporte activo antes de publicarla.', 1;
             IF EXISTS (SELECT 1 FROM dbo.CLASE WHERE ID_CLASE = @IdClase AND
                        (PRECIO IS NULL OR PRECIO < 0 OR CUPO_MAXIMO IS NULL OR CUPO_MAXIMO < 1 OR
                         NULLIF(LTRIM(RTRIM(DESCRIPCION)), '') IS NULL OR NULLIF(LTRIM(RTRIM(NOMBRE_CLASE)), '') IS NULL OR ID_DEPORTE IS NULL))
@@ -283,6 +305,7 @@ BEGIN
     SET @respuesta = 'Fotografía consultada correctamente.';
     BEGIN TRY
     SELECT u.FOTO FROM dbo.CLASE c JOIN dbo.USUARIO u ON u.ID_USUARIO = c.ID_ENTRENADOR
+    JOIN dbo.DEPORTE d ON d.ID_DEPORTE = c.ID_DEPORTE AND d.ACTIVO = 1
     JOIN dbo.ROL r ON r.ID_ROL = u.ID_ROL
     WHERE c.ID_CLASE = @IdClase AND c.DISPONIBLE = 1 AND c.PRECIO >= 0 AND c.CUPO_MAXIMO > 0
       AND UPPER(LTRIM(RTRIM(r.NOMBRE_ROL))) = 'ENTRENADOR'

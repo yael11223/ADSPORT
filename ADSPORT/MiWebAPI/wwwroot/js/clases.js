@@ -7,6 +7,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     const dias = ["", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
     const moneda = new Intl.NumberFormat("es-MX", { style: "currency", currency: "MXN" });
     let peticion;
+    let deportes = [];
+    let deporteNoDisponible = false;
 
     function elemento(tag, clase, texto) {
         const nodo = document.createElement(tag);
@@ -22,17 +24,24 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     function portada() {
-        const deporte = filtro.value;
+        const seleccionado = deportes.find(d => String(d.idDeporte) === filtro.value);
+        const deporte = seleccionado?.nombreDeporte || "";
         document.getElementById("titulo-tenis").textContent = deporte || "DEPORTES";
         document.title = `Clases de ${deporte || "deportes"} | ADSPORT`;
         const nombreNormalizado = deporte.toLocaleLowerCase("es");
-        document.querySelector(".tenis-info").hidden = nombreNormalizado !== "tenis";
+        document.querySelector(".tenis-info").hidden = !seleccionado;
+        document.querySelector(".tenis-beneficios").hidden = nombreNormalizado !== "tenis";
+        document.querySelector(".tenis-info h2").textContent = "CONOCE " + deporte.toLocaleUpperCase("es");
+        document.querySelector(".tenis-info__encabezado p").textContent = seleccionado?.descripcion ||
+            "Encuentra clases, conoce a los entrenadores y consulta sus horarios disponibles.";
         document.querySelector(".tenis-hero__contenido p").textContent =
-            `Encuentra tu próxima clase${deporte ? " de " + deporte : " deportiva"} y conoce sus horarios y entrenadores.`;
+            seleccionado?.descripcion || `Encuentra tu próxima clase${deporte ? " de " + deporte : " deportiva"} y conoce sus horarios y entrenadores.`;
         const fotos = { tenis: "tenis.png", boxeo: "boxeo.png", baloncesto: "baloncesto.png" };
         const foto = document.querySelector(".tenis-hero__imagen");
-        foto.src = fotos[nombreNormalizado] ? `/img/nosotros/${fotos[nombreNormalizado]}` : "/Accet/Inicio.jpg";
+        foto.onerror = () => { foto.onerror = null; foto.src = "/Accet/Inicio.jpg"; };
+        foto.src = seleccionado?.imagenUrl || (fotos[nombreNormalizado] ? `/img/nosotros/${fotos[nombreNormalizado]}` : "/Accet/Inicio.jpg");
         foto.alt = deporte ? `ADSPORT: ${deporte}` : "Deportes ADSPORT";
+        document.querySelector(".tenis-hero__inferior span").textContent = "ENTRENA A TU RITMO";
     }
 
     function tarjeta(clase) {
@@ -71,8 +80,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         tabla.replaceChildren();
         catalogo.setAttribute("aria-busy", "true");
         portada();
+        if (deporteNoDisponible) {
+            estado.textContent = "Este deporte no está disponible. Selecciona otro para consultar sus clases.";
+            document.getElementById("titulo-tenis").textContent = "DEPORTE NO DISPONIBLE";
+            catalogo.setAttribute("aria-busy", "false");
+            return;
+        }
         try {
-            const clases = await obtener(`/api/Clases?deporte=${encodeURIComponent(filtro.value)}`, signal);
+            const clases = await obtener("/api/Clases" + (filtro.value ? "?idDeporte=" + encodeURIComponent(filtro.value) : ""), signal);
             for (const clase of clases) {
                 catalogo.append(tarjeta(clase));
                 const fila = elemento("tr");
@@ -101,18 +116,27 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     filtro.addEventListener("change", () => {
+        deporteNoDisponible = false;
         const url = new URL(window.location.href);
-        url.searchParams.set("deporte", filtro.value || "todos");
+        const seleccionado = deportes.find(d => String(d.idDeporte) === filtro.value);
+        if (seleccionado) url.searchParams.set("idDeporte", seleccionado.idDeporte);
+        else url.searchParams.delete("idDeporte");
+        url.searchParams.set("deporte", seleccionado?.nombreDeporte || "todos");
         window.history.replaceState(null, "", url);
+        window.dispatchEvent(new Event("adsport:deporte-cambiado"));
         cargar();
     });
     document.getElementById("recargarClases").addEventListener("click", cargar);
     try {
-        const deportes = await obtener("/api/Clases/deportes");
-        for (const deporte of deportes) filtro.add(new Option(deporte.nombreDeporte, deporte.nombreDeporte));
-        const seleccionado = new URLSearchParams(window.location.search).get("deporte") || "Tenis";
-        filtro.value = seleccionado.toLowerCase() === "todos" ? "" :
-            [...filtro.options].find(opcion => opcion.value.localeCompare(seleccionado, "es", { sensitivity: "base" }) === 0)?.value || "";
+        deportes = await obtener("/api/Deporte");
+        for (const deporte of deportes) filtro.add(new Option(deporte.nombreDeporte, String(deporte.idDeporte)));
+        const parametros = new URLSearchParams(window.location.search);
+        const idSolicitado = parametros.get("idDeporte");
+        const nombreSolicitado = parametros.get("deporte") || "Tenis";
+        const seleccionado = idSolicitado !== null ? deportes.find(d => String(d.idDeporte) === idSolicitado) :
+            deportes.find(d => d.nombreDeporte.localeCompare(nombreSolicitado, "es", { sensitivity: "base" }) === 0);
+        deporteNoDisponible = !seleccionado && (idSolicitado !== null || (parametros.has("deporte") && nombreSolicitado.toLowerCase() !== "todos"));
+        filtro.value = seleccionado ? String(seleccionado.idDeporte) : "";
         await cargar();
     } catch (error) {
         estado.textContent = error.message;

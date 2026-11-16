@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 
 <head>
@@ -17,6 +17,7 @@
 
     <!-- ESTILOS -->
     <link rel="stylesheet" href="css/indexUsuario.css">
+    <link rel="stylesheet" href="/css/deportes-home.css">
     <!-- ESTILOS DEL HEADER Y FOOTER -->
     <link rel="stylesheet" href="/css/componentes.css">
 </head>
@@ -318,8 +319,8 @@
                     </p>
 
                     <h2>
-                        RESERVA<br>
-                        <span>INMEDIATA.</span>
+                        TU SIGUIENTE<br>
+                        <span>ENTRENAMIENTO.</span>
                     </h2>
 
                     <p class="reserva-description">
@@ -330,12 +331,10 @@
                         tu próximo reto.
                     </p>
 
-                    <button type="button"
-                            class="reserva-button"
-                            id="btnVerHorarios">
+                    <a href="/tenis.html?deporte=todos" class="reserva-button" id="btnVerHorarios">
                         VER HORARIOS DISPONIBLES
                         <span aria-hidden="true">→</span>
-                    </button>
+                    </a>
 
                 </div>
 
@@ -384,257 +383,19 @@
 
                 <p>
                     Explora nuestras actividades deportivas.
-                    Desliza para descubrir cada experiencia.
+                    Selecciona una disciplina para consultar sus clases y horarios.
                 </p>
 
             </div>
 
 
-            <!-- CONTENEDOR DE TARJETAS APILADAS -->
-            <div class="clases-stack"
-                 id="clasesContainer">
-
-                <!-- =========================================
-                TARJETA 1: BALONCESTO
-                ========================================= -->
-
-                <article class="clase-card stack-card"
-                         data-card="1"
-                         style="--card-index: 0;">
-
-                    <div class="stack-card-inner">
-
-                        <!-- IMAGEN -->
-                        <div class="clase-image">
-
-                            <img src="https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=1200&q=85"
-                                 alt="Jugadores de baloncesto"
-                                 loading="lazy">
-
-                            <span class="clase-badge">
-                                DISPONIBLE
-                            </span>
-
-                            <span class="card-number">
-                                01 / 03
-                            </span>
-
-                        </div>
-
-
-                        <!-- INFORMACIÓN -->
-                        <div class="clase-content">
-
-                            <span class="clase-category">
-                                DEPORTE DE EQUIPO
-                            </span>
-
-                            <h3>BALONCESTO</h3>
-
-                            <p class="clase-description">
-                                Mejora tu coordinación, velocidad
-                                y trabajo en equipo mientras
-                                disfrutas de cada entrenamiento.
-                            </p>
-
-                            <p class="clase-entrenador">
-                                Entrenador: Por asignar
-                            </p>
-
-                            <div class="clase-details">
-
-                                <div class="clase-detail">
-                                    <span>📅</span>
-                                    <span>Martes</span>
-                                </div>
-
-                                <div class="clase-detail">
-                                    <span>🕒</span>
-                                    <span>10:00 AM</span>
-                                </div>
-
-                                <div class="clase-detail">
-                                    <span>👥</span>
-                                    <span>8 lugares disponibles</span>
-                                </div>
-
-                            </div>
-
-                            <button type="button"
-                                    class="clase-button"
-                                    data-clase="baloncesto">
-                                RESERVAR AHORA
-                                <span aria-hidden="true">→</span>
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                </article>
-
-
-                <!-- =========================================
-                TARJETA 2: BOXEO
-                ========================================= -->
-
-                <article class="clase-card stack-card"
-                         data-card="2"
-                         style="--card-index: 1;">
-
-                    <div class="stack-card-inner">
-
-                        <!-- IMAGEN -->
-                        <div class="clase-image">
-
-                            <img src="https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?auto=format&fit=crop&w=1200&q=85"
-                                 alt="Entrenamiento de boxeo"
-                                 loading="lazy">
-
-                            <span class="clase-badge">
-                                DISPONIBLE
-                            </span>
-
-                            <span class="card-number">
-                                02 / 03
-                            </span>
-
-                        </div>
-
-
-                        <!-- INFORMACIÓN -->
-                        <div class="clase-content">
-
-                            <span class="clase-category">
-                                DEPORTE DE CONTACTO
-                            </span>
-
-                            <h3>BOXEO</h3>
-
-                            <p class="clase-description">
-                                Desarrolla fuerza, resistencia
-                                y disciplina con entrenamientos
-                                diseñados para superar tus límites.
-                            </p>
-
-                            <p class="clase-entrenador">
-                                Entrenador: Por asignar
-                            </p>
-
-                            <div class="clase-details">
-
-                                <div class="clase-detail">
-                                    <span>📅</span>
-                                    <span>Miércoles</span>
-                                </div>
-
-                                <div class="clase-detail">
-                                    <span>🕒</span>
-                                    <span>12:00 PM</span>
-                                </div>
-
-                                <div class="clase-detail">
-                                    <span>👥</span>
-                                    <span>5 lugares disponibles</span>
-                                </div>
-
-                            </div>
-
-                            <button type="button"
-                                    class="clase-button"
-                                    data-clase="boxeo">
-                                RESERVAR AHORA
-                                <span aria-hidden="true">→</span>
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                </article>
-
-
-                <!-- =========================================
-                TARJETA 3: TENIS
-                ========================================= -->
-
-                <article class="clase-card stack-card"
-                         data-card="3"
-                         style="--card-index: 2;">
-
-                    <div class="stack-card-inner">
-
-                        <!-- IMAGEN -->
-                        <div class="clase-image">
-
-                            <img src="https://images.unsplash.com/photo-1622279457486-62dcc4a431d6?auto=format&fit=crop&w=1200&q=85"
-                                 alt="Partido de tenis"
-                                 loading="lazy">
-
-                            <span class="clase-badge">
-                                DISPONIBLE
-                            </span>
-
-                            <span class="card-number">
-                                03 / 03
-                            </span>
-
-                        </div>
-
-
-                        <!-- INFORMACIÓN -->
-                        <div class="clase-content">
-
-                            <span class="clase-category">
-                                DEPORTE INDIVIDUAL
-                            </span>
-
-                            <h3>TENIS</h3>
-
-                            <p class="clase-description">
-                                Perfecciona tu técnica,
-                                mejora tus reflejos y disfruta
-                                de una experiencia deportiva dinámica.
-                            </p>
-
-                            <p class="clase-entrenador">
-                                Entrenador: Por asignar
-                            </p>
-
-                            <div class="clase-details">
-
-                                <div class="clase-detail">
-                                    <span>📅</span>
-                                    <span>Jueves</span>
-                                </div>
-
-                                <div class="clase-detail">
-                                    <span>🕒</span>
-                                    <span>4:00 PM</span>
-                                </div>
-
-                                <div class="clase-detail">
-                                    <span>👥</span>
-                                    <span>3 lugares disponibles</span>
-                                </div>
-
-                            </div>
-
-                            <button type="button"
-                                    class="clase-button"
-                                    data-clase="tenis">
-                                RESERVAR AHORA
-                                <span aria-hidden="true">→</span>
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                </article>
-
+            <div class="deportes-home-heading">
+                <p id="estadoDeportesHome" role="status" aria-live="polite">Consultando disciplinas de ADSPORT?</p>
+                <button type="button" class="deportes-home-refresh" id="recargarDeportesHome">Actualizar disciplinas ?</button>
             </div>
-
+            <!-- Las disciplinas se consultan desde el cat?logo; se conserva el efecto de tarjetas de Home.js. -->
+            <div class="clases-stack deportes-home-catalogo deportes-home-catalogo--vacio" id="clasesContainer" aria-busy="true"></div>
+            <noscript><p class="clases-nota">Activa JavaScript para consultar las disciplinas de ADSPORT.</p></noscript>
 
             <!-- INDICADOR FINAL -->
             <div class="clases-end">
@@ -650,11 +411,7 @@
             </div>
 
 
-            <p class="clases-nota">
-                * Los horarios y lugares mostrados son ejemplos
-                de diseño. La disponibilidad real se consultará
-                posteriormente mediante la API de ADSPORT.
-            </p>
+            <p class="clases-nota">Consulta en cada disciplina sus clases, entrenadores y horarios publicados.</p>
 
         </section>
 
@@ -757,6 +514,7 @@
     <!-- JAVASCRIPT -->
     <script src="js/Home.js"></script>
     <script src="/js/layout.js"></script>
+    <script src="/js/deportes-home.js"></script>
 
 </body>
 </html>

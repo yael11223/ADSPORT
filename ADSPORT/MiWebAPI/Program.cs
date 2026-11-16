@@ -27,6 +27,7 @@ builder.Services.AddScoped<VerificacionData>();
 builder.Services.AddScoped<LoginUsuarioData>();
 builder.Services.AddScoped<IEntrenadorCuentaData, EntrenadorCuentaData>();
 builder.Services.AddScoped<ClaseData>();
+builder.Services.AddScoped<DeporteData>();
 builder.Services.AddScoped<IAuthorizationHandler, EntrenadorAuthorizationHandler>();
 builder.Services.AddAntiforgery(options =>
 {
