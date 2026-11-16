@@ -171,7 +171,7 @@ namespace ADSPORT.Data
         // ========================================
 
         public async Task<RespuestaOperacion> Crear(
-            Usuario objeto)
+            Usuario objeto, string passwordHash)
         {
             using (var con = new SqlConnection(conexion))
             {
@@ -183,6 +183,8 @@ namespace ADSPORT.Data
 
                 cmd.Parameters.AddWithValue(
                     "@id_rol", objeto.IdRol);
+
+                cmd.Parameters.Add("@password_hash", SqlDbType.VarChar, 60).Value = passwordHash;
 
                 cmd.Parameters.AddWithValue(
                     "@nombre", objeto.Nombre);
@@ -247,10 +249,11 @@ namespace ADSPORT.Data
                 }
                 catch (Exception ex)
                 {
+                    Console.Error.WriteLine(ex);
                     return new RespuestaOperacion
                     {
-                        NumeroError = -1,
-                        Respuesta = ex.Message
+                        NumeroError = ex is SqlException sqlException ? sqlException.Number : -1,
+                        Respuesta = "No fue posible registrar al empleado. Revisa la conexión y las migraciones SQL."
                     };
                 }
             }

@@ -1,215 +1,108 @@
 ﻿<!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#090909">
     <title>Perfil Entrenador | ADSPORT</title>
-
-    <!-- FUENTES -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-    <!-- BOOTSTRAP 5.3 & ESTILOS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/Perfil.css">
+    <link rel="stylesheet" href="/css/Perfil.css">
     <link rel="stylesheet" href="/css/componentes.css">
+    <link rel="stylesheet" href="/css/entrenador.css">
 </head>
-
-<body class="profile-page">
-
-    <!-- ENCABEZADO -->
+<body class="profile-page trainer-page">
     <div id="contenedor-header"></div>
-
-    <!-- CONTENIDO PRINCIPAL DEL PERFIL -->
     <main class="container profile-container py-5">
+        <header class="profile-welcome">
+            <div>
+                <span class="profile-eyebrow">ADSPORT / ÁREA DE ENTRENADORES</span>
+                <h1 class="profile-main-title">TU PASIÓN.<br><span>TUS CLASES.</span></h1>
+                <p class="profile-main-description">Gestiona tus disciplinas, organiza tus horarios y prepara el siguiente entrenamiento.</p>
+            </div>
+            <button type="button" class="trainer-button trainer-button--quiet" id="btnActualizarEntrenador">Actualizar panel ↻</button>
+        </header>
+        <div id="avisoEntrenador" class="trainer-notice" role="status" aria-live="polite">Cargando tu panel…</div>
+        <a id="accesoEntrenador" href="/loginEntrenador.html" class="trainer-access-link" hidden>Acceder con una cuenta de entrenador →</a>
+        <noscript><p class="trainer-notice">Activa JavaScript para consultar y administrar tus clases.</p></noscript>
 
-        <!-- DASHBOARD GRID -->
-        <div class="row g-4 align-items-stretch">
-
-            <!-- COLUMNA IZQUIERDA: FOTO, NOMBRE Y DISCIPLINAS -->
-            <div class="col-12 col-lg-4">
-                <div class="profile-card text-center">
+        <!-- Se conserva el perfil y las tarjetas existentes, conectados ahora a la sesión real. -->
+        <div class="row g-4 align-items-stretch" id="panelEntrenador" hidden>
+            <aside class="col-12 col-lg-4">
+                <section class="profile-card text-center" aria-labelledby="lblNombreEntrenador">
                     <div class="avatar-wrapper">
-                        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=500&q=80" alt="Foto Entrenador" class="profile-avatar">
-                        <span class="status-badge active"><i class="status-dot"></i> Activo</span>
+                        <img src="/Accet/perfil.png" alt="Tu fotografía de perfil" class="profile-avatar" id="fotoEntrenador" width="180" height="180">
+                        <span class="status-badge" id="estadoEntrenador">Consultando estado</span>
                     </div>
-                    <h2 class="user-name mt-3" id="lblNombreEntrenador">Valeria Gómez</h2>
+                    <h2 class="user-name mt-3" id="lblNombreEntrenador">Entrenador</h2>
                     <p class="user-role">ENTRENADOR ADSPORT</p>
-
-                    <div class="disciplines-container mt-2">
-                        <span class="discipline-tag">Tenis</span>
-                        <span class="discipline-tag">Boxeo</span>
+                    <div class="disciplines-container mt-2" id="disciplinasEntrenador"></div>
+                    <dl class="trainer-personal">
+                        <dt>Correo electrónico</dt><dd id="correoPerfilEntrenador">—</dd>
+                        <dt>Teléfono</dt><dd id="telefonoPerfilEntrenador">—</dd>
+                    </dl>
+                    <p class="trainer-muted">Para actualizar tus datos personales, contacta al administrador.</p>
+                    <button type="button" class="trainer-button trainer-button--quiet" id="btnAbrirPassword">Cambiar mi contraseña</button>
+                </section>
+                <section class="profile-card trainer-summary mt-4" aria-label="Resumen de actividad">
+                    <div><span>Clases disponibles</span><strong id="totalClasesDisponibles">0</strong></div>
+                    <div><span>Inscripciones activas</span><strong id="totalInscripciones">0</strong></div>
+                    <p class="trainer-muted">Las inscripciones se consultan de los registros existentes de tus clases.</p>
+                </section>
+            </aside>
+            <section class="col-12 col-lg-8" aria-labelledby="tituloMisClases">
+                <div class="profile-card trainer-classes-panel">
+                    <div class="trainer-section-heading">
+                        <div><span class="profile-eyebrow">MI ENTRENAMIENTO</span><h2 class="section-title mb-0" id="tituloMisClases">MIS CLASES</h2></div>
+                        <button type="button" class="trainer-button" id="btnNuevaClase" disabled>+ Nueva clase</button>
                     </div>
+                    <p class="trainer-muted">Publica una clase para mostrarla en el catálogo. Puedes desactivarla y conservar su información.</p>
+                    <div id="listaClasesEntrenador" class="trainer-class-list" aria-live="polite"></div>
                 </div>
-            </div>
-
-            <!-- COLUMNA CENTRAL: MIS CLASES Y TOTAL ALUMNOS -->
-            <div class="col-12 col-lg-5">
-                <div class="profile-card">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h3 class="section-title mb-0">MIS CLASES IMPARTIDAS</h3>
-                        <button type="button" class="btn-add-class" data-bs-toggle="modal" data-bs-target="#modalNuevaClase">
-                            + Nueva Clase
-                        </button>
-                    </div>
-
-                    <!-- CLASE 1 -->
-                    <div class="class-item active-class-box">
-                        <div class="class-info">
-                            <span class="class-name">🎾 Tenis Avanzado</span>
-                            <span class="class-time">Lun y Mié | 5:00 - 7:00 p.m.</span>
-                        </div>
-                        <span class="badge-count">12 Alumnos</span>
-                    </div>
-
-                    <!-- CLASE 2 -->
-                    <div class="class-item active-class-box mt-3">
-                        <div class="class-info">
-                            <span class="class-name">🥊 Boxeo Intermedio</span>
-                            <span class="class-time">Mar y Jue | 7:00 - 9:00 p.m.</span>
-                        </div>
-                        <span class="badge-count">8 Alumnos</span>
-                    </div>
-
-                    <div class="total-students-banner mt-4">
-                        <span>TOTAL ALUMNOS ACTIVOS:</span>
-                        <strong class="students-count">20 personas</strong>
-                    </div>
-                </div>
-            </div>
-
-            <!-- COLUMNA DERECHA: CÓDIGO QR -->
-            <div class="col-12 col-lg-3">
-                <div class="profile-card qr-card text-center">
-                    <h3 class="qr-title">CÓDIGO QR</h3>
-                    <div class="qr-box">
-                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=ADSPORT-TRAINER-001&color=090909" alt="Código QR de Acceso">
-                    </div>
-                    <p class="qr-hint">Acceso Staff / Instructor</p>
-                </div>
-            </div>
-
-            <!-- FILA INFERIOR: LISTAS DE ASISTENCIA POR DEPORTE/CLASE -->
-            <div class="col-12">
+            </section>
+            <section class="col-12" aria-labelledby="tituloAgendaEntrenador">
                 <div class="profile-card attendance-card">
-                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
-                        <h3 class="section-title mb-0">LISTA DE ASISTENCIA</h3>
-
-                        <!-- FILTRO POR DEPORTE -->
-                        <div class="class-selector-tabs">
-                            <button class="tab-btn active" onclick="filtrarAsistencia('tenis')">🎾 Tenis (5 p.m.)</button>
-                            <button class="tab-btn" onclick="filtrarAsistencia('boxeo')">🥊 Boxeo (7 p.m.)</button>
-                        </div>
-                    </div>
-
-                    <!-- ASISTENCIA CLASE TENIS -->
-                    <div id="asistenciaTenis" class="attendance-group">
-                        <div class="d-flex justify-content-between align-items-center time-header">
-                            <span class="time-label">Hoy - Tenis Cancha 1</span>
-                            <span class="time-value">5:00 p.m.</span>
-                        </div>
-                        <ul class="student-list">
-                            <li>Elienay Cantera Martínez <span class="badge bg-success float-end">Confirmado</span></li>
-                            <li>Carlos Mendoza Ríos <span class="badge bg-success float-end">Confirmado</span></li>
-                            <li>Sofía Torres Lara <span class="badge bg-warning text-dark float-end">Pendiente</span></li>
-                            <li>Miguel Ángel Pérez <span class="badge bg-success float-end">Confirmado</span></li>
-                        </ul>
-                    </div>
-
-                    <!-- ASISTENCIA CLASE BOXEO -->
-                    <div id="asistenciaBoxeo" class="attendance-group d-none">
-                        <div class="d-flex justify-content-between align-items-center time-header">
-                            <span class="time-label">Hoy - Ring Principal</span>
-                            <span class="time-value">7:00 p.m.</span>
-                        </div>
-                        <ul class="student-list">
-                            <li>Alejandro Ruiz <span class="badge bg-success float-end">Confirmado</span></li>
-                            <li>Mariana López <span class="badge bg-success float-end">Confirmado</span></li>
-                        </ul>
-                    </div>
+                    <div class="trainer-section-heading"><h2 class="section-title mb-0" id="tituloAgendaEntrenador">MI AGENDA SEMANAL</h2><span class="trainer-muted">Horarios de tus clases disponibles</span></div>
+                    <div id="agendaEntrenador" class="trainer-agenda"></div>
                 </div>
-            </div>
-
+            </section>
         </div>
-
     </main>
 
-    <!-- MODAL PARA AGREGAR NUEVA CLASE -->
-    <div class="modal fade" id="modalNuevaClase" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content modal-adsport">
-
-                <div class="modal-header border-0 pb-0">
-                    <h5 class="modal-title section-title w-100 mb-0">AGREGAR NUEVA CLASE</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                </div>
-
-                <div class="modal-body pt-4">
-                    <form id="formNuevaClase">
-
-                        <div class="mb-3">
-                            <label class="form-label modal-label">Nombre de la Clase</label>
-                            <input type="text" class="form-control modal-input" placeholder="Ej. Tenis Principiantes" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label modal-label">Deporte</label>
-                            <select class="form-select modal-input" required>
-                                <option value="1">Tenis</option>
-                                <option value="2">Boxeo</option>
-                                <option value="3">Baloncesto</option>
-                            </select>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-6 mb-3">
-                                <label class="form-label modal-label">Cupo Máximo</label>
-                                <input type="number" class="form-control modal-input" value="15" required>
-                            </div>
-                            <div class="col-6 mb-3">
-                                <label class="form-label modal-label">Precio ($)</label>
-                                <input type="number" step="0.01" class="form-control modal-input" value="250.00" required>
-                            </div>
-                        </div>
-
-                        <button type="submit" class="btn-modal-submit mt-3">
-                            GUARDAR CLASE
-                        </button>
-
-                    </form>
-                </div>
-
+    <!-- Se amplía el formulario de nueva clase existente para permitir también editarla. -->
+    <dialog id="modalNuevaClase" class="trainer-dialog modal-adsport" aria-labelledby="tituloEditorClase">
+        <div class="trainer-dialog-heading"><h2 class="section-title" id="tituloEditorClase">NUEVA CLASE</h2><button type="button" class="trainer-close" data-cerrar-dialog="modalNuevaClase" aria-label="Cerrar formulario de clase">×</button></div>
+        <form id="formNuevaClase">
+            <div class="trainer-form-grid">
+                <div class="trainer-field"><label for="claseNombre">Nombre de la clase</label><input id="claseNombre" name="nombreClase" type="text" minlength="2" maxlength="100" required></div>
+                <div class="trainer-field"><label for="claseDeporte">Deporte o disciplina</label><select id="claseDeporte" name="idDeporte" required><option value="">Selecciona un deporte</option></select></div>
+                <div class="trainer-field trainer-field--wide"><label for="claseDescripcion">Descripción</label><textarea id="claseDescripcion" name="descripcion" rows="3" maxlength="2000" required></textarea></div>
+                <div class="trainer-field"><label for="clasePrecio">Precio por clase (MXN)</label><input id="clasePrecio" name="precio" type="number" min="0" max="99999999.99" step="0.01" inputmode="decimal" required></div>
+                <div class="trainer-field"><label for="claseCupo">Capacidad máxima de alumnos</label><input id="claseCupo" name="cupoMaximo" type="number" min="1" max="10000" step="1" required></div>
+                <div class="trainer-field trainer-field--wide"><label for="claseUbicacion">Ubicación <span class="trainer-muted">(opcional)</span></label><input id="claseUbicacion" name="ubicacion" type="text" maxlength="100" placeholder="Ej. Cancha 1"></div>
             </div>
-        </div>
-    </div>
+            <fieldset class="trainer-schedules"><legend>Días y horarios</legend><p class="trainer-muted" id="ayudaHorarios">Agrega al menos un horario semanal. La hora final debe ser posterior a la inicial; tus clases disponibles no pueden cruzarse.</p><div id="horariosEditor"></div><button type="button" class="trainer-button trainer-button--quiet" id="btnAgregarHorario">+ Agregar horario</button></fieldset>
+            <label class="trainer-checkbox" for="claseDisponible"><input type="checkbox" id="claseDisponible" name="disponible" checked> Clase disponible en el catálogo</label>
+            <p id="avisoEditorClase" class="trainer-notice" role="alert" hidden></p>
+            <div class="trainer-dialog-actions"><button type="button" class="trainer-button trainer-button--quiet" data-cerrar-dialog="modalNuevaClase">Cancelar</button><button type="submit" class="trainer-button" id="btnGuardarClase">Guardar clase</button></div>
+        </form>
+    </dialog>
+
+    <dialog id="modalPasswordEntrenador" class="trainer-dialog trainer-dialog--small modal-adsport" aria-labelledby="tituloPasswordEntrenador">
+        <div class="trainer-dialog-heading"><h2 class="section-title" id="tituloPasswordEntrenador">CAMBIAR CONTRASEÑA</h2><button type="button" class="trainer-close" data-cerrar-dialog="modalPasswordEntrenador" aria-label="Cerrar cambio de contraseña">×</button></div>
+        <form id="formPasswordEntrenador">
+            <div class="trainer-field"><label for="passwordActual">Contraseña actual</label><input type="password" id="passwordActual" autocomplete="current-password" required></div>
+            <div class="trainer-field"><label for="passwordNueva">Contraseña nueva</label><input type="password" id="passwordNueva" autocomplete="new-password" minlength="8" required aria-describedby="ayudaPassword"></div>
+            <p class="trainer-muted" id="ayudaPassword">Usa 8 caracteres o más, con mayúscula, minúscula, número y símbolo. Máximo 72 bytes; los acentos y emojis pueden ocupar más de uno.</p>
+            <div class="trainer-field"><label for="confirmarPassword">Confirma la contraseña nueva</label><input type="password" id="confirmarPassword" autocomplete="new-password" minlength="8" required></div>
+            <p id="avisoPasswordEntrenador" class="trainer-notice" role="alert" hidden></p>
+            <div class="trainer-dialog-actions"><button type="button" class="trainer-button trainer-button--quiet" data-cerrar-dialog="modalPasswordEntrenador">Cancelar</button><button type="submit" class="trainer-button" id="btnGuardarPassword">Actualizar contraseña</button></div>
+        </form>
+    </dialog>
     <div id="contenedor-footer"></div>
-
-    <!-- BOOTSTRAP JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        function filtrarAsistencia(deporte) {
-            const tabs = document.querySelectorAll('.tab-btn');
-            tabs.forEach(t => t.classList.remove('active'));
-
-            const tabSeleccionada = event.target;
-            tabSeleccionada.classList.add('active');
-
-            if (deporte === 'tenis') {
-                document.getElementById('asistenciaTenis').classList.remove('d-none');
-                document.getElementById('asistenciaBoxeo').classList.add('d-none');
-            } else {
-                document.getElementById('asistenciaTenis').classList.add('d-none');
-                document.getElementById('asistenciaBoxeo').classList.remove('d-none');
-            }
-        }
-    </script>
-
-
-    <!-- Conserva los scripts que ya utiliza la página -->
-    <script src="/js/layout.js?v=1"></script>
+    <script src="/js/layout.js?v=6"></script>
+    <script src="/js/entrenador.js" defer></script>
 </body>
-
 </html>

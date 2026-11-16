@@ -1,0 +1,14 @@
+.catalogo-filtros { display: flex; align-items: center; flex-wrap: wrap; gap: 14px; margin-bottom: 24px; }
+.catalogo-filtros label { font-weight: 700; }
+.catalogo-filtros select { padding: 12px 16px; color: #fff; background: #151515; border: 1px solid #555; border-radius: 8px; font: inherit; }
+.catalogo-filtros select:focus-visible, .catalogo-filtros button:focus-visible { outline: 3px solid #ff6a00; outline-offset: 3px; }
+.catalogo-contenido { display: flex; flex-direction: column; gap: 14px; }
+.catalogo-contenido h3 { font-size: 1.6rem; margin: 0; overflow-wrap: anywhere; }
+.catalogo-contenido p { margin: 0; }
+.catalogo-descripcion { white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.6; }
+.catalogo-entrenador, .catalogo-cupos { color: #ccc; }
+.catalogo-precio { color: #ff8938; font-size: 1.2rem; }
+.catalogo-horarios { padding-left: 20px; line-height: 1.8; margin: 0; }
+#estadoCatalogo { color: #ccc; margin-bottom: 20px; }
+.tenis-info[hidden] { display: none; }
+@media (max-width: 600px) { .catalogo-filtros { align-items: stretch; flex-direction: column; } .catalogo-filtros select { width: 100%; } }

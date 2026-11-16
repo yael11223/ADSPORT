@@ -27,6 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const API_FOTO = "/api/Usuario/mi-foto";
 
     const FOTO_DEFAULT = "/Accet/perfil.png";
+    let esEntrenador = false;
 
     const PAGINA_LOGIN = "/loginUsuario.html";
 
@@ -365,6 +366,9 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             const usuario = await respuesta.json();
+            esEntrenador = (usuario.nombreRol || "").trim().toUpperCase() === "ENTRENADOR";
+            const enlacePerfil = document.getElementById("enlaceMiPerfil");
+            if (enlacePerfil) enlacePerfil.href = esEntrenador ? "/perfilEntrenador.html" : "/perfilCliente.html";
 
             // Obtener nombre real de la API.
             const nombreCompleto = (
@@ -513,14 +517,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
         try {
 
-            const respuesta = await fetch(API_LOGOUT, {
+            const csrf = await fetch("/api/Entrenador/csrf", { cache: "no-store" }).then(r => r.json());
+            const respuesta = await fetch(esEntrenador ? "/api/Entrenador/logout" : API_LOGOUT, {
 
                 method: "POST",
 
                 credentials: "same-origin",
 
                 headers: {
-                    "Accept": "application/json"
+                    "Accept": "application/json",
+                    "X-CSRF-TOKEN": csrf.token
                 }
             });
 
@@ -533,7 +539,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             actualizarMenuSesion(false);
 
-            window.location.replace(PAGINA_LOGIN);
+            window.location.replace(esEntrenador ? "/loginEntrenador.html" : PAGINA_LOGIN);
 
         } catch (error) {
 

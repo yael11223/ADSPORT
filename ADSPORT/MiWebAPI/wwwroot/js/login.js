@@ -13,9 +13,10 @@ formLogin.addEventListener("submit", async (evento) => {
   btnLogin.disabled = true;
   btnLogin.textContent = "Ingresando...";
   try {
+    const csrf = await fetch("/api/Auth/csrf", { cache: "no-store" }).then(r => r.json());
     const respuesta = await fetch("/api/Auth/login", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": csrf.token },
       body: JSON.stringify({ correo: correo.value.trim(), password: password.value })
     });
     const resultado = await respuesta.json();

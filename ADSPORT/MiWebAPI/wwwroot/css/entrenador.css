@@ -1,0 +1,61 @@
+/* Complementos del perfil existente; solo afectan al área de entrenadores. */
+.trainer-page [hidden] { display: none !important; }
+.trainer-page aside .profile-card { height: auto; }
+.trainer-page .avatar-wrapper { display: inline-flex; flex-direction: column; gap: 15px; }
+.trainer-page .profile-avatar { width: 164px; height: 164px; border: 2px solid #ff6a0080; box-shadow: 0 0 0 6px #ff6a0010; }
+.trainer-page .trainer-access-link { display: inline-block; color: #ff9a52; margin: 0 0 25px; font-size: 13px; }
+.trainer-page .trainer-button { display: inline-flex; justify-content: center; align-items: center; gap: 8px; border: 1px solid #ff6a00; border-radius: 8px; padding: 12px 18px; background: #ff6a00; color: #090909; font: 700 12px "Inter", sans-serif; cursor: pointer; min-height: 44px; }
+.trainer-page .trainer-button:hover { background: #ff8c38; border-color: #ff8c38; }
+.trainer-page .trainer-button--quiet { background: transparent; color: #ff9a52; }
+.trainer-page .trainer-button--quiet:hover { background: #ff6a001a; }
+.trainer-page .trainer-button:disabled { opacity: .5; cursor: not-allowed; }
+.trainer-page button:focus-visible, .trainer-page input:focus-visible, .trainer-page select:focus-visible, .trainer-page textarea:focus-visible { outline: 2px solid #ff6a00; outline-offset: 4px; }
+.trainer-page .trainer-muted { color: #aaa; font-size: 12px; line-height: 1.8; }
+.trainer-page .trainer-notice { padding: 15px 18px; background: #ff6a0010; border: 1px solid #ff6a0055; border-radius: 8px; color: #f1cfb4; font-size: 13px; line-height: 1.7; margin-bottom: 24px; }
+.trainer-page .trainer-notice--error { color: #ffbcb5; border-color: #c35449; }
+.trainer-page .trainer-personal { text-align: left; border-top: 1px solid #303030; margin-top: 25px; padding-top: 22px; overflow-wrap: anywhere; }
+.trainer-page .trainer-personal dt { color: #999; font-size: 11px; font-weight: 500; margin-bottom: 5px; }
+.trainer-page .trainer-personal dd { color: #eee; font-size: 13px; margin-bottom: 18px; }
+.trainer-page .trainer-summary > div { display: flex; justify-content: space-between; align-items: center; gap: 14px; margin-bottom: 18px; color: #ccc; font-size: 13px; }
+.trainer-page .trainer-summary strong { color: #ff6a00; font-size: 32px; font-family: "Barlow Condensed", sans-serif; }
+.trainer-page .trainer-section-heading { display: flex; justify-content: space-between; gap: 20px; align-items: center; flex-wrap: wrap; margin-bottom: 22px; }
+.trainer-page .trainer-section-heading .profile-eyebrow { margin-bottom: 8px; font-size: 9px; }
+.trainer-page .trainer-classes-panel { height: 100%; }
+.trainer-page .trainer-class-list { display: grid; gap: 18px; }
+.trainer-page .trainer-class { border: 1px solid #343434; border-radius: 12px; padding: 22px; background: #101010; overflow-wrap: anywhere; }
+.trainer-page .trainer-class--inactive { border-style: dashed; }
+.trainer-page .trainer-class__top { display: flex; justify-content: space-between; gap: 14px; flex-wrap: wrap; align-items: center; }
+.trainer-page .trainer-class h3 { font-family: "Barlow Condensed", sans-serif; font-size: 27px; font-weight: 700; color: #fff; margin: 10px 0; }
+.trainer-page .trainer-class__sport { color: #ff9a52; font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; }
+.trainer-page .trainer-class__status { border-radius: 20px; padding: 5px 10px; font-size: 10px; color: #9ce4b6; background: #22c55e18; }
+.trainer-page .trainer-class--inactive .trainer-class__status { color: #ccc; background: #ffffff12; }
+.trainer-page .trainer-class__description { color: #b8b8b8; font-size: 13px; line-height: 1.7; white-space: pre-wrap; }
+.trainer-page .trainer-class__details { display: flex; flex-wrap: wrap; gap: 12px 20px; color: #ddd; font-size: 12px; padding: 12px 0; border-block: 1px solid #303030; }
+.trainer-page .trainer-class__schedules { list-style: none; padding: 13px 0 0; margin: 0; color: #aaa; font-size: 12px; line-height: 1.9; }
+.trainer-page .trainer-class__actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+.trainer-page .trainer-empty { padding: 30px 20px; color: #aaa; border: 1px dashed #444; border-radius: 10px; font-size: 13px; text-align: center; line-height: 1.8; }
+.trainer-page .trainer-agenda { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; }
+.trainer-page .trainer-agenda-day { padding: 18px; border: 1px solid #303030; border-radius: 10px; }
+.trainer-page .trainer-agenda-day h3 { font-family: "Barlow Condensed", sans-serif; color: #ff9a52; font-size: 22px; margin-bottom: 14px; }
+.trainer-page .trainer-agenda-day p { font-size: 12px; color: #ddd; margin-bottom: 14px; overflow-wrap: anywhere; }
+.trainer-page .trainer-agenda-day small { display: block; color: #999; margin-top: 5px; }
+.trainer-page .trainer-dialog { width: min(760px, calc(100% - 28px)); max-height: calc(100dvh - 40px); padding: 28px; border: 1px solid #444; border-top: 3px solid #ff6a00; border-radius: 16px; background: #151515; color: #fff; overflow-y: auto; }
+.trainer-page .trainer-dialog--small { width: min(520px, calc(100% - 28px)); }
+.trainer-page .trainer-dialog::backdrop { background: #000c; backdrop-filter: blur(4px); }
+.trainer-page .trainer-dialog-heading { display: flex; justify-content: space-between; align-items: start; gap: 18px; margin-bottom: 25px; }
+.trainer-page .trainer-dialog-heading .section-title { margin: 0; }
+.trainer-page .trainer-close { border: 0; background: transparent; color: #ddd; font-size: 27px; line-height: 1; min-width: 36px; min-height: 36px; }
+.trainer-page .trainer-form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.trainer-page .trainer-field--wide { grid-column: 1 / -1; }
+.trainer-page .trainer-field { min-width: 0; margin-bottom: 15px; }
+.trainer-page .trainer-field label, .trainer-page .trainer-schedule-row label { display: block; color: #ccc; font-size: 12px; margin-bottom: 8px; }
+.trainer-page .trainer-field input, .trainer-page .trainer-field select, .trainer-page .trainer-field textarea, .trainer-page .trainer-schedule-row input, .trainer-page .trainer-schedule-row select { width: 100%; min-height: 44px; color-scheme: dark; border: 1px solid #444; border-radius: 7px; background: #090909; color: #fff; padding: 11px; font: 13px "Inter", sans-serif; }
+.trainer-page .trainer-field textarea { resize: vertical; }
+.trainer-page .trainer-schedules { border: 1px solid #3a3a3a; padding: 18px; border-radius: 10px; margin: 12px 0 22px; }
+.trainer-page .trainer-schedules legend { float: none; width: auto; padding-inline: 6px; color: #eee; font-size: 14px; }
+.trainer-page .trainer-schedule-row { display: grid; grid-template-columns: 1.3fr 1fr 1fr auto; align-items: end; gap: 10px; margin-bottom: 15px; }
+.trainer-page .trainer-schedule-row .trainer-button { padding-inline: 12px; }
+.trainer-page .trainer-checkbox { display: flex; align-items: center; gap: 12px; margin: 20px 0; color: #ddd; font-size: 13px; }
+.trainer-page .trainer-checkbox input { width: 18px; height: 18px; accent-color: #ff6a00; }
+.trainer-page .trainer-dialog-actions { display: flex; justify-content: end; flex-wrap: wrap; gap: 12px; margin-top: 25px; }
+@media (max-width: 600px) { .trainer-page .trainer-form-grid { grid-template-columns: 1fr; } .trainer-page .trainer-dialog { padding: 22px 18px; } .trainer-page .trainer-schedule-row { grid-template-columns: repeat(2, minmax(0, 1fr)); } .trainer-page .trainer-schedule-row > div:first-child { grid-column: 1 / -1; } .trainer-page .trainer-schedule-row .trainer-button { grid-column: 1 / -1; } .trainer-page .trainer-class { padding: 18px; } .trainer-page .profile-main-title { font-size: 56px; } }

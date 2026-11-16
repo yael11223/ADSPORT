@@ -77,6 +77,12 @@
                         <input id="entrenadorCorreo" name="correo" type="email" class="form-control employee-input" maxlength="120" placeholder="entrenador@empresa.com" required>
                     </div>
 
+                    <div class="mb-3" id="campoPasswordInicial">
+                        <label for="entrenadorPassword" class="form-label">Contraseña inicial</label>
+                        <input id="entrenadorPassword" type="password" class="form-control employee-input" minlength="8" maxlength="72" autocomplete="new-password" required aria-describedby="ayudaPasswordInicial">
+                        <small id="ayudaPasswordInicial">Mínimo 8 caracteres, mayúscula, minúscula, número y símbolo. Entrégala al empleado para su primer acceso.</small>
+                    </div>
+
                     <div class="mb-3">
                         <label for="entrenadorTelefono" class="form-label">Teléfono</label>
                         <input id="entrenadorTelefono" name="telefono" type="tel" class="form-control employee-input" maxlength="20" placeholder="Número de teléfono" required>

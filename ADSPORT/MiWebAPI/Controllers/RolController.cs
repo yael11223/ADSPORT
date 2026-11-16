@@ -1,11 +1,13 @@
 ﻿using ADSPORT.Data;
 using ADSPORT.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ADSPORT.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Policy = "SoloAdministrador")]
     public class RolController : ControllerBase
     {
         private readonly RolData _rolData;
@@ -33,6 +35,7 @@ namespace ADSPORT.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Post([FromBody] Rol objeto)
         {
             var (esExito, mensaje) = await _rolData.RegistrarRolAsync(objeto);
@@ -40,6 +43,7 @@ namespace ADSPORT.Controllers
         }
 
         [HttpPut("{id}")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Put(int id, [FromBody] Rol objeto)
         {
             objeto.IdRol = id; // Asegura que tome el ID enviado en la URL
@@ -48,6 +52,7 @@ namespace ADSPORT.Controllers
         }
 
         [HttpDelete("{id}")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
             var (esExito, mensaje) = await _rolData.EliminarRolAsync(id);
