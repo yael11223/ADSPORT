@@ -1,0 +1,212 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#080808">
+    <title>Reserva y Pago | ADSPORT</title>
+
+    <!-- GOOGLE FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- BOOTSTRAP 5.3 & ICONS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <!-- ESTILOS PERSONALIZADOS DE RESERVA -->
+    <link rel="stylesheet" href="css/reserva.css">
+</head>
+
+<body class="reserva-page">
+
+    <!-- ENCABEZADO / NAVBAR PRINCIPAL ADSPORT -->
+    <header class="nosotros-header">
+        <div class="container-fluid px-4 px-lg-5">
+            <div class="d-flex justify-content-between align-items-center">
+                <a href="index.html" class="brand-logo" aria-label="ADSPORT - Inicio">
+                    AD<span>SPORT</span>
+                </a>
+
+                <nav class="header-navigation" aria-label="Navegación principal">
+                    <a href="index.html">INICIO</a>
+                    <a href="nosotros.html">NOSOTROS</a>
+                    <a href="clases.html">CLASES</a>
+                    <a href="LoginUsuario.html">INICIAR SESIÓN</a>
+                    <a href="registro.html" class="header-cta">REGISTRARSE</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- SECCIÓN CINEMÁTICA A PANTALLA COMPLETA (100VH) -->
+    <main class="reserva-hero-section">
+
+        <!-- FONDOS ANIMADOS ADSPORT -->
+        <div class="story-background">
+            <div class="background-glow glow-orange"></div>
+            <div class="background-grid"></div>
+            <div class="background-noise"></div>
+        </div>
+
+        <div class="container-fluid story-container h-100 d-flex flex-column justify-content-center">
+
+            <!-- ======================================================
+                 PASO 1: RESUMEN DE LA ORDEN
+                 ====================================================== -->
+            <section id="paso-resumen" class="paso-container active">
+                <h1 class="main-page-title text-center">RESUMEN DE <span>LA ORDEN</span></h1>
+                <p class="story-subtitle text-center mb-5">CONFIRMA LOS DETALLES DE TU EXPERIENCIA DEPORTIVA</p>
+
+                <div class="row justify-content-center">
+                    <div class="col-12 col-lg-8">
+                        <div class="adsport-glass-panel">
+                            <div class="row g-4 align-items-center">
+                                <div class="col-12 col-md-6 border-end-md">
+                                    <div class="info-group">
+                                        <span class="info-label">CLASE SELECCIONADA</span>
+                                        <span class="info-value-big" id="resumen-clase">Tenis</span>
+                                    </div>
+                                    <div class="info-group mt-4">
+                                        <span class="info-label">HORARIO</span>
+                                        <span class="info-value" id="resumen-horario">7:00 p.m. - 9:00 p.m.</span>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-md-6 ps-md-4">
+                                    <div class="d-flex justify-content-between mb-3">
+                                        <span class="info-label">Subtotal</span>
+                                        <span class="info-value" id="resumen-subtotal">$350.00</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-3">
+                                        <span class="info-label">IVA (16%)</span>
+                                        <span class="info-value" id="resumen-iva">$0.00</span>
+                                    </div>
+                                    <div class="divider-line"></div>
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <span class="info-label-total">TOTAL A PAGAR</span>
+                                        <span class="total-monto-highlight" id="resumen-total">$350.00</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-center gap-4 mt-5 flex-wrap">
+                                <button id="btn-ir-pagar" class="btn-pill-adsport">
+                                    <span>Continuar al Pago</span>
+                                    <div class="icon-circle-adsport">
+                                        <i class="bi bi-arrow-right"></i>
+                                    </div>
+                                </button>
+
+                                <button id="btn-agregar-mas" class="btn-pill-adsport btn-secondary">
+                                    <span>Agregar Más Clases</span>
+                                    <div class="icon-circle-adsport">
+                                        <i class="bi bi-plus-lg"></i>
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ======================================================
+                 PASO 2: FORMULARIO DE PAGO
+                 ====================================================== -->
+            <section id="paso-pago" class="paso-container d-none">
+                <h1 class="main-page-title text-center">MÉTODO DE <span>PAGO</span></h1>
+                <p class="story-subtitle text-center mb-5">TRANSACCIÓN SEGURA Y ENCRIPTADA</p>
+
+                <div class="row justify-content-center">
+                    <div class="col-12 col-lg-7">
+                        <div class="adsport-glass-panel">
+                            <form id="form-pago" autocomplete="off">
+                                <div class="row g-4">
+                                    <div class="col-12">
+                                        <div class="campo-adsport">
+                                            <label for="numTarjeta">Número de Tarjeta</label>
+                                            <input type="text" id="numTarjeta" placeholder="1234 5678 9012 3456" maxlength="19" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                        <div class="campo-adsport">
+                                            <label for="fechaVenc">Fecha de Vencimiento</label>
+                                            <input type="text" id="fechaVenc" placeholder="MM/AA" maxlength="5" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                        <div class="campo-adsport">
+                                            <label for="ccv">Código de Seguridad (CCV)</label>
+                                            <input type="password" id="ccv" placeholder="123" maxlength="4" required>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top border-secondary">
+                                    <span class="info-label-total">MONTO TOTAL:</span>
+                                    <span class="total-monto-highlight" id="pago-monto">$350.00</span>
+                                </div>
+
+                                <div class="d-flex justify-content-center gap-4 mt-5 flex-wrap">
+                                    <button type="submit" id="btn-procesar-pago" class="btn-pill-adsport">
+                                        <span>Confirmar y Pagar</span>
+                                        <div class="icon-circle-adsport">
+                                            <i class="bi bi-check-lg"></i>
+                                        </div>
+                                    </button>
+
+                                    <button type="button" id="btn-cancelar-pago" class="btn-pill-adsport btn-secondary">
+                                        <span>Cancelar</span>
+                                        <div class="icon-circle-adsport">
+                                            <i class="bi bi-x-lg"></i>
+                                        </div>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ======================================================
+                 PASO 3: CONFIRMACIÓN Y CÓDIGO QR GIGANTE
+                 ====================================================== -->
+            <section id="paso-qr" class="paso-container d-none text-center">
+                <h1 class="main-page-title mb-2">TU ACCESO <span>QR</span></h1>
+                <p class="story-subtitle mb-4">PRESENTA ESTE CÓDIGO AL INGRESAR A LA INSTALACIÓN</p>
+
+                <div class="d-flex justify-content-center my-4">
+                    <div class="qr-glow-card">
+                        <div id="qrcode-wrapper" class="d-flex justify-content-center"></div>
+                    </div>
+                </div>
+
+                <p class="qr-subtext">CÓDIGO DE ACCESO ÚNICO · NO COMPARTIR</p>
+
+                <div class="mt-5">
+                    <a href="perfil.html" class="btn-pill-adsport">
+                        <span>Ver en Mi Perfil</span>
+                        <div class="icon-circle-adsport">
+                            <i class="bi bi-person-fill"></i>
+                        </div>
+                    </a>
+                </div>
+            </section>
+
+        </div>
+
+        <!-- MARCA DE AGUA INFERIOR ESTILO NOSOTROS.HTML -->
+        <div class="section-watermark" aria-hidden="true">
+            ADSPORT ACCESOS
+        </div>
+    </main>
+
+    <!-- GENERADOR DE QR -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
+    <script src="js/reserva.js" defer></script>
+</body>
+
+</html>

@@ -1,0 +1,481 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#ffffff">
+
+    <title>Crear cuenta | ADSPORT</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/registro.css">
+</head>
+
+<body>
+
+    <!-- BARRA SUPERIOR -->
+    <header class="barra-superior">
+        <a href="login.html" class="marca" aria-label="ADSPORT, inicio">
+            AD<span>SPORT</span>
+        </a>
+
+        <p class="enlace-login">
+            ¿Ya tienes una cuenta?
+            <a href="login.html">Inicia sesión</a>
+        </p>
+    </header>
+
+    <main class="contenedor">
+
+        <!-- ENCABEZADO -->
+        <section class="encabezado">
+            <span class="etiqueta">ÚNETE A ADSPORT</span>
+
+            <h1>CREA TU <span>CUENTA</span></h1>
+
+            <p>
+                Estás a un paso de comenzar.
+                Completa el proceso para formar parte de ADSPORT.
+            </p>
+        </section>
+
+        <div class="registro-layout">
+
+            <!-- PANEL DEPORTIVO -->
+            <aside class="panel-deportivo">
+                <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1000&q=85"
+                     alt="Instalaciones deportivas y entrenamiento">
+
+                <div class="contenido-deportivo">
+                    <p class="mini-etiqueta">TU RETO COMIENZA AQUÍ</p>
+
+                    <h2>
+                        SUPERA<br>
+                        TUS <span>LÍMITES.</span>
+                    </h2>
+
+                    <p>
+                        Cada meta comienza con una decisión.
+                        Da el primer paso hacia tu mejor versión.
+                    </p>
+                </div>
+            </aside>
+
+            <!-- PANEL DE REGISTRO -->
+            <section class="panel-formulario">
+
+                <!-- INDICADOR DE PROGRESO -->
+                <nav class="pasos" aria-label="Progreso del registro">
+
+                    <div class="paso activo" data-paso="1">
+                        <span class="numero-paso">1</span>
+                        <span>CORREO</span>
+                    </div>
+
+                    <div class="paso" data-paso="2">
+                        <span class="numero-paso">2</span>
+                        <span>VERIFICACIÓN</span>
+                    </div>
+
+                    <div class="paso" data-paso="3">
+                        <span class="numero-paso">3</span>
+                        <span>CUENTA</span>
+                    </div>
+
+                </nav>
+
+                <!-- ==================================
+                     PANTALLA 1: INTRODUCIR CORREO
+                     ================================== -->
+                <section class="pantalla pantalla-correo" id="pantallaCorreo">
+
+                    <div class="icono-verificacion" aria-hidden="true">
+                        ✉
+                    </div>
+
+                    <h2 class="titulo-formulario">
+                        Comencemos por tu correo
+                    </h2>
+
+                    <p class="descripcion-formulario">
+                        Introduce tu correo electrónico.
+                        Te enviaremos un código para comprobar que
+                        tienes acceso a esa dirección.
+                    </p>
+
+                    <form id="formCorreo" novalidate>
+
+                        <div class="grupo-campos">
+
+                            <div class="campo completo">
+                                <label for="correo">
+                                    Correo electrónico <span>*</span>
+                                </label>
+
+                                <input type="email"
+                                       id="correo"
+                                       name="correo"
+                                       placeholder="ejemplo@correo.com"
+                                       autocomplete="email"
+                                       required>
+                            </div>
+
+                        </div>
+
+                        <div class="aviso-correo">
+                            <span class="icono-aviso" aria-hidden="true">
+                                ✉
+                            </span>
+
+                            <div>
+                                <strong>Protege tu cuenta</strong>
+
+                                <p>
+                                    Utilizaremos este correo para verificar
+                                    tu identidad y continuar con el registro.
+                                </p>
+                            </div>
+                        </div>
+
+                        <p class="mensaje-error" id="errorCorreo" role="alert" hidden>
+                            Introduce una dirección de correo electrónico válida.
+                        </p>
+
+                        <button type="button"
+                                class="boton-principal"
+                                data-siguiente="pantallaVerificacion">
+                            ENVIAR CÓDIGO
+                        </button>
+
+                    </form>
+                </section>
+
+                <!-- ==================================
+                     PANTALLA 2: VERIFICAR CORREO
+                     ================================== -->
+                <section class="pantalla pantalla-verificacion" id="pantallaVerificacion" hidden>
+
+                    <div class="icono-verificacion" aria-hidden="true">
+                        ✉
+                    </div>
+
+                    <h2 class="titulo-formulario">
+                        Verifica tu correo
+                    </h2>
+
+                    <p class="descripcion-formulario">
+                        Hemos enviado un código de verificación a la
+                        siguiente dirección:
+                    </p>
+
+                    <p class="correo-destino" id="correoDestino">
+                        usuario@correo.com
+                    </p>
+
+                    <form id="formVerificacion" novalidate>
+
+                        <div class="campo completo">
+                            <label for="codigo">
+                                Código de verificación <span>*</span>
+                            </label>
+
+                            <input type="text"
+                                   id="codigo"
+                                   name="codigo"
+                                   placeholder="Introduce el código"
+                                   maxlength="6"
+                                   inputmode="numeric"
+                                   autocomplete="one-time-code"
+                                   required>
+                        </div>
+
+                        <p class="texto-ayuda">
+                            ¿No encuentras el mensaje? Revisa tu carpeta
+                            de correo no deseado.
+                        </p>
+
+                        <div class="contenedor-reenvio">
+
+                            <p class="texto-reenvio" id="textoReenvio">
+                                Podrás solicitar otro código en:
+                            </p>
+
+                            <!-- CONTADOR -->
+                            <div class="contador-codigo" id="contadorCodigo"
+                                 role="timer" aria-live="off">
+                                <span id="tiempoReenvio">01:00</span>
+                            </div>
+
+                            <!-- BOTÓN REENVIAR -->
+                            <button type="button"
+                                    class="boton-reenviar"
+                                    id="btnReenviarCodigo"
+                                    disabled>
+                                REENVIAR CÓDIGO
+                            </button>
+
+                        </div>
+
+                        <p class="mensaje-error" id="errorCodigo" role="alert" hidden>
+                            El código introducido no es válido.
+                            Comprueba los datos e inténtalo de nuevo.
+                        </p>
+
+                        <button type="button"
+                                class="boton-principal"
+                                data-siguiente="pantallaDatos">
+                            VERIFICAR Y CONTINUAR
+                        </button>
+
+                        <button type="button"
+                                class="boton-secundario"
+                                data-anterior="pantallaCorreo">
+                            VOLVER
+                        </button>
+
+                    </form>
+                </section>
+
+                <!-- ==================================
+                     PANTALLA 3: DATOS PERSONALES
+                     ================================== -->
+                <section class="pantalla pantalla-datos" id="pantallaDatos" hidden>
+
+                    <h2 class="titulo-formulario">
+                        Tus datos personales
+                    </h2>
+
+                    <p class="descripcion-formulario">
+                        Tu correo está confirmado. Ahora necesitamos
+                        algunos datos para completar tu perfil.
+                    </p>
+
+                    <form id="formDatos" novalidate>
+
+                        <div class="grupo-campos">
+
+                            <div class="campo completo">
+                                <label for="nombre">
+                                    Nombre <span>*</span>
+                                </label>
+
+                                <input type="text"
+                                       id="nombre"
+                                       name="nombre"
+                                       placeholder="Introduce tu nombre"
+                                       autocomplete="given-name"
+                                       maxlength="100"
+                                       title="Solo se permiten letras y espacios."
+                                       required>
+                            </div>
+
+                            <div class="campo">
+                                <label for="apellidoPaterno">
+                                    Apellido paterno <span>*</span>
+                                </label>
+
+                                <input type="text"
+                                       id="apellidoPaterno"
+                                       name="apellidoPaterno"
+                                       placeholder="Apellido paterno"
+                                       autocomplete="family-name"
+                                       maxlength="100"
+                                       title="Solo se permiten letras y espacios."
+                                       required>
+                            </div>
+
+                            <div class="campo">
+                                <label for="apellidoMaterno">
+                                    Apellido materno
+                                </label>
+
+                                <input type="text"
+                                       id="apellidoMaterno"
+                                       name="apellidoMaterno"
+                                       placeholder="Apellido materno"
+                                       autocomplete="additional-name"
+                                       maxlength="100"
+                                       title="Solo se permiten letras y espacios.">
+                            </div>
+
+                            <div class="campo completo">
+                                <label for="telefono">
+                                    Teléfono <span>*</span>
+                                </label>
+
+                                <input type="tel"
+                                       id="telefono"
+                                       name="telefono"
+                                       placeholder="Introduce tu número de teléfono"
+                                       autocomplete="tel-national"
+                                       inputmode="numeric"
+                                       maxlength="10"
+                                       pattern="[0-9]{10}"
+                                       title="Escribe un teléfono de 10 dígitos, solo números."
+                                       required>
+                                <small class="ayuda-campo">10 dígitos, sin letras ni espacios.</small>
+                            </div>
+
+                        </div>
+
+                        <p class="mensaje-error" id="errorDatos" role="alert" hidden>
+                            Revisa los campos obligatorios antes de continuar.
+                        </p>
+
+                        <button type="button"
+                                class="boton-principal"
+                                data-siguiente="pantallaPassword">
+                            CONTINUAR
+                        </button>
+
+                        <button type="button"
+                                class="boton-secundario"
+                                data-anterior="pantallaVerificacion">
+                            VOLVER
+                        </button>
+
+                    </form>
+                </section>
+
+                <!-- ==================================
+                     PANTALLA 4: CREAR CONTRASEÑA
+                     ================================== -->
+                <section class="pantalla pantalla-password" id="pantallaPassword" hidden>
+
+                    <div class="icono-verificacion" aria-hidden="true">
+                        &#128274;
+                    </div>
+
+                    <h2 class="titulo-formulario">
+                        Crea tu contraseña
+                    </h2>
+
+                    <p class="descripcion-formulario">
+                        Elige una contraseña segura para proteger
+                        tu cuenta de ADSPORT.
+                    </p>
+
+                    <form id="formPassword" novalidate>
+
+                        <div class="grupo-campos">
+
+                            <div class="campo completo">
+                                <label for="password">
+                                    Contraseña <span>*</span>
+                                </label>
+
+                                <input type="password"
+                                       id="password"
+                                       name="password"
+                                       placeholder="Crea una contraseña"
+                                       autocomplete="new-password"
+                                       required>
+                            </div>
+
+                            <div class="campo completo">
+                                <label for="confirmarPassword">
+                                    Confirmar contraseña <span>*</span>
+                                </label>
+
+                                <input type="password"
+                                       id="confirmarPassword"
+                                       name="confirmarPassword"
+                                       placeholder="Repite tu contraseña"
+                                       autocomplete="new-password"
+                                       required>
+                            </div>
+
+                        </div>
+
+                        <div class="requisitos-password">
+                            <p>Tu contraseña deberá incluir:</p>
+
+                            <ul id="listaRequisitosPassword">
+                                <li data-requisito="longitud">Mínimo 8 caracteres.</li>
+                                <li data-requisito="mayuscula">Al menos una letra mayúscula.</li>
+                                <li data-requisito="minuscula">Al menos una letra minúscula.</li>
+                                <li data-requisito="numero">Al menos un número.</li>
+                                <li data-requisito="especial">Al menos un carácter especial.</li>
+                                <li data-requisito="coincidencia">Las contraseñas coinciden.</li>
+                            </ul>
+                        </div>
+
+                        <p class="mensaje-error" id="errorPassword" role="alert" hidden>
+                            Revisa las contraseñas e inténtalo de nuevo.
+                        </p>
+
+                        <button type="button"
+                                class="boton-principal"
+                                data-siguiente="pantallaFinal">
+                            CONFIRMAR CONTRASEÑA
+                        </button>
+
+                        <button type="button"
+                                class="boton-secundario"
+                                data-anterior="pantallaDatos">
+                            VOLVER
+                        </button>
+
+                    </form>
+                </section>
+
+                <!-- ==================================
+                     PANTALLA 5: REGISTRO COMPLETADO
+                     ================================== -->
+                <section class="pantalla pantalla-final" id="pantallaFinal" hidden>
+
+                    <div class="icono-exito" aria-hidden="true">
+                        ✓
+                    </div>
+
+                    <span class="etiqueta">
+                        REGISTRO COMPLETADO
+                    </span>
+
+                    <h2 class="titulo-formulario">
+                        ¡Bienvenido a ADSPORT!
+                    </h2>
+
+                    <p class="descripcion-formulario">
+                        Tu cuenta se ha registrado correctamente.
+                        Ya puedes iniciar sesión y comenzar a utilizar ADSPORT.
+                    </p>
+
+                    <a href="LoginUsuario.html" class="boton-principal enlace-boton">
+                        IR AL INICIO DE SESIÓN
+                    </a>
+
+                </section>
+
+            </section>
+        </div>
+    </main>
+
+    <!-- PIE DE PÁGINA -->
+    <footer class="pie-pagina">
+        <p>© 2026 ADSPORT. TODOS LOS DERECHOS RESERVADOS.</p>
+    </footer>
+
+    <!-- Ventana animada para el envío del código -->
+    <div class="ventana-envio" id="ventanaEnvio" hidden>
+        <div class="ventana-envio-contenido" role="status" aria-live="polite" aria-atomic="true">
+            <div class="animacion-envio" aria-hidden="true">
+                <span class="anillo-envio"></span>
+                <span class="icono-sobre-envio">✉</span>
+                <span class="icono-exito-envio" hidden>✓</span>
+            </div>
+            <h2 id="tituloVentanaEnvio">Enviando tu código…</h2>
+            <p id="descripcionVentanaEnvio">Estamos preparando el mensaje para tu correo electrónico.</p>
+        </div>
+    </div>
+
+    <!-- Primero cargamos las funciones API y después la navegación del registro -->
+    <script src="js/app.js"></script>
+    <script src="js/registro.js?v=12"></script>
+    <script src="js/config.js"></script>
+
+</body>
+</html>

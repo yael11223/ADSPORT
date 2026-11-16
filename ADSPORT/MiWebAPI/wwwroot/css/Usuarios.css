@@ -1,0 +1,723 @@
+﻿
+/* =========================================
+   ADSPORT - GESTIÓN DE EMPLEADOS
+   ========================================= */
+.adsport-empleados {
+    --employee-orange: #ff6a00;
+    --employee-bg: #f3f4f6;
+    --employee-white: #ffffff;
+    --employee-ink: #171717;
+    --employee-muted: #777777;
+    min-height: 100vh;
+    background: var(--employee-bg);
+    color: var(--employee-ink);
+}
+
+    .adsport-empleados .adsport-navbar {
+        background: #0b0b0b;
+        border-bottom: 2px solid var(--employee-orange);
+    }
+
+    .adsport-empleados .adsport-brand-name {
+        color: #ffffff;
+    }
+
+    .adsport-empleados .adsport-brand-subtitle {
+        color: #ff9b55;
+    }
+
+    .adsport-empleados .empleados-nav-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .adsport-empleados .btn-nav-light {
+        padding: 9px 13px;
+        color: #ffffff;
+        border: 1px solid #555555;
+        border-radius: 7px;
+        font-size: 12px;
+        font-weight: 700;
+        text-decoration: none;
+    }
+
+        .adsport-empleados .btn-nav-light:hover {
+            color: #ffffff;
+            border-color: var(--employee-orange);
+        }
+
+    .adsport-empleados .btn-logout {
+        margin-left: 0;
+    }
+
+    .adsport-empleados .employee-main {
+        width: min(100% - 40px, 1500px);
+        margin: 0 auto;
+        padding: 38px 0 20px;
+    }
+
+    .adsport-empleados .employee-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        margin-bottom: 30px;
+    }
+
+    .adsport-empleados .employee-eyebrow,
+    .adsport-empleados .panel-kicker {
+        color: #d95b00;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 2px;
+    }
+
+    .adsport-empleados .employee-eyebrow {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        margin-bottom: 12px;
+    }
+
+        .adsport-empleados .employee-eyebrow .status-dot {
+            background: var(--employee-orange);
+        }
+
+    .adsport-empleados .employee-header h1 {
+        margin: 0;
+        font-size: clamp(30px, 4vw, 43px);
+        font-weight: 900;
+        letter-spacing: -1.5px;
+    }
+
+        .adsport-empleados .employee-header h1 span {
+            color: #e96100;
+        }
+
+    .adsport-empleados .employee-header p {
+        max-width: 650px;
+        margin: 12px 0 0;
+        color: #686868;
+        font-size: 14px;
+        line-height: 1.7;
+    }
+
+    .adsport-empleados .employee-header .btn-orange {
+        flex-shrink: 0;
+        border-radius: 8px;
+    }
+
+    .adsport-empleados .employee-layout {
+        display: grid;
+        grid-template-columns: minmax(275px, 0.8fr) minmax(0, 1.8fr);
+        align-items: start;
+        gap: 22px;
+    }
+
+    .adsport-empleados .employee-panel {
+        min-width: 0;
+        padding: 25px;
+        background: var(--employee-white);
+        border: 1px solid #e5e5e5;
+        border-radius: 13px;
+        box-shadow: 0 5px 22px #00000008;
+    }
+
+    .adsport-empleados .employee-panel-heading {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+
+    .adsport-empleados .panel-index {
+        color: #d8d8d8;
+        font-size: 25px;
+        font-weight: 900;
+    }
+
+    .adsport-empleados .employee-panel h2 {
+        margin: 0;
+        font-size: 22px;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+    }
+
+    .adsport-empleados .panel-description {
+        margin: 9px 0 25px;
+        color: var(--employee-muted);
+        font-size: 12px;
+        line-height: 1.7;
+    }
+
+    .adsport-empleados .form-label {
+        margin-bottom: 8px;
+        color: #303030;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .adsport-empleados .employee-input {
+        min-height: 44px;
+        color: #222222;
+        background-color: #fafafa;
+        border: 1px solid #dedede;
+        border-radius: 7px;
+        font-size: 13px;
+        box-shadow: none;
+    }
+
+    .adsport-empleados textarea.employee-input {
+        min-height: auto;
+    }
+
+    .adsport-empleados .employee-input::placeholder {
+        color: #a0a0a0;
+    }
+
+    .adsport-empleados .employee-input:focus {
+        background-color: #ffffff;
+        border-color: var(--employee-orange);
+        box-shadow: 0 0 0 3px #ff6a001c;
+    }
+
+    .adsport-empleados .employee-addon {
+        color: #555555;
+        background: #eeeeee;
+        border-color: #dedede;
+    }
+
+    .adsport-empleados .employee-form-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 9px;
+    }
+
+    .adsport-empleados .employee-save {
+        flex: 1;
+        justify-content: center;
+        min-height: 45px;
+        border-radius: 7px;
+    }
+
+    .adsport-empleados .btn-cancel {
+        padding: 11px 15px;
+        color: #444444;
+        background: #ffffff;
+        border: 1px solid #d5d5d5;
+        border-radius: 7px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+        .adsport-empleados .btn-cancel:hover {
+            background: #f1f1f1;
+        }
+
+    .adsport-empleados .employee-table-heading {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+        .adsport-empleados .employee-table-heading h2 {
+            margin-top: 10px;
+        }
+
+        .adsport-empleados .employee-table-heading .panel-description {
+            margin-bottom: 0;
+        }
+
+    .adsport-empleados .btn-refresh {
+        flex-shrink: 0;
+        padding: 9px 12px;
+        color: #333333;
+        background: #ffffff;
+        border: 1px solid #d8d8d8;
+        border-radius: 7px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+        .adsport-empleados .btn-refresh:hover {
+            color: #d95b00;
+            border-color: var(--employee-orange);
+        }
+
+    .adsport-empleados .employee-search {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 18px;
+        padding: 0 13px;
+        background: #f7f7f7;
+        border: 1px solid #e5e5e5;
+        border-radius: 8px;
+    }
+
+        .adsport-empleados .employee-search > span {
+            color: #c75a0c;
+            font-size: 23px;
+        }
+
+        .adsport-empleados .employee-search input {
+            width: 100%;
+            min-height: 43px;
+            color: #222222;
+            background: transparent;
+            border: 0;
+            outline: 0;
+            font-size: 13px;
+        }
+
+    .adsport-empleados .employee-table {
+        margin-bottom: 0;
+        color: #252525;
+        font-size: 12px;
+    }
+
+        .adsport-empleados .employee-table thead th {
+            padding: 14px 12px;
+            color: #666666;
+            background: #f4f4f4;
+            border-bottom: 1px solid #e5e5e5;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        .adsport-empleados .employee-table tbody td {
+            padding: 14px 12px;
+            border-color: #eeeeee;
+            vertical-align: middle;
+        }
+
+        .adsport-empleados .employee-table tbody tr:hover > * {
+            background: #fff8f3;
+        }
+
+        .adsport-empleados .employee-table .btn {
+            font-size: 11px;
+        }
+
+    .adsport-empleados .empty-results {
+        padding: 30px 10px;
+        color: #888888;
+        text-align: center;
+    }
+
+        .adsport-empleados .empty-results > span {
+            display: block;
+            color: #d95b00;
+            font-size: 32px;
+        }
+
+        .adsport-empleados .empty-results p {
+            margin: 7px 0 0;
+            font-size: 13px;
+        }
+
+    /* REGISTRO PRELIMINAR DE ENTRENADOR */
+
+    .adsport-empleados .trainer-panel {
+        margin-top: 24px;
+    }
+
+    .adsport-empleados .trainer-badge {
+        flex-shrink: 0;
+        padding: 7px 10px;
+        color: #9b4c0d;
+        background: #fff1e6;
+        border: 1px solid #ffd4b4;
+        border-radius: 5px;
+        font-size: 9px;
+        font-weight: 800;
+        letter-spacing: 1px;
+    }
+
+    .adsport-empleados .trainer-fields {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 20px;
+    }
+
+    .adsport-empleados .trainer-qr-field {
+        grid-column: 1 / -1;
+    }
+
+        .adsport-empleados .trainer-qr-field small {
+            display: block;
+            margin-top: 8px;
+            color: #888888;
+            font-size: 11px;
+        }
+
+    .adsport-empleados .trainer-notice {
+        margin: 22px 0 0;
+        padding: 12px 14px;
+        color: #76502f;
+        background: #fff8f1;
+        border-left: 3px solid var(--employee-orange);
+        font-size: 12px;
+        line-height: 1.7;
+    }
+
+    .adsport-empleados .employee-footer {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 28px;
+        padding: 20px 0;
+        color: #858585;
+        border-top: 1px solid #dedede;
+        font-size: 9px;
+        font-weight: 800;
+        letter-spacing: 1.5px;
+    }
+
+        .adsport-empleados .employee-footer span {
+            color: var(--employee-orange);
+        }
+
+    /* MODAL DE ROLES */
+
+    .adsport-empleados .role-modal {
+        color: #222222;
+        background: #ffffff;
+        border: 1px solid #e4e4e4;
+        border-radius: 14px;
+    }
+
+        .adsport-empleados .role-modal .modal-header {
+            padding: 24px;
+            background: #111111;
+            border-bottom: 2px solid var(--employee-orange);
+        }
+
+        .adsport-empleados .role-modal .modal-title {
+            margin-top: 8px;
+            color: #ffffff;
+            font-size: 23px;
+            font-weight: 800;
+        }
+
+        .adsport-empleados .role-modal .modal-body {
+            padding: 24px;
+        }
+
+            .adsport-empleados .role-modal .modal-body > p {
+                color: #777777;
+                font-size: 13px;
+                line-height: 1.7;
+            }
+
+    .adsport-empleados .role-modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+        .adsport-empleados .role-modal-actions .btn-orange {
+            border-radius: 7px;
+        }
+
+    .adsport-empleados .role-feedback {
+        margin: 16px 0 0;
+        padding: 12px;
+        color: #74400e;
+        background: #fff2e7;
+        border-radius: 7px;
+        font-size: 12px;
+        line-height: 1.7;
+    }
+
+/* RESPONSIVE */
+
+@media (max-width: 1100px) {
+    .adsport-empleados .employee-layout {
+        grid-template-columns: minmax(260px, 0.8fr) minmax(0, 1.5fr);
+    }
+
+    .adsport-empleados .trainer-fields {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 800px) {
+    .adsport-empleados .employee-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .adsport-empleados .employee-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+        .adsport-empleados .employee-header > .btn-orange {
+            align-self: flex-start;
+        }
+}
+
+@media (max-width: 550px) {
+    .adsport-empleados .adsport-navbar {
+        align-items: center;
+        padding: 14px;
+    }
+
+    .adsport-empleados .adsport-brand-icon {
+        width: 38px;
+        height: 38px;
+    }
+
+    .adsport-empleados .adsport-brand-name {
+        font-size: 17px;
+    }
+
+    .adsport-empleados .adsport-brand-subtitle {
+        font-size: 8px;
+        letter-spacing: 1px;
+    }
+
+    .adsport-empleados .empleados-nav-actions {
+        gap: 6px;
+    }
+
+    .adsport-empleados .btn-nav-light,
+    .adsport-empleados .btn-logout {
+        padding: 8px;
+        font-size: 10px;
+    }
+
+    .adsport-empleados .employee-main {
+        width: calc(100% - 24px);
+        padding-top: 25px;
+    }
+
+    .adsport-empleados .employee-panel {
+        padding: 18px;
+    }
+
+    .adsport-empleados .employee-header h1 {
+        font-size: 31px;
+    }
+
+    .adsport-empleados .employee-table-heading {
+        flex-direction: column;
+    }
+
+    .adsport-empleados .trainer-fields {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .adsport-empleados .trainer-qr-field {
+        grid-column: auto;
+    }
+
+    .adsport-empleados .employee-footer {
+        flex-direction: column;
+        gap: 8px;
+        line-height: 1.8;
+    }
+}
+
+/* =========================================
+   AJUSTES FINALES: HEADER Y BOTÓN NUEVO ROL
+   ========================================= */
+
+.adsport-empleados .adsport-navbar {
+    min-height: 82px;
+    padding: 14px clamp(20px, 4vw, 60px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    background: #0b0b0b;
+    border-bottom: 2px solid #ff6a00;
+}
+
+.adsport-empleados .adsport-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0;
+    text-decoration: none;
+}
+
+.adsport-empleados .adsport-brand-icon {
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    flex: 0 0 44px;
+    border-radius: 11px;
+    background: #ff6a00;
+    color: #fff;
+    font-size: 24px;
+    font-weight: 900;
+    font-style: italic;
+}
+
+.adsport-empleados .adsport-brand-name {
+    display: block;
+    margin: 0;
+    color: #fff;
+    font-size: 21px;
+    font-weight: 900;
+    font-style: italic;
+    line-height: 1.2;
+    letter-spacing: 1px;
+}
+
+/* El encabezado muestra únicamente ADSPORT */
+.adsport-empleados .adsport-brand-subtitle {
+    display: none;
+}
+
+.adsport-empleados .empleados-nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.adsport-empleados .btn-nav-light {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    padding: 0 16px;
+    color: #ededed;
+    background: #171717;
+    border: 1px solid #383838;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background .2s ease, border-color .2s ease;
+}
+
+    .adsport-empleados .btn-nav-light:hover {
+        color: #fff;
+        background: #242424;
+        border-color: #ff6a00;
+    }
+
+.adsport-empleados .btn-logout {
+    min-height: 40px;
+    margin-left: 0;
+    padding: 0 15px;
+    color: #ffb17e;
+    background: transparent;
+    border: 1px solid #713710;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    transition: background .2s ease, color .2s ease, border-color .2s ease;
+}
+
+    .adsport-empleados .btn-logout:hover {
+        color: #fff;
+        background: #ff6a00;
+        border-color: #ff6a00;
+    }
+
+/* Botón Nuevo rol */
+.adsport-empleados .employee-header > .btn-orange {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 22px;
+    min-width: 160px;
+    min-height: 48px;
+    flex-shrink: 0;
+    padding: 6px 7px 6px 18px;
+    overflow: hidden;
+    color: #fff;
+    background: linear-gradient(110deg, #ff7a1a, #f45b00);
+    border: 1px solid #ff8a3d;
+    border-radius: 9px;
+    box-shadow: 0 5px 16px #ff6a0025;
+    font-size: 13px;
+    font-weight: 800;
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+
+    .adsport-empleados .employee-header > .btn-orange:hover {
+        color: #fff;
+        box-shadow: 0 7px 24px #ff6a0045;
+        transform: translateY(-2px);
+    }
+
+    .adsport-empleados .employee-header > .btn-orange:focus-visible {
+        outline: 3px solid #ff6a0060;
+        outline-offset: 3px;
+    }
+
+    .adsport-empleados .employee-header > .btn-orange .button-arrow {
+        width: 34px;
+        height: 34px;
+        display: grid;
+        place-items: center;
+        flex-shrink: 0;
+        color: #ff6a00;
+        background: #fff;
+        border-radius: 6px;
+        font-size: 22px;
+        transition: transform .2s ease;
+    }
+
+    .adsport-empleados .employee-header > .btn-orange:hover .button-arrow {
+        transform: translateX(2px);
+    }
+
+/* Responsive: encabezado y botón */
+@media (max-width: 800px) {
+    .adsport-empleados .employee-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+        .adsport-empleados .employee-header > .btn-orange {
+            align-self: flex-start;
+        }
+}
+
+@media (max-width: 550px) {
+    .adsport-empleados .adsport-navbar {
+        min-height: 70px;
+        padding: 12px;
+        gap: 10px;
+    }
+
+    .adsport-empleados .adsport-brand-icon {
+        width: 38px;
+        height: 38px;
+        flex-basis: 38px;
+        font-size: 21px;
+    }
+
+    .adsport-empleados .adsport-brand-name {
+        font-size: 17px;
+    }
+
+    .adsport-empleados .empleados-nav-actions {
+        gap: 6px;
+    }
+
+    .adsport-empleados .btn-nav-light,
+    .adsport-empleados .btn-logout {
+        min-height: 36px;
+        padding: 0 9px;
+        font-size: 10px;
+    }
+
+    .adsport-empleados .employee-header > .btn-orange {
+        min-height: 44px;
+    }
+}
