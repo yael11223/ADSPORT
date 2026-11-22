@@ -5,6 +5,8 @@ namespace ADSPORT.Models;
 
 public sealed class HorarioClase
 {
+    public long? IdCancha { get; set; }
+    public string? NombreCancha { get; set; }
     [Range(1, 7)]
     public int DiaSemana { get; set; }
 
@@ -17,6 +19,8 @@ public sealed class HorarioClase
 
 public sealed class GuardarClaseSolicitud : IValidatableObject
 {
+    [Range(1, long.MaxValue)]
+    public long IdCancha { get; set; }
     [Range(1, long.MaxValue)]
     public long IdDeporte { get; set; }
 
@@ -74,6 +78,8 @@ public sealed class DisponibilidadClaseSolicitud
 
 public sealed class ClaseDeportiva
 {
+    public long? IdCancha { get; set; }
+    public string? NombreCancha { get; set; }
     public long IdClase { get; set; }
     public long IdDeporte { get; set; }
     public string NombreDeporte { get; set; } = string.Empty;

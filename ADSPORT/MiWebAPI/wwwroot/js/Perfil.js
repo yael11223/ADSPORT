@@ -29,7 +29,7 @@ const API_FOTO = "/api/Usuario/mi-foto";
 
 const API_SESION = "/api/LoginUsuario/sesion";
 
-const FOTO_PREDETERMINADA = "/img/perfiles/default.png";
+const FOTO_PREDETERMINADA = "/Accet/perfil.png";
 
 
 /* ==========================================================

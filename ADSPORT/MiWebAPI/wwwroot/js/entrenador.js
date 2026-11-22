@@ -9,6 +9,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const formClase = porId("formNuevaClase");
     const formPassword = porId("formPasswordEntrenador");
     let clases = [];
+    let canchas = [];
+    let disponibilidad = null;
+    let consultandoCancha = false;
+    let consultaCancha = 0;
     let claseEditando = null;
     let numeroHorario = 0;
     let cargando = false;
@@ -117,7 +121,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 elemento("span", "", (Number(clase.alumnosInscritos) || 0) + " alumnos inscritos"),
                 elemento("span", "", clase.cupoMaximo ? "Capacidad: " + clase.cupoMaximo : "Capacidad por completar"));
             if (clase.cuposDisponibles !== null && clase.cuposDisponibles !== undefined) detalles.append(elemento("span", "", clase.cuposDisponibles + " cupos disponibles"));
-            if (clase.ubicacion) detalles.append(elemento("span", "", clase.ubicacion));
+            if (clase.nombreCancha) detalles.append(elemento("span", "", clase.nombreCancha));
+            else detalles.append(elemento("span", "", "Sin cancha asignada: edita la clase."));
+            if (clase.ubicacion && clase.ubicacion !== clase.nombreCancha) detalles.append(elemento("span", "", clase.ubicacion));
             tarjeta.append(detalles);
             const horarios = elemento("ul", "trainer-class__schedules");
             (clase.horarios || []).forEach((horario) => horarios.append(elemento("li", "", textoHorario(horario))));
@@ -128,6 +134,18 @@ document.addEventListener("DOMContentLoaded", () => {
             editar.type = "button";
             editar.addEventListener("click", () => abrirEditor(clase));
             const disponibilidad = elemento("button", "trainer-button trainer-button--quiet", clase.disponible ? "Desactivar" : "Publicar clase");
+            const eliminar = elemento("button", "trainer-button trainer-button--quiet", "Eliminar clase");
+            eliminar.type = "button";
+            eliminar.addEventListener("click", async () => {
+                if (!confirm("¿Eliminar definitivamente la clase «" + clase.nombreClase + "» y sus horarios? Las reservas y pagos se conservarán.")) return;
+                eliminar.disabled = true; editar.disabled = true; disponibilidad.disabled = true;
+                try {
+                    await modificar("/api/Entrenador/clases/" + encodeURIComponent(clase.idClase), "DELETE");
+                    await cargarClases();
+                    aviso("avisoEntrenador", "Clase eliminada definitivamente.");
+                } catch (error) { aviso("avisoEntrenador", error.message, true); }
+                finally { eliminar.disabled = false; editar.disabled = false; disponibilidad.disabled = false; }
+            });
             disponibilidad.type = "button";
             if (!deporteActivo && !clase.disponible) {
                 disponibilidad.disabled = true;
@@ -148,7 +166,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     editar.disabled = false;
                 }
             });
-            acciones.append(editar, disponibilidad);
+            acciones.append(editar, disponibilidad, eliminar);
             tarjeta.append(acciones);
             lista.append(tarjeta);
         });
@@ -170,7 +188,7 @@ document.addEventListener("DOMContentLoaded", () => {
             bloque.append(elemento("h3", "", dias[dia]));
             sesiones.forEach(({ clase, horario }) => {
                 const sesion = elemento("p", "", clase.nombreClase);
-                sesion.append(elemento("small", "", String(horario.horaInicio).slice(0, 5) + " – " + String(horario.horaFin).slice(0, 5) + (clase.ubicacion ? " · " + clase.ubicacion : "")));
+                sesion.append(elemento("small", "", String(horario.horaInicio).slice(0, 5) + " – " + String(horario.horaFin).slice(0, 5) + (horario.nombreCancha || clase.nombreCancha ? " · " + (horario.nombreCancha || clase.nombreCancha) : " · Sin cancha asignada")));
                 bloque.append(sesion);
             });
             agenda.append(bloque);
@@ -178,51 +196,123 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!agenda.childElementCount) agenda.append(elemento("p", "trainer-empty", "No tienes horarios publicados. Agrega o activa una clase para ver tu agenda semanal."));
     }
 
+
     function actualizarBotonesHorarios() {
         const filas = porId("horariosEditor").querySelectorAll(".trainer-schedule-row");
-        filas.forEach((fila) => { fila.querySelector("button").disabled = filas.length <= 1; });
-        porId("btnAgregarHorario").disabled = filas.length >= 21;
+        filas.forEach(fila => { fila.querySelector("button").disabled = filas.length <= 1 || guardandoClase; });
+        porId("btnAgregarHorario").disabled = filas.length >= 21 || consultandoCancha || !disponibilidad?.disponibles.length || guardandoClase;
+        porId("btnGuardarClase").disabled = consultandoCancha || !disponibilidad?.disponibles.length || guardandoClase;
+    }
+
+    const minutos = hora => Number(hora.slice(0, 2)) * 60 + Number(hora.slice(3, 5));
+    const textoHora = valor => String(Math.floor(valor / 60)).padStart(2, "0") + ":" + String(valor % 60).padStart(2, "0");
+
+    function opcionesHoras(select, valores, preferida) {
+        select.replaceChildren(new Option("Selecciona una hora", ""));
+        [...new Set(valores)].sort((a, b) => a - b).forEach(valor => select.add(new Option(textoHora(valor), textoHora(valor))));
+        select.value = preferida && [...select.options].some(o => o.value === preferida) ? preferida : "";
     }
 
     function agregarHorario(horario = {}) {
         if (porId("horariosEditor").childElementCount >= 21) return;
         const fila = elemento("div", "trainer-schedule-row");
         const identificador = ++numeroHorario;
-        const campos = [
-            { nombre: "dia", etiqueta: "Día", tipo: "select", valor: horario.diaSemana || 1 },
-            { nombre: "inicio", etiqueta: "Hora de inicio", tipo: "time", valor: String(horario.horaInicio || "").slice(0, 5) },
-            { nombre: "fin", etiqueta: "Hora final", tipo: "time", valor: String(horario.horaFin || "").slice(0, 5) }
-        ];
-        campos.forEach((campo) => {
-            const grupo = elemento("div");
-            const label = elemento("label", "", campo.etiqueta);
-            const input = elemento(campo.tipo === "select" ? "select" : "input");
-            input.id = "horario-" + identificador + "-" + campo.nombre;
-            label.htmlFor = input.id;
-            input.dataset.campo = campo.nombre;
-            input.required = true;
-            if (campo.tipo === "select") {
-                dias.forEach((nombre, indice) => { if (indice) input.append(new Option(nombre, String(indice))); });
-            } else {
-                input.type = campo.tipo;
-                input.step = "60";
-            }
-            input.value = String(campo.valor);
-            grupo.append(label, input);
-            fila.append(grupo);
+        ["dia", "inicio", "fin"].forEach((campo, indice) => {
+            const grupo = elemento("div"), label = elemento("label", "", ["Día", "Inicio disponible", "Hora final"][indice]);
+            const select = elemento("select");
+            select.id = "horario-" + identificador + "-" + campo; label.htmlFor = select.id;
+            select.dataset.campo = campo; select.required = true;
+            grupo.append(label, select); fila.append(grupo);
         });
+        const dia = fila.querySelector('[data-campo="dia"]');
+        const inicio = fila.querySelector('[data-campo="inicio"]');
+        const fin = fila.querySelector('[data-campo="fin"]');
+        dia.add(new Option("Selecciona un día", ""));
+        [...new Set((disponibilidad?.disponibles || []).map(h => h.diaSemana))].sort((a,b) => a-b).forEach(d => dia.add(new Option(dias[d], String(d))));
+        dia.value = horario.diaSemana && [...dia.options].some(o => o.value === String(horario.diaSemana))
+            ? String(horario.diaSemana) : dia.options[1]?.value || "";
+
+        function finales(preferida = "") {
+            const valor = inicio.value ? minutos(inicio.value) : null;
+            const rango = (disponibilidad?.disponibles || []).find(h => h.diaSemana === Number(dia.value) &&
+                valor !== null && minutos(h.horaInicio) <= valor && minutos(h.horaFin) > valor);
+            const valores = [];
+            if (rango) {
+                const limite = minutos(rango.horaFin);
+                for (let m = Math.ceil((valor + 1) / 15) * 15; m <= limite; m += 15) valores.push(m);
+                valores.push(limite);
+                if (preferida && minutos(preferida) > valor && minutos(preferida) <= limite) valores.push(minutos(preferida));
+            }
+            opcionesHoras(fin, valores, preferida);
+        }
+        function inicios(preferida = "", finalPreferida = "") {
+            const rangos = (disponibilidad?.disponibles || []).filter(h => h.diaSemana === Number(dia.value));
+            const valores = [];
+            rangos.forEach(h => {
+                const desde = minutos(h.horaInicio), hasta = minutos(h.horaFin);
+                valores.push(desde);
+                for (let m = Math.ceil(desde / 15) * 15; m < hasta; m += 15) valores.push(m);
+            });
+            if (preferida && rangos.some(h => minutos(h.horaInicio) <= minutos(preferida) && minutos(h.horaFin) > minutos(preferida)))
+                valores.push(minutos(preferida));
+            opcionesHoras(inicio, valores, preferida); finales(finalPreferida);
+        }
+        dia.addEventListener("change", () => inicios());
+        inicio.addEventListener("change", () => finales());
+        inicios(horario.horaInicio, horario.horaFin);
         const quitar = elemento("button", "trainer-button trainer-button--quiet", "Quitar");
-        quitar.type = "button";
-        quitar.setAttribute("aria-label", "Quitar este horario");
+        quitar.type = "button"; quitar.setAttribute("aria-label", "Quitar este horario");
         quitar.addEventListener("click", () => { fila.remove(); actualizarBotonesHorarios(); });
-        fila.append(quitar);
-        porId("horariosEditor").append(fila);
+        fila.append(quitar); porId("horariosEditor").append(fila);
         actualizarBotonesHorarios();
     }
 
+    function leerFilas() {
+        return [...porId("horariosEditor").querySelectorAll(".trainer-schedule-row")].map(fila => ({
+            diaSemana: Number(fila.querySelector('[data-campo="dia"]').value),
+            horaInicio: fila.querySelector('[data-campo="inicio"]').value,
+            horaFin: fila.querySelector('[data-campo="fin"]').value
+        }));
+    }
+
+    async function consultarCancha(horarios = []) {
+        const actual = ++consultaCancha, id = porId("claseCancha").value;
+        disponibilidad = null; consultandoCancha = true;
+        porId("horariosEditor").replaceChildren(); porId("franjasCanchaClase").replaceChildren();
+        actualizarBotonesHorarios();
+        aviso("avisoCanchaClase", id ? "Consultando los horarios libres de la cancha…" : "Selecciona un deporte y una cancha para consultar sus horarios.");
+        if (!id) { consultandoCancha = false; actualizarBotonesHorarios(); return; }
+        try {
+            const params = new URLSearchParams();
+            if (claseEditando) params.set("excluirClase", claseEditando.idClase);
+            const datos = await solicitar("/api/Cancha/" + encodeURIComponent(id) + "/disponibilidad?" + params);
+            if (actual !== consultaCancha) return;
+            disponibilidad = datos;
+            datos.disponibles.forEach(h => porId("franjasCanchaClase").append(elemento("li", "", textoHorario(h))));
+            if (!datos.disponibles.length) {
+                aviso("avisoCanchaClase", "No hay horarios libres. Selecciona otra cancha o consulta al administrador.", true);
+            } else {
+                aviso("avisoCanchaClase", "Estas franjas están libres para la cancha y para ti. Elige el inicio y el final de cada sesión.");
+                (horarios.length ? horarios : [{}]).forEach(agregarHorario);
+            }
+        } catch (error) {
+            if (actual === consultaCancha) aviso("avisoCanchaClase", error.message, true);
+        } finally {
+            if (actual === consultaCancha) { consultandoCancha = false; actualizarBotonesHorarios(); }
+        }
+    }
+
+    function poblarCanchas(idCancha = null) {
+        const select = porId("claseCancha");
+        const candidatas = canchas.filter(c => String(c.idDeporte) === porId("claseDeporte").value);
+        select.replaceChildren(new Option(candidatas.length ? "Selecciona una cancha" : "No hay canchas habilitadas para este deporte", ""));
+        candidatas.forEach(c => select.add(new Option(c.nombre + (c.ubicacion ? " · " + c.ubicacion : ""), String(c.idCancha))));
+        select.value = candidatas.some(c => String(c.idCancha) === String(idCancha)) ? String(idCancha) :
+            candidatas.length === 1 ? String(candidatas[0].idCancha) : "";
+    }
+
     function abrirEditor(clase = null) {
-        claseEditando = clase;
-        formClase.reset();
+        claseEditando = clase; formClase.reset();
         aviso("avisoEditorClase", "");
         porId("tituloEditorClase").textContent = clase ? "EDITAR CLASE" : "NUEVA CLASE";
         porId("claseNombre").value = clase?.nombreClase || "";
@@ -230,12 +320,10 @@ document.addEventListener("DOMContentLoaded", () => {
         porId("claseDescripcion").value = clase?.descripcion || "";
         porId("clasePrecio").value = clase?.precio ?? "";
         porId("claseCupo").value = clase?.cupoMaximo ?? "";
-        porId("claseUbicacion").value = clase?.ubicacion || "";
         porId("claseDisponible").checked = clase ? clase.disponible : true;
-        porId("horariosEditor").replaceChildren();
-        const horarios = clase?.horarios?.length ? clase.horarios : [{}];
-        horarios.forEach(agregarHorario);
+        poblarCanchas(clase?.idCancha);
         modalClase.showModal();
+        consultarCancha(clase?.horarios || []);
     }
 
     function leerClase() {
@@ -254,15 +342,23 @@ document.addEventListener("DOMContentLoaded", () => {
             descripcion: porId("claseDescripcion").value.trim(),
             precio: Number(porId("clasePrecio").value),
             cupoMaximo: Number(porId("claseCupo").value),
-            ubicacion: porId("claseUbicacion").value.trim(),
+            idCancha: Number(porId("claseCancha").value),
             disponible: porId("claseDisponible").checked,
             horarios
         };
+        if (!datos.idCancha) throw new Error("Selecciona una cancha para esta clase.");
+        if (!horarios.length || horarios.some(h => !(disponibilidad?.disponibles || []).some(libre =>
+            libre.diaSemana === h.diaSemana && libre.horaInicio <= h.horaInicio && libre.horaFin >= h.horaFin)))
+            throw new Error("Selecciona horarios dentro de una franja disponible.");
         if (datos.nombreClase.length < 2 || !datos.descripcion) throw new Error("Completa el nombre y la descripción de la clase.");
         return datos;
     }
 
     function bloquearFormulario(form, bloqueado) {
+        form.querySelectorAll('button[type="submit"]').forEach(boton => {
+            if (bloqueado) boton.setAttribute("aria-busy", "true");
+            else boton.removeAttribute("aria-busy");
+        });
         form.querySelectorAll("input, select, textarea, button").forEach((campo) => { campo.disabled = bloqueado; });
     }
 
@@ -320,6 +416,9 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    porId("claseDeporte").addEventListener("change", () => { poblarCanchas(); consultarCancha(); });
+    porId("claseCancha").addEventListener("change", () => consultarCancha());
+    porId("btnActualizarCanchaClase").addEventListener("click", () => consultarCancha(leerFilas()));
     porId("btnNuevaClase").addEventListener("click", () => abrirEditor());
     porId("btnAgregarHorario").addEventListener("click", () => agregarHorario());
     porId("btnAbrirPassword").addEventListener("click", () => { formPassword.reset(); aviso("avisoPasswordEntrenador", ""); modalPassword.showModal(); });
@@ -341,14 +440,15 @@ document.addEventListener("DOMContentLoaded", () => {
         try {
             const perfil = await solicitar("/api/Entrenador/perfil");
             mostrarPerfil(perfil);
-            const [deportes] = await Promise.all([solicitar("/api/Clases/deportes"), cargarClases()]);
+            const [deportes, canchasActuales] = await Promise.all([solicitar("/api/Clases/deportes"), solicitar("/api/Cancha"), cargarClases()]);
+            canchas = canchasActuales;
             if (!Array.isArray(deportes)) throw new Error("No fue posible cargar las disciplinas.");
             const select = porId("claseDeporte");
             select.replaceChildren(new Option("Selecciona un deporte", ""));
             deportes.forEach((deporte) => select.append(new Option(deporte.nombreDeporte, String(deporte.idDeporte))));
             porId("panelEntrenador").hidden = false;
-            porId("btnNuevaClase").disabled = !deportes.length;
-            aviso("avisoEntrenador", deportes.length ? "" : "No hay deportes registrados. Solicita al administrador que configure las disciplinas para agregar clases.");
+            porId("btnNuevaClase").disabled = !deportes.length || !canchas.length;
+            aviso("avisoEntrenador", !deportes.length ? "Solicita al administrador que registre los deportes." : !canchas.length ? "Solicita al administrador que registre canchas y horarios para agregar clases." : "");
         } catch (error) {
             aviso("avisoEntrenador", error.message, true);
         } finally {

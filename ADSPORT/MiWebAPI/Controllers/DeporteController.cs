@@ -72,6 +72,16 @@ public sealed class DeporteController : ControllerBase
     [HttpDelete("{id:long:min(1)}")]
     [Authorize(Policy = "SoloAdministrador")]
     [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Eliminar(long id)
+    {
+        await _datos.Eliminar(id);
+        return Ok(new { isSuccess = true, numeroError = 0,
+            respuesta = "Deporte eliminado definitivamente. Sus canchas quedaron inactivas y sus clases dejaron de publicarse." });
+    }
+
+    [HttpPost("{id:long:min(1)}/desactivar")]
+    [Authorize(Policy = "SoloAdministrador")]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Desactivar(long id)
     {
         try

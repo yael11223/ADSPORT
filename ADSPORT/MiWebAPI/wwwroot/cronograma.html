@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>ADSPORT | Cronograma semanal</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"><link rel="stylesheet" href="/css/Usuarios.css"><link rel="stylesheet" href="/css/administracion.css">    <link rel="stylesheet" href="/css/animaciones.css?v=1">
+</head>
+<body class="adsport-dashboard adsport-empleados admin-page">    <nav class="adsport-navbar">
+        <a class="adsport-brand text-decoration-none" href="index.html">
+            <div class="adsport-brand-icon">A</div>
+            <div>
+                <span class="adsport-brand-name">ADSPORT</span>
+                <span class="adsport-brand-subtitle">GESTIÓN DE CRONOGRAMA</span>
+            </div>
+        </a>
+
+        <div class="empleados-nav-actions">
+            <a href="index.html" class="btn-nav-light">← Inicio</a>
+            <button type="button" class="btn-logout" onclick="cerrarSesion()">Cerrar sesión</button>
+        </div>
+    </nav><p id="avisoSesion" class="admin-notice" role="status">Comprobando tu sesión…</p>
+<main id="adminContenido" class="employee-main" hidden>
+<header class="employee-header"><div><div class="employee-eyebrow"><span class="status-dot"></span> ADMINISTRACIÓN</div><h1>Cronograma <span>semanal.</span></h1><p>Consulta el cronograma completo o filtra por profesor, cancha y deporte.</p></div><div class="admin-actions"><a class="admin-button admin-button--quiet" href="/canchas.html">Consultar canchas disponibles</a><button type="button" id="abrirClasesAgenda" class="admin-button admin-button--quiet">Todas las clases</button></div></header>
+<nav class="employee-module-links" aria-label="Apartados de administración"><a class="btn-refresh" href="/empleados.html">Profesores</a><a class="btn-refresh" href="/usuarios.html">Usuarios</a><a class="btn-refresh" href="/deportes.html">Deportes</a><a class="btn-refresh" href="/canchas.html">Canchas</a><a class="btn-refresh" href="/cronograma.html" aria-current="page">Cronograma</a></nav>
+<section class="employee-panel admin-panel" aria-label="Filtros del cronograma"><div class="admin-toolbar">
+<div class="admin-field"><label for="profesorAgenda">Profesor</label><select id="profesorAgenda"><option value="">Todos los profesores</option></select></div>
+<div class="admin-field"><label for="canchaAgenda">Cancha</label><select id="canchaAgenda"><option value="">Todas las canchas</option></select></div>
+<div class="admin-field"><label for="deporteAgenda">Deporte</label><select id="deporteAgenda"><option value="">Todos los deportes</option></select></div>
+<button id="actualizarAgenda" type="button" class="admin-button admin-button--quiet">Actualizar</button><button id="limpiarAgenda" type="button" class="admin-button admin-button--quiet">Limpiar filtros</button>
+</div><label class="admin-check"><input id="incluirNoPublicadas" type="checkbox"> Incluir clases no publicadas</label><p class="admin-help">Los horarios son semanales. Las clases no publicadas no ocupan la cancha. Las clases anteriores sin asignación aparecerán como “Sin cancha asignada”.</p></section>
+<p id="avisoAgenda" class="admin-notice" role="status" aria-live="polite" hidden></p><p id="resumenAgenda" class="admin-help" role="status"></p><div id="semanaAgenda" class="admin-week" aria-label="Clases por día de la semana"></div>
+<footer class="employee-footer">ADSPORT <span>/</span> SISTEMA DE GESTIÓN DE CRONOGRAMA</footer></main><dialog id="dialogClasesAgenda" class="admin-dialog" aria-labelledby="tituloClasesAgenda">
+<div class="admin-dialog-top"><h2 id="tituloClasesAgenda">Todas las clases</h2><button type="button" id="cerrarClasesAgenda" class="admin-button admin-button--quiet">Cerrar</button></div>
+<p class="admin-help">Incluye clases no publicadas y clases que aún no tienen profesor, deporte o horarios asignados.</p>
+<p id="avisoListaClases" class="admin-notice" role="status" hidden></p><div id="listaClasesAgenda"></div>
+</dialog><noscript><p>Activa JavaScript para consultar el cronograma.</p></noscript><script src="/js/auth.js"></script><script src="/js/admin.js"></script><script src="/js/cronograma.js"></script>    <script src="/js/animaciones.js?v=1" defer></script>
+</body></html>

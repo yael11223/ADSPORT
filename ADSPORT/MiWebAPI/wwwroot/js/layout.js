@@ -1,4 +1,4 @@
-﻿/* ==========================================================
+/* ==========================================================
    ADSPORT - COMPONENTES COMPARTIDOS
    Archivo: layout.js
    ========================================================== */
@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const FOTO_DEFAULT = "/Accet/perfil.png";
     let esEntrenador = false;
 
-    const PAGINA_LOGIN = "/loginUsuario.html";
+    const PAGINA_LOGIN = "/LoginUsuario.html";
 
     const PAGINAS_DEPORTES = [
         "tenis.html",
@@ -90,46 +90,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    async function cargarDeportesEnMenu() {
-        const menuClases = document.querySelector(".nav-dropdown__menu");
-        if (!menuClases) return;
-
-        try {
-            const res = await fetch(API_DEPORTE, { cache: "no-store" });
-            if (!res.ok) return;
-
-            const deportes = await res.json();
-            const params = new URLSearchParams(window.location.search);
-            const idActual = params.get("idDeporte");
-
-            let html = `<span class="nav-dropdown__label" style="display:block; font-size:0.7rem; opacity:0.7; padding:6px 12px;">EXPLORA LOS DEPORTES</span>`;
-
-            if (!deportes || deportes.length === 0) {
-                html += `<span style="display:block; padding:8px 12px; font-size:0.85rem; color:#888;">Sin deportes registrados</span>`;
-            } else {
-                html += deportes.map(d => {
-                    const activo = String(d.idDeporte) === String(idActual) ? "activo" : "";
-                    const url = `/tenis.html?idDeporte=${d.idDeporte}&deporte=${encodeURIComponent(d.nombreDeporte)}`;
-                    return `
-                        <a href="${url}" class="${activo}" style="display:block; width:100%; padding:8px 12px;">
-                            <span>🏅 ${d.nombreDeporte.toUpperCase()}</span>
-                        </a>
-                    `;
-                }).join("");
-            }
-
-            html += `
-                <a href="/tenis.html" class="btn-ver-todas" style="margin-top:8px; background:#ff6b00; color:#fff; font-weight:700; border-radius:6px; text-align:center; display:block; width:100%; padding:8px 12px;">
-                    VER TODAS LAS CLASES →
-                </a>
-            `;
-
-            menuClases.innerHTML = html;
-        } catch (error) {
-            console.error("ADSPORT - Error al cargar deportes en el menú:", error);
-        }
-    }
-
     function marcarPaginaActiva() {
         const paginaActual = window.location.pathname
             .split("/")
@@ -150,6 +110,8 @@ document.addEventListener("DOMContentLoaded", () => {
             seccionActiva = seccionActual === "#clases" ? "clases" : "inicio";
         } else if (paginaActual === "nosotros.html") {
             seccionActiva = "nosotros";
+        } else if (paginaActual === "instalaciones.html") {
+            seccionActiva = "instalaciones";
         } else if (paginaActual === "tenis.html" || paginaActual === "clases.html") {
             seccionActiva = "clases";
         }
@@ -166,6 +128,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Marcar el deporte seleccionado.
         if (PAGINAS_DEPORTES.includes(paginaActual)) {
+            const enlacesDeportes = document.querySelectorAll(".nav-dropdown__menu a");
 
             enlacesDeportes.forEach(enlace => {
 
@@ -292,6 +255,8 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             const usuario = await respuesta.json();
+            const nombreCompleto = usuario.nombreCompleto || [usuario.nombre, usuario.apellidoPaterno, usuario.apellidoMaterno].filter(Boolean).join(" ");
+            const primerNombre = (usuario.nombre || nombreCompleto || "Mi cuenta").trim().split(/\s+/)[0];
             esEntrenador = (usuario.nombreRol || "").trim().toUpperCase() === "ENTRENADOR";
             const enlacePerfil = document.getElementById("enlaceMiPerfil");
             if (enlacePerfil) enlacePerfil.href = esEntrenador ? "/perfilEntrenador.html" : "/perfilCliente.html";

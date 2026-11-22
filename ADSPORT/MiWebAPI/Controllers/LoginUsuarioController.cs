@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using ADSPORT.Security;
 
 namespace MiWebAPI.Controllers
 {
@@ -54,6 +55,7 @@ namespace MiWebAPI.Controllers
             // CONSULTAR SQL SERVER Y VALIDAR BCRYPT
             // ========================================
 
+            var inicioSesion = DateTime.UtcNow;
             var resultado =
                 await _loginUsuarioData.IniciarSesion(objeto);
 
@@ -90,7 +92,8 @@ namespace MiWebAPI.Controllers
                 new Claim(
                     ClaimTypes.NameIdentifier,
                     resultado.IdUsuario.ToString()
-                )
+                ),
+                SesionRecuperacionPassword.CrearClaim(inicioSesion)
             };
 
             var identidad = new ClaimsIdentity(

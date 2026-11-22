@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="/css/Perfil.css">
     <link rel="stylesheet" href="/css/componentes.css">
     <link rel="stylesheet" href="/css/entrenador.css">
+    <link rel="stylesheet" href="/css/animaciones.css?v=1">
 </head>
 <body class="profile-page trainer-page">
     <div id="contenedor-header"></div>
@@ -81,9 +82,12 @@
                 <div class="trainer-field trainer-field--wide"><label for="claseDescripcion">Descripción</label><textarea id="claseDescripcion" name="descripcion" rows="3" maxlength="2000" required></textarea></div>
                 <div class="trainer-field"><label for="clasePrecio">Precio por clase (MXN)</label><input id="clasePrecio" name="precio" type="number" min="0" max="99999999.99" step="0.01" inputmode="decimal" required></div>
                 <div class="trainer-field"><label for="claseCupo">Capacidad máxima de alumnos</label><input id="claseCupo" name="cupoMaximo" type="number" min="1" max="10000" step="1" required></div>
-                <div class="trainer-field trainer-field--wide"><label for="claseUbicacion">Ubicación <span class="trainer-muted">(opcional)</span></label><input id="claseUbicacion" name="ubicacion" type="text" maxlength="100" placeholder="Ej. Cancha 1"></div>
+                <div class="trainer-field trainer-field--wide"><label for="claseCancha">Cancha del deporte seleccionado</label><select id="claseCancha" name="idCancha" required><option value="">Selecciona primero un deporte</option></select></div>
             </div>
-            <fieldset class="trainer-schedules"><legend>Días y horarios</legend><p class="trainer-muted" id="ayudaHorarios">Agrega al menos un horario semanal. La hora final debe ser posterior a la inicial; tus clases disponibles no pueden cruzarse.</p><div id="horariosEditor"></div><button type="button" class="trainer-button trainer-button--quiet" id="btnAgregarHorario">+ Agregar horario</button></fieldset>
+            <p id="avisoCanchaClase" class="trainer-notice" role="status" aria-live="polite" hidden></p>
+            <ul id="franjasCanchaClase" class="trainer-muted" aria-label="Franjas libres de la cancha"></ul>
+            <button type="button" id="btnActualizarCanchaClase" class="trainer-button trainer-button--quiet">Actualizar disponibilidad</button>
+            <fieldset class="trainer-schedules"><legend>Días y horarios disponibles</legend><p class="trainer-muted" id="ayudaHorarios">Elige horas dentro de una misma franja libre. Las clases publicadas ocupan la cancha; las clases no publicadas liberan el espacio.</p><div id="horariosEditor"></div><button type="button" class="trainer-button trainer-button--quiet" id="btnAgregarHorario">Agregar horario</button></fieldset>
             <label class="trainer-checkbox" for="claseDisponible"><input type="checkbox" id="claseDisponible" name="disponible" checked> Clase disponible en el catálogo</label>
             <p id="avisoEditorClase" class="trainer-notice" role="alert" hidden></p>
             <div class="trainer-dialog-actions"><button type="button" class="trainer-button trainer-button--quiet" data-cerrar-dialog="modalNuevaClase">Cancelar</button><button type="submit" class="trainer-button" id="btnGuardarClase">Guardar clase</button></div>
@@ -104,5 +108,6 @@
     <div id="contenedor-footer"></div>
     <script src="/js/layout.js?v=6"></script>
     <script src="/js/entrenador.js" defer></script>
+    <script src="/js/animaciones.js?v=1" defer></script>
 </body>
 </html>

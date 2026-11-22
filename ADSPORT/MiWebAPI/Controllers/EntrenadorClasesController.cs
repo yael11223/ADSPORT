@@ -51,6 +51,14 @@ public sealed class EntrenadorClasesController : ControllerBase
         catch (SqlException ex) { return ErrorSql(ex); }
     }
 
+    [HttpDelete("{id:long:min(1)}")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Eliminar(long id)
+    {
+        await _data.Eliminar(id, IdEntrenador);
+        return Ok(new { isSuccess = true, numeroError = 0, respuesta = "Clase eliminada definitivamente. Las reservas y pagos se conservaron." });
+    }
+
     [HttpPut("{id:long:min(1)}/disponibilidad")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Disponibilidad(long id, [FromBody] DisponibilidadClaseSolicitud solicitud)

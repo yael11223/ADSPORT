@@ -1,329 +1,111 @@
-﻿
 using ADSPORT.Data;
 using ADSPORT.Models;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+using ADSPORT.Security;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using MiWebAPI.Models;
+using Microsoft.AspNetCore.Mvc;
+using QRCoder;
 using System.Security.Claims;
 
-namespace ADSPORT.Controllers
+namespace ADSPORT.Controllers;
+
+[ApiController]
+[Route("api/Usuario")]
+[ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
+public sealed class UsuarioController(UsuarioData usuarios, ClaseData clases) : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class UsuarioController : ControllerBase
+    [HttpGet]
+    [Authorize(Policy = "SoloAdministrador")]
+    public async Task<IActionResult> Lista([FromQuery] string? rol = null)
     {
-        private readonly UsuarioData _usuarioData;
-        private readonly ILogger<UsuarioController> _logger;
+        if (rol?.Length > 100) return BadRequest(new { respuesta = "El rol admite hasta 100 caracteres." });
+        return Ok(await usuarios.Lista(rol));
+    }
 
-        public UsuarioController(UsuarioData usuarioData, ILogger<UsuarioController> logger)
+    [HttpGet("{id:long:min(1)}")]
+    [Authorize(Policy = "SoloAdministrador")]
+    public async Task<IActionResult> Obtener(long id)
+    {
+        var usuario = await usuarios.Obtener(id);
+        return usuario is null ? NotFound(new { respuesta = "Usuario no encontrado." }) : Ok(usuario);
+    }
+
+    [HttpPost]
+    [Authorize(Policy = "SoloAdministrador")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Crear([FromBody] AltaEmpleadoRequest solicitud)
+    {
+        var error = PoliticaPassword.Validar(solicitud.PasswordInicial);
+        if (error is not null) return BadRequest(new { isSuccess = false, numeroError = 400, respuesta = error });
+        var resultado = await usuarios.Crear(solicitud, BCrypt.Net.BCrypt.HashPassword(solicitud.PasswordInicial, workFactor: 12));
+        return Created($"/api/Usuario/{resultado.IdUsuario}", resultado);
+    }
+
+    [HttpPut("{id:long:min(1)}")]
+    [Authorize(Policy = "SoloAdministrador")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Editar(long id, [FromBody] Usuario solicitud)
+    {
+        solicitud.IdUsuario = id;
+        return Ok(await usuarios.Editar(solicitud));
+    }
+
+    [HttpDelete("{id:long:min(1)}")]
+    [Authorize(Policy = "SoloAdministrador")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Eliminar(long id) => Ok(await usuarios.Eliminar(id));
+
+    [HttpPost("{id:long:min(1)}/desactivar")]
+    [Authorize(Policy = "SoloAdministrador")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Desactivar(long id) => Ok(await usuarios.Desactivar(id));
+
+    [HttpGet("{id:long:min(1)}/clases")]
+    [Authorize(Policy = "SoloAdministrador")]
+    public async Task<IActionResult> Clases(long id)
+    {
+        var usuario = await usuarios.Obtener(id);
+        if (usuario is null || !string.Equals(usuario.NombreRol?.Trim(), "ENTRENADOR", StringComparison.OrdinalIgnoreCase))
+            return NotFound(new { respuesta = "No se encontró al profesor." });
+        return Ok(await clases.Consultar(id, administracion: true));
+    }
+
+    [HttpGet("{id:long:min(1)}/qr")]
+    [Authorize(Policy = "SoloAdministrador")]
+    public async Task<IActionResult> Qr(long id)
+    {
+        var usuario = await usuarios.Obtener(id);
+        if (usuario is null || string.IsNullOrWhiteSpace(usuario.CodigoQr)) return NotFound();
+        using var datos = QRCodeGenerator.GenerateQrCode(usuario.CodigoQr, QRCodeGenerator.ECCLevel.Q);
+        using var qr = new PngByteQRCode(datos);
+        return File(qr.GetGraphic(10), "image/png");
+    }
+
+    [HttpGet("mi-perfil")]
+    [Authorize]
+    public async Task<IActionResult> MiPerfil()
+    {
+        if (!long.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var id)) return Unauthorized();
+        var usuario = await usuarios.Obtener(id);
+        if (usuario is null) return NotFound();
+        return Ok(new
         {
-            _usuarioData = usuarioData;
-            _logger = logger;
-        }
+            usuario.IdUsuario, usuario.Nombre, usuario.ApellidoPaterno, usuario.ApellidoMaterno,
+            nombreCompleto = string.Join(" ", new[] { usuario.Nombre, usuario.ApellidoPaterno, usuario.ApellidoMaterno }.Where(x => !string.IsNullOrWhiteSpace(x))),
+            usuario.Correo, usuario.Telefono, usuario.NombreRol, usuario.Estatus, usuario.TieneFoto
+        });
+    }
 
-        // ========================================
-        // 1. LISTAR USUARIOS
-        // ========================================
-
-        [HttpGet]
-        [Authorize(Policy = "SoloAdministrador")]
-        public async Task<IActionResult> Lista()
-        {
-            List<Usuario> lista =
-                await _usuarioData.Lista();
-
-            return StatusCode(
-                StatusCodes.Status200OK,
-                lista
-            );
-        }
-
-        // ========================================
-        // 2. OBTENER USUARIO POR ID
-        // ========================================
-
-        [HttpGet("{id}")]
-        [Authorize(Policy = "SoloAdministrador")]
-        public async Task<IActionResult> Obtener(int id)
-        {
-            Usuario? objeto =
-                await _usuarioData.Obtener(id);
-
-            if (objeto == null)
-            {
-                return NotFound(new
-                {
-                    numeroError = 1,
-                    respuesta = "Usuario no encontrado"
-                });
-            }
-
-            return StatusCode(
-                StatusCodes.Status200OK,
-                objeto
-            );
-        }
-
-        // ========================================
-        // 3. CREAR USUARIO
-        // ========================================
-
-        [HttpPost]
-        [Authorize(Policy = "SoloAdministrador")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Crear(
-            [FromBody] AltaEmpleadoRequest objeto)
-        {
-            if (objeto.IdRol <= 0 || string.IsNullOrWhiteSpace(objeto.Nombre) ||
-                string.IsNullOrWhiteSpace(objeto.ApellidoPaterno) ||
-                string.IsNullOrWhiteSpace(objeto.Telefono) ||
-                !new System.ComponentModel.DataAnnotations.EmailAddressAttribute().IsValid(objeto.Correo))
-                return BadRequest(new RespuestaOperacion { NumeroError = 400, Respuesta = "Completa los datos obligatorios del empleado." });
-
-            string? errorPassword = ADSPORT.Security.PoliticaPassword.Validar(objeto.PasswordInicial);
-            if (errorPassword != null)
-                return BadRequest(new RespuestaOperacion { NumeroError = 400, Respuesta = errorPassword });
-
-            string hash = BCrypt.Net.BCrypt.HashPassword(objeto.PasswordInicial, workFactor: 12);
-            RespuestaOperacion resultado =
-                await _usuarioData.Crear(objeto, hash);
-
-            if (resultado.NumeroError != 0 && resultado.NumeroError is not (400 or 51001 or 51002))
-            {
-                _logger.LogError("USUARIO_AGREGA devolvió {NumeroError}: {Respuesta}", resultado.NumeroError, resultado.Respuesta);
-                resultado.Respuesta = "No fue posible registrar al empleado. Revisa la conexión y las migraciones SQL.";
-            }
-
-            return StatusCode(
-                StatusCodes.Status200OK,
-                resultado
-            );
-        }
-
-        // ========================================
-        // 4. EDITAR USUARIO
-        // ========================================
-
-        [HttpPut("{id}")]
-        [Authorize(Policy = "SoloAdministrador")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Editar(
-            int id,
-            [FromBody] Usuario objeto)
-        {
-            objeto.IdUsuario = id;
-
-            RespuestaOperacion resultado =
-                await _usuarioData.Editar(objeto);
-
-            return StatusCode(
-                StatusCodes.Status200OK,
-                resultado
-            );
-        }
-
-        // ========================================
-        // 5. ELIMINAR USUARIO
-        // ========================================
-
-        [HttpDelete("{id}")]
-        [Authorize(Policy = "SoloAdministrador")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Eliminar(int id)
-        {
-            RespuestaOperacion resultado =
-                await _usuarioData.Eliminar(id);
-
-            return StatusCode(
-                StatusCodes.Status200OK,
-                resultado
-            );
-        }
-
-        // ========================================
-        // 6. OBTENER MI PERFIL
-        // ========================================
-
-        [HttpGet("mi-perfil")]
-        [Authorize(
-            AuthenticationSchemes =
-                CookieAuthenticationDefaults
-                    .AuthenticationScheme
-        )]
-        public async Task<IActionResult> MiPerfil()
-        {
-            // Obtener el ID de la sesión.
-            string? idSesion = User.FindFirstValue(
-                ClaimTypes.NameIdentifier
-            );
-
-            if (!int.TryParse(
-                idSesion,
-                out int idUsuario))
-            {
-                return Unauthorized(new
-                {
-                    numeroError = 1,
-                    respuesta = "Sesión no válida."
-                });
-            }
-
-            // Consultar al usuario.
-            Usuario? usuario =
-                await _usuarioData.Obtener(idUsuario);
-
-            if (usuario == null)
-            {
-                return NotFound(new
-                {
-                    numeroError = 2,
-                    respuesta = "Usuario no encontrado."
-                });
-            }
-
-            // Construir nombre completo.
-            string nombreCompleto = string.Join(
-                " ",
-                new[]
-                {
-                    usuario.Nombre,
-                    usuario.ApellidoPaterno,
-                    usuario.ApellidoMaterno
-                }
-                .Where(nombre =>
-                    !string.IsNullOrWhiteSpace(nombre))
-            );
-
-            // Devolver solamente los datos
-            // necesarios para el Header.
-
-            return Ok(new
-            {
-                idUsuario = usuario.IdUsuario,
-
-                nombre = usuario.Nombre,
-                nombreCompleto = nombreCompleto,
-
-                apellidoPaterno = usuario.ApellidoPaterno,
-                apellidoMaterno = usuario.ApellidoMaterno,
-
-                correo = usuario.Correo,
-                telefono = usuario.Telefono,
-
-                nombreRol = usuario.NombreRol,
-                estatus = usuario.Estatus,
-
-                tieneFoto = usuario.Foto != null
-                    && usuario.Foto.Length > 0
-            });
-
-        }
-
-        // ========================================
-        // 7. OBTENER MI FOTOGRAFÍA
-        // ========================================
-
-        [HttpGet("mi-foto")]
-        [Authorize(
-            AuthenticationSchemes =
-                CookieAuthenticationDefaults
-                    .AuthenticationScheme
-        )]
-        public async Task<IActionResult> MiFoto()
-        {
-            // Obtener ID desde la sesión.
-            string? idSesion = User.FindFirstValue(
-                ClaimTypes.NameIdentifier
-            );
-
-            if (!int.TryParse(
-                idSesion,
-                out int idUsuario))
-            {
-                return Unauthorized();
-            }
-
-            // Consultar fotografía.
-            Usuario? usuario =
-                await _usuarioData.Obtener(idUsuario);
-
-            if (usuario == null ||
-                usuario.Foto == null ||
-                usuario.Foto.Length == 0)
-            {
-                return NotFound();
-            }
-
-            // Detectar formato real de la imagen.
-            string? tipoImagen =
-                DetectarTipoImagen(usuario.Foto);
-
-            if (tipoImagen == null)
-            {
-                return StatusCode(
-                    StatusCodes
-                        .Status415UnsupportedMediaType
-                );
-            }
-
-            // Evitar almacenar la fotografía
-            // privada en cachés compartidas.
-            Response.Headers.CacheControl =
-                "private, no-store";
-
-            return File(
-                usuario.Foto,
-                tipoImagen
-            );
-        }
-
-        // ========================================
-        // 8. DETECTAR TIPO DE IMAGEN
-        // ========================================
-
-        private static string? DetectarTipoImagen(
-            byte[] datos)
-        {
-            // JPEG
-            if (datos.Length >= 3 &&
-                datos[0] == 0xFF &&
-                datos[1] == 0xD8 &&
-                datos[2] == 0xFF)
-            {
-                return "image/jpeg";
-            }
-
-            // PNG
-            if (datos.Length >= 8 &&
-                datos[0] == 0x89 &&
-                datos[1] == 0x50 &&
-                datos[2] == 0x4E &&
-                datos[3] == 0x47 &&
-                datos[4] == 0x0D &&
-                datos[5] == 0x0A &&
-                datos[6] == 0x1A &&
-                datos[7] == 0x0A)
-            {
-                return "image/png";
-            }
-
-            // WebP
-            if (datos.Length >= 12 &&
-                datos[0] == 0x52 &&
-                datos[1] == 0x49 &&
-                datos[2] == 0x46 &&
-                datos[3] == 0x46 &&
-                datos[8] == 0x57 &&
-                datos[9] == 0x45 &&
-                datos[10] == 0x42 &&
-                datos[11] == 0x50)
-            {
-                return "image/webp";
-            }
-
-            return null;
-        }
+    [HttpGet("mi-foto")]
+    [Authorize]
+    public async Task<IActionResult> MiFoto()
+    {
+        if (!long.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var id)) return Unauthorized();
+        var usuario = await usuarios.Obtener(id);
+        if (usuario?.Foto is not { Length: > 0 } foto) return NotFound();
+        var tipo = foto.Length >= 3 && foto[0] == 255 && foto[1] == 216 && foto[2] == 255 ? "image/jpeg"
+            : foto.Length >= 8 && foto.AsSpan(0, 8).SequenceEqual(new byte[] { 137,80,78,71,13,10,26,10 }) ? "image/png"
+            : foto.Length >= 12 && System.Text.Encoding.ASCII.GetString(foto, 0, 4) == "RIFF"
+              && System.Text.Encoding.ASCII.GetString(foto, 8, 4) == "WEBP" ? "image/webp" : null;
+        return tipo is null ? StatusCode(415) : File(foto, tipo);
     }
 }

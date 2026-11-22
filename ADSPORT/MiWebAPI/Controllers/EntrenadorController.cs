@@ -47,6 +47,7 @@ public sealed class EntrenadorController : ControllerBase
 
         try
         {
+            var inicioSesion = DateTime.UtcNow;
             var resultado = await _login.IniciarSesion(new LoginUsuario
             {
                 Correo = request.Correo,
@@ -64,7 +65,8 @@ public sealed class EntrenadorController : ControllerBase
             {
                 new Claim(ClaimTypes.NameIdentifier, cuenta.IdUsuario.ToString(CultureInfo.InvariantCulture)),
                 new Claim(ClaimTypes.Name, cuenta.NombreCompleto),
-                new Claim(ClaimTypes.Role, "ENTRENADOR")
+                new Claim(ClaimTypes.Role, "ENTRENADOR"),
+                SesionRecuperacionPassword.CrearClaim(inicioSesion)
             }, CookieAuthenticationDefaults.AuthenticationScheme);
 
             // No trasladar claims administrativos ni permisos de una sesión anterior.

@@ -106,7 +106,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             const acciones = nodo("td"); const grupo = nodo("div", "sports-row-actions");
             const btnEditar = nodo("button", "sports-button sports-button--quiet", "Editar"); btnEditar.type = "button"; btnEditar.addEventListener("click", () => editar(deporte));
             const btnEstado = nodo("button", "sports-button sports-button--quiet", deporte.activo ? "Desactivar" : "Reactivar"); btnEstado.type = "button"; btnEstado.addEventListener("click", () => cambiarEstado(deporte));
-            grupo.append(btnEditar, btnEstado); acciones.append(grupo); fila.append(datos, estado, fecha, acciones); tabla.append(fila);
+            const btnEliminar = nodo("button", "sports-button sports-button--quiet", "Eliminar");
+            btnEliminar.type = "button"; btnEliminar.addEventListener("click", () => eliminar(deporte));
+            grupo.append(btnEditar, btnEstado, btnEliminar); acciones.append(grupo); fila.append(datos, estado, fecha, acciones); tabla.append(fila);
         });
         if (ocupado) tabla.querySelectorAll("button").forEach((boton) => { boton.disabled = true; });
     }
@@ -141,12 +143,27 @@ document.addEventListener("DOMContentLoaded", async () => {
         return solicitar("/api/Deporte/" + encodeURIComponent(id) + "/imagen", { method: "POST", body: data });
     }
 
+
+    async function eliminar(deporte) {
+        if (ocupado) return;
+        if (!confirm("¿Eliminar definitivamente el deporte «" + deporte.nombreDeporte + "» y su imagen? Sus canchas quedarán inactivas para asignarles otro deporte y sus clases dejarán de publicarse. Las reservas y pagos se conservarán.")) return;
+        bloquear(true);
+        try {
+            const resultado = await solicitar("/api/Deporte/" + encodeURIComponent(deporte.idDeporte), { method:"DELETE" });
+            deportes = deportes.filter(d => d.idDeporte !== deporte.idDeporte); renderizar();
+            if (String(porId("idDeporte").value) === String(deporte.idDeporte)) limpiarFormulario();
+            try { await cargarDeportes(); aviso(resultado.respuesta); }
+            catch { aviso("El deporte se eliminó. Actualiza el catálogo para volver a cargar los registros."); }
+        } catch (error) { aviso(error.message,true); }
+        finally { bloquear(false); }
+    }
+
     async function cambiarEstado(deporte) {
         if (ocupado) return;
         if (deporte.activo && !window.confirm("¿Desactivar " + deporte.nombreDeporte + "? Se ocultará del catálogo público y se conservarán sus datos y clases.")) return;
         bloquear(true);
         try {
-            await solicitar("/api/Deporte/" + encodeURIComponent(deporte.idDeporte), deporte.activo ? { method: "DELETE" } : {
+            await solicitar("/api/Deporte/" + encodeURIComponent(deporte.idDeporte) + (deporte.activo ? "/desactivar" : ""), deporte.activo ? { method: "POST" } : {
                 method: "PUT", headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ nombreDeporte: deporte.nombreDeporte, descripcion: deporte.descripcion, activo: true })
             });
@@ -182,6 +199,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         let guardado = false;
         let imagenPendiente = false;
         bloquear(true);
+        porId("btnGuardar").setAttribute("aria-busy", "true");
         aviso("");
         try {
             const nuevo = id === "0";
@@ -209,7 +227,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 aviso("El deporte se guardó, pero su imagen no pudo cargarse. " + error.message + " Usa Reintentar imagen; se conservará el mismo deporte.", true);
                 await cargarDeportes().catch(() => {});
             } else aviso(guardado ? "El deporte se guardó, pero no fue posible actualizar el catálogo. Usa Actualizar catálogo." : error.message || "No fue posible guardar el deporte.", true);
-        } finally { bloquear(false); }
+        } finally { bloquear(false); porId("btnGuardar").removeAttribute("aria-busy"); }
     });
 
     porId("btnReintentarImagen").addEventListener("click", async () => {

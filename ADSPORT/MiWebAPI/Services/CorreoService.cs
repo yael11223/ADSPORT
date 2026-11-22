@@ -32,71 +32,7 @@ namespace ADSPORT.Services
             string destinatario,
             string codigo)
         {
-            // ========================================
-            // 1. CONFIGURACIÓN SMTP
-            // ========================================
-
-            string servidor =
-                _configuration["Smtp:Servidor"]
-                ?? throw new Exception(
-                    "Falta el servidor SMTP."
-                );
-
-            int puerto = int.Parse(
-                _configuration["Smtp:Puerto"]
-                ?? throw new Exception(
-                    "Falta el puerto SMTP."
-                )
-            );
-
-            string remitente =
-                _configuration["Smtp:CorreoRemitente"]
-                ?? throw new Exception(
-                    "Falta el correo remitente."
-                );
-
-            string usuario =
-                _configuration["Smtp:Usuario"]
-                ?? throw new Exception(
-                    "Falta el usuario SMTP."
-                );
-
-            string password =
-                _configuration["Smtp:Password"]
-                ?? throw new Exception(
-                    "Falta la contraseña SMTP."
-                );
-
-            if (string.IsNullOrWhiteSpace(password))
-            {
-                throw new Exception(
-                    "La contraseña SMTP está vacía."
-                );
-            }
-
-            string nombreRemitente =
-                _configuration["Smtp:NombreRemitente"]
-                ?? "ADSPORT";
-
-            // ========================================
-            // 2. CREAR CORREO
-            // ========================================
-
-            var mensaje = new MimeMessage();
-
-            mensaje.From.Add(
-                new MailboxAddress(
-                    nombreRemitente,
-                    remitente
-                )
-            );
-
-            mensaje.To.Add(
-                MailboxAddress.Parse(destinatario)
-            );
-
-            mensaje.Subject =
-                "Verifica tu cuenta | ADSPORT";
+            var mensaje = CrearMensaje(destinatario, "Verifica tu cuenta | ADSPORT");
 
             // ========================================
             // 3. CREAR CUERPO HTML Y TEXTO
@@ -380,31 +316,72 @@ namespace ADSPORT.Services
 
             mensaje.Body = cuerpo.ToMessageBody();
 
-            // ========================================
-            // 5. CONEXIÓN SMTP DE HOSTINGER
-            // ========================================
+            await EnviarMensaje(mensaje);
+        }
 
-            SecureSocketOptions seguridad =
-                puerto == 465
-                    ? SecureSocketOptions.SslOnConnect
-                    : SecureSocketOptions.StartTls;
+        public async Task EnviarCodigoRecuperacion(string destinatario, string codigo, CancellationToken cancellationToken = default)
+        {
+            var mensaje = CrearMensaje(destinatario, "Recupera tu contraseña | ADSPORT");
+            var cuerpo = new BodyBuilder
+            {
+                TextBody = "Tu código para recuperar la contraseña de ADSPORT es: " + codigo
+                    + "\n\nVence en 10 minutos y solo puede utilizarse una vez."
+                    + "\nSi no solicitaste este cambio, ignora el mensaje. Tu contraseña sigue igual.",
+                HtmlBody = "<!DOCTYPE html><html lang='es'><body style='margin:0;background:#080808;color:#fff;font-family:Arial,sans-serif;padding:32px'>"
+                    + "<div style='max-width:520px;margin:auto;padding:32px;background:#171717;border-radius:16px;border-top:4px solid #ff6900'>"
+                    + "<h1 style='color:#ff6900'>ADSPORT</h1><h2>Recupera tu contraseña</h2>"
+                    + "<p>Introduce este código en la pantalla de recuperación:</p>"
+                    + "<p style='font-size:36px;letter-spacing:8px;color:#ff6900;font-weight:bold'>"
+                    + WebUtility.HtmlEncode(codigo) + "</p>"
+                    + "<p>Vence en 10 minutos y solo puede utilizarse una vez. Nunca compartas este código.</p>"
+                    + "<p style='color:#bbb'>Si no solicitaste este cambio, ignora el mensaje. Tu contraseña sigue igual.</p></div></body></html>"
+            };
+            mensaje.Body = cuerpo.ToMessageBody();
+            await EnviarMensaje(mensaje, cancellationToken);
+        }
 
-            using var smtp = new SmtpClient();
+        public async Task NotificarPasswordRestablecida(string destinatario, CancellationToken cancellationToken = default)
+        {
+            var mensaje = CrearMensaje(destinatario, "Tu contraseña se actualizó | ADSPORT");
+            mensaje.Body = new TextPart("plain")
+            {
+                Text = "La contraseña de tu cuenta de ADSPORT se actualizó y las sesiones anteriores se cerraron.\n\n"
+                    + "Si no hiciste este cambio, recupera tu contraseña y contacta a la administración del club."
+            };
+            await EnviarMensaje(mensaje, cancellationToken);
+        }
 
-            await smtp.ConnectAsync(
-                servidor,
-                puerto,
-                seguridad
-            );
+        private MimeMessage CrearMensaje(string destinatario, string asunto)
+        {
+            var mensaje = new MimeMessage();
+            mensaje.From.Add(new MailboxAddress(_configuration["Smtp:NombreRemitente"] ?? "ADSPORT",
+                _configuration["Smtp:CorreoRemitente"] ?? throw new InvalidOperationException("Falta el correo remitente.")));
+            mensaje.To.Add(MailboxAddress.Parse(destinatario));
+            mensaje.Subject = asunto;
+            return mensaje;
+        }
 
-            await smtp.AuthenticateAsync(
-                usuario,
-                password
-            );
-
-            await smtp.SendAsync(mensaje);
-
-            await smtp.DisconnectAsync(true);
+        private async Task EnviarMensaje(MimeMessage mensaje, CancellationToken cancellationToken = default)
+        {
+            var servidor = _configuration["Smtp:Servidor"] ?? throw new InvalidOperationException("Falta el servidor SMTP.");
+            var puerto = _configuration.GetValue<int>("Smtp:Puerto");
+            // Solo permite SMTP sin TLS hacia loopback en Development y con activación explícita.
+            var pruebasLocales = _environment.IsDevelopment() && _configuration.GetValue<bool>("Smtp:PermitirSinTlsLocal")
+                && (servidor.Equals("localhost", StringComparison.OrdinalIgnoreCase)
+                    || IPAddress.TryParse(servidor, out var ip) && IPAddress.IsLoopback(ip));
+            var seguridad = pruebasLocales ? SecureSocketOptions.None
+                : puerto == 465 ? SecureSocketOptions.SslOnConnect : SecureSocketOptions.StartTls;
+            using var smtp = new SmtpClient { Timeout = 10000 };
+            await smtp.ConnectAsync(servidor, puerto, seguridad, cancellationToken);
+            if (!pruebasLocales)
+            {
+                var usuario = _configuration["Smtp:Usuario"] ?? throw new InvalidOperationException("Falta el usuario SMTP.");
+                var password = _configuration["Smtp:Password"];
+                if (string.IsNullOrWhiteSpace(password)) throw new InvalidOperationException("Falta la contraseña SMTP.");
+                await smtp.AuthenticateAsync(usuario, password, cancellationToken);
+            }
+            await smtp.SendAsync(mensaje, cancellationToken);
+            await smtp.DisconnectAsync(true, cancellationToken);
         }
     }
 }

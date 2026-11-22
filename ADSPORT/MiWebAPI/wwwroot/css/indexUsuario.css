@@ -1,4 +1,4 @@
-﻿/* ==========================================================
+/* ==========================================================
    ADSPORT - HOME
    DISEÑO CINEMATOGRÁFICO
    ========================================================== */
@@ -1505,3 +1505,8 @@ img {
         transform: none;
     }
 }
+
+/* Acceso al catálogo de fotografías de las instalaciones. */
+.instalaciones-acceso { max-width:1350px; margin:30px auto 0; }
+.instalaciones-ver-todas { display:inline-flex; padding:13px 22px; border:1px solid var(--naranja); border-radius:25px; color:var(--blanco); font-size:14px; font-weight:700; text-decoration:none; }
+.instalaciones-ver-todas:hover { background:var(--naranja); color:var(--blanco); }

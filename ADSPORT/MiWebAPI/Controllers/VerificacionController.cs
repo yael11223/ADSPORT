@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using MiWebAPI.Models;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Cryptography;
-using System.Text;
+using ADSPORT.Security;
 
 namespace ADSPORT.Controllers
 {
@@ -40,34 +40,8 @@ namespace ADSPORT.Controllers
         // GENERAR HASH SEGURO DEL CÓDIGO
         // ========================================
 
-        private string GenerarHash(string correo, string codigo)
-        {
-            string clave = _configuration["Verificacion:ClaveHmac"]
-                ?? throw new InvalidOperationException(
-                    "Falta configurar la clave HMAC de verificación."
-                );
-
-            byte[] claveBytes = Convert.FromBase64String(clave);
-
-            if (claveBytes.Length < 32)
-            {
-                throw new InvalidOperationException(
-                    "La clave HMAC debe tener al menos 32 bytes."
-                );
-            }
-
-            string contenido =
-                $"{correo.Trim().ToLowerInvariant()}:{codigo}";
-
-            using (var hmac = new HMACSHA256(claveBytes))
-            {
-                byte[] hash = hmac.ComputeHash(
-                    Encoding.UTF8.GetBytes(contenido)
-                );
-
-                return Convert.ToHexString(hash);
-            }
-        }
+        private string GenerarHash(string correo, string codigo) =>
+            CodigoVerificacionSeguro.CrearHash(_configuration, correo, codigo);
 
         // ========================================
         // 1. AGREGAR CÓDIGO DE VERIFICACIÓN

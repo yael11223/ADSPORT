@@ -4,7 +4,10 @@ using System.Security.Claims;
 
 namespace ADSPORT.Security;
 
-public sealed class EntrenadorRequirement : IAuthorizationRequirement { }
+public sealed class EntrenadorRequirement(bool permitirAdministrador = false) : IAuthorizationRequirement
+{
+    public bool PermitirAdministrador { get; } = permitirAdministrador;
+}
 
 public sealed class EntrenadorAuthorizationHandler : AuthorizationHandler<EntrenadorRequirement>
 {
@@ -21,6 +24,12 @@ public sealed class EntrenadorAuthorizationHandler : AuthorizationHandler<Entren
     protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context,
         EntrenadorRequirement requirement)
     {
+        if (requirement.PermitirAdministrador && context.User.Identity?.IsAuthenticated == true
+            && context.User.HasClaim("ADSPORT.Administrador", "true"))
+        {
+            context.Succeed(requirement);
+            return;
+        }
         if (context.User.Identity?.IsAuthenticated != true
             || !long.TryParse(context.User.FindFirstValue(ClaimTypes.NameIdentifier), out var id)
             || id <= 0) return;

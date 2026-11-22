@@ -1,0 +1,42 @@
+/* Conserva la paleta, las tipografías y los componentes del sitio público. */
+.instalaciones-page { margin:0; min-width:320px; background:#090909; color:#fff; font-family:"Inter",Arial,sans-serif; }
+.instalaciones-page [hidden] { display:none!important; }
+.instalaciones-contenido, .instalaciones-contenido *, .instalaciones-visor, .instalaciones-visor * { box-sizing:border-box; }
+.instalaciones-contenido { width:min(1350px,90%); margin:0 auto; padding:65px 0 90px; }
+.instalaciones-portada { max-width:750px; margin-bottom:55px; }
+.instalaciones-etiqueta { margin:0 0 22px; color:#ff6500; font-size:.875rem; font-weight:700; letter-spacing:2px; }
+.instalaciones-portada h1 { margin:0; font-family:"Barlow Condensed",Impact,Arial,sans-serif; font-size:clamp(3.1rem,7vw,6rem); font-weight:900; line-height:.95; }
+.instalaciones-portada h1 span { color:#ff6500; }
+.instalaciones-portada > p:last-child { max-width:610px; color:#aaa; font-size:1rem; line-height:1.8; margin-top:24px; }
+.instalaciones-controles { display:flex; align-items:end; justify-content:space-between; flex-wrap:wrap; gap:20px; margin:0 0 28px; }
+.instalaciones-controles h2 { margin:0; font-family:"Barlow Condensed",Impact,Arial,sans-serif; font-weight:800; font-size:1.85rem; }
+.instalaciones-ayuda { margin:10px 0 0; color:#aaa; font-size:.875rem; line-height:1.7; }
+.instalaciones-filtro { margin-left:auto; min-width:220px; }
+.instalaciones-filtro label { display:block; margin-bottom:9px; color:#ccc; font-size:.875rem; }
+.instalaciones-filtro select { appearance:none; min-width:220px; width:100%; border:1px solid #555; background-color:#151515; color:#eee; padding:12px 38px 12px 15px; border-radius:8px; font:inherit; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='none' stroke='%23ddd' stroke-width='2' d='m5 7 5 5 5-5'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center; background-size:16px; }
+.instalaciones-boton { display:inline-flex; align-items:center; justify-content:center; min-height:44px; padding:12px 18px; background:#ff6500; color:#fff; border:1px solid #ff6500; border-radius:8px; text-decoration:none; font:inherit; font-size:.875rem; font-weight:700; cursor:pointer; }
+.instalaciones-boton:hover { background:#e85c00; }
+.instalaciones-boton--secundario { color:#eee; background:transparent; border-color:#555; }
+.instalaciones-boton--secundario:hover { background:#ff650015; border-color:#ff6500; }
+.instalaciones-boton:disabled { opacity:.55; cursor:wait; }
+.instalaciones-page button:focus-visible, .instalaciones-page a:focus-visible, .instalaciones-page select:focus-visible { outline:2px solid #ff914d; outline-offset:4px; }
+.instalaciones-estado { padding:18px 20px; margin:0 0 25px; color:#ddd; background:#151515; border:1px solid #333; border-radius:8px; line-height:1.7; }
+.instalaciones-estado--error { border-color:#ad673d; color:#ffd2b3; }
+.instalaciones-galeria { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:24px; }
+.instalacion-tarjeta { min-width:0; background:#151515; border:1px solid #333; border-radius:16px; overflow:hidden; }
+.instalacion-foto { display:block; width:100%; height:250px; object-fit:cover; }
+.instalacion-sin-foto { display:grid; place-items:center; background:#202020; color:#aaa; padding:25px; font-size:.875rem; text-align:center; }
+.instalacion-datos { padding:25px; }
+.instalacion-deporte { color:#ff914d; font-size:.875rem; font-weight:700; }
+.instalacion-datos h3 { font-family:"Barlow Condensed",Impact,Arial,sans-serif; font-size:1.9rem; line-height:1.1; margin:10px 0 16px; overflow-wrap:anywhere; }
+.instalacion-ubicacion { color:#bbb; font-size:1rem; line-height:1.6; overflow-wrap:anywhere; }
+.instalacion-datos h4 { margin:22px 0 12px; font-size:.875rem; font-weight:700; color:#eee; }
+.instalacion-horarios { padding-left:18px; color:#aaa; font-size:.875rem; line-height:1.9; }
+.instalacion-acciones { display:flex; flex-wrap:wrap; gap:10px; margin-top:24px; }
+.instalaciones-visor { width:min(1100px,calc(100% - 30px)); max-height:90vh; overflow:auto; background:#151515; color:#fff; border:1px solid #555; border-radius:12px; padding:22px; }
+.instalaciones-visor::backdrop { background:#000c; }
+.instalaciones-visor-cabecera { display:flex; align-items:center; justify-content:space-between; gap:20px; margin-bottom:20px; }
+.instalaciones-visor-cabecera h2 { font-family:"Barlow Condensed",Impact,Arial,sans-serif; margin:0; font-size:1.8rem; }
+.instalaciones-visor img { display:block; width:100%; max-height:70vh; object-fit:contain; }
+@media(max-width:1000px) { .instalaciones-galeria { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media(max-width:650px) { .instalaciones-contenido { padding-top:40px; } .instalaciones-galeria { grid-template-columns:1fr; } .instalaciones-filtro { margin-left:0; width:100%; } .instalacion-foto { height:230px; } }

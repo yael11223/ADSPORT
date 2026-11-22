@@ -1,0 +1,155 @@
+/* Movimiento compartido: conserva tamaños, colores y distribución de cada módulo. */
+body.ads-motion {
+    --ads-motion-ease: cubic-bezier(.2, .75, .25, 1);
+    --ads-motion-fast: 180ms;
+    --ads-motion-base: 300ms;
+}
+
+body.ads-motion :where(.admin-button, .btn-orange, .btn-refresh, .btn-nav-light,
+    .sports-button, .trainer-button, .instalaciones-boton, .btn-ingresar,
+    .crear-cuenta, .card-link, .btn-logout) {
+    transition: transform var(--ads-motion-fast) var(--ads-motion-ease),
+        box-shadow var(--ads-motion-base) ease, background-color var(--ads-motion-fast) ease,
+        border-color var(--ads-motion-fast) ease, color var(--ads-motion-fast) ease,
+        opacity var(--ads-motion-fast) ease;
+}
+
+body.ads-motion :where(.admin-court-card, .admin-class-card, .admin-session,
+    .trainer-class, .instalacion-tarjeta, .dashboard-card) {
+    transition: transform var(--ads-motion-base) var(--ads-motion-ease),
+        box-shadow var(--ads-motion-base) ease, border-color var(--ads-motion-base) ease;
+}
+
+body.ads-motion :where(.employee-panel, .sports-panel) {
+    transition: box-shadow var(--ads-motion-base) ease;
+}
+
+body.ads-motion :where(.employee-panel, .sports-panel):focus-within {
+    box-shadow: 0 8px 28px #0000000c, 0 0 0 1px #ff6a0024;
+}
+
+body.ads-motion :where(.admin-field, .trainer-field, .sports-field, .campo) :where(input, select, textarea),
+body.ads-motion .employee-input {
+    transition: border-color var(--ads-motion-fast) ease, box-shadow var(--ads-motion-fast) ease,
+        background-color var(--ads-motion-fast) ease;
+}
+
+body.ads-motion .employee-module-links a {
+    position: relative;
+}
+
+body.ads-motion .employee-module-links a::after {
+    content: "";
+    position: absolute;
+    inset: auto 12px 4px;
+    height: 2px;
+    border-radius: 2px;
+    background: #ff6a00;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--ads-motion-base) var(--ads-motion-ease);
+    pointer-events: none;
+}
+
+body.ads-motion .employee-module-links a:is(:hover, :focus-visible, [aria-current="page"])::after {
+    transform: scaleX(1);
+}
+
+body.ads-motion :where(.employee-table, .sports-table) tbody td {
+    transition: background-color var(--ads-motion-fast) ease;
+}
+
+body.ads-motion :where(.instalacion-tarjeta img.instalacion-foto) {
+    transition: transform 650ms var(--ads-motion-ease);
+}
+
+body.ads-motion :where(.admin-dialog, .trainer-dialog, .instalaciones-visor)[open] {
+    animation: ads-dialog-enter 260ms var(--ads-motion-ease) both;
+}
+
+body.ads-motion :where(.admin-dialog, .trainer-dialog, .instalaciones-visor)[open]::backdrop {
+    animation: ads-backdrop-enter 220ms ease both;
+}
+
+/* Una línea discreta indica trabajo temporal, sin añadir elementos ni mover el texto. */
+body.ads-motion button[data-ads-loading="true"],
+body.ads-motion :where(.admin-notice, .trainer-notice, .sports-notice,
+    .instalaciones-estado, .recuperacion-aviso)[data-ads-loading="true"] {
+    position: relative;
+}
+
+body.ads-motion button[data-ads-loading="true"]::after,
+body.ads-motion :where(.admin-notice, .trainer-notice, .sports-notice,
+    .instalaciones-estado, .recuperacion-aviso)[data-ads-loading="true"]::after {
+    content: "";
+    position: absolute;
+    left: 12%;
+    right: 12%;
+    bottom: 3px;
+    height: 2px;
+    border-radius: 2px;
+    background: currentColor;
+    opacity: .55;
+    transform-origin: left;
+    animation: ads-working 1.2s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    body.ads-motion :where(.admin-button, .sports-button, .trainer-button,
+        .instalaciones-boton):not(:disabled):hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px #ff6a001b;
+    }
+
+    body.ads-motion :where(.admin-court-card, .admin-class-card, .trainer-class,
+        .instalacion-tarjeta):hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 26px #00000013;
+    }
+
+    body.ads-motion .admin-session:hover {
+        transform: translateY(-2px);
+    }
+
+    body.ads-motion .instalacion-tarjeta:hover img.instalacion-foto {
+        transform: scale(1.035);
+    }
+}
+
+body.ads-motion :where(.admin-button, .sports-button, .trainer-button,
+    .instalaciones-boton, .btn-ingresar):not(:disabled):active {
+    transform: translateY(0) scale(.985);
+}
+
+@keyframes ads-dialog-enter {
+    from { opacity: 0; transform: translateY(14px) scale(.975); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes ads-backdrop-enter {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes ads-working {
+    0%, 100% { transform: scaleX(.12); opacity: .25; }
+    50% { transform: scaleX(1); opacity: .65; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body.ads-motion *, body.ads-motion *::before, body.ads-motion *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+        scroll-behavior: auto !important;
+    }
+    body.ads-motion :is(.admin-button, .sports-button, .trainer-button,
+        .instalaciones-boton, .admin-court-card, .admin-class-card,
+        .admin-session, .trainer-class, .instalacion-tarjeta, .dashboard-card,
+        .btn-orange, .btn-refresh, .btn-nav-light, .btn-ingresar, .crear-cuenta,
+        .card-link, .btn-logout):is(:hover, :active),
+    body.ads-motion .instalacion-tarjeta:hover img.instalacion-foto {
+        transform: none;
+    }
+}

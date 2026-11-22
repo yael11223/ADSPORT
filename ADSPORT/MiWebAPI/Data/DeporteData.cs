@@ -58,6 +58,17 @@ public sealed class DeporteData
         return Convert.ToInt64(idGuardado);
     }
 
+    public async Task Eliminar(long id)
+    {
+        using var conexion = new SqlConnection(_conexion);
+        using var comando = CrearComando("DEPORTE_BORRAR", conexion);
+        comando.Parameters.Add("@id_deporte", SqlDbType.BigInt).Value = id;
+        var resultado = SqlResultadoProcedimiento.Agregar(comando);
+        await conexion.OpenAsync();
+        await comando.ExecuteNonQueryAsync();
+        resultado.Comprobar();
+    }
+
     public async Task Desactivar(long id)
     {
         using var conexion = new SqlConnection(_conexion);

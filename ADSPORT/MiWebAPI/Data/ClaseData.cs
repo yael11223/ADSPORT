@@ -16,13 +16,14 @@ public sealed class ClaseData
             ?? throw new InvalidOperationException("Falta configurar CadenaSQL.");
     }
 
-    public async Task<List<ClaseDeportiva>> Consultar(long? idEntrenador, string? deporte = null, long? idDeporte = null)
+    public async Task<List<ClaseDeportiva>> Consultar(long? idEntrenador, string? deporte = null, long? idDeporte = null, bool administracion = false)
     {
         using var conexion = new SqlConnection(_cadenaSql);
         using var comando = new SqlCommand("ENTRENADOR_CLASES_CONSULTAR", conexion) { CommandType = CommandType.StoredProcedure };
         comando.Parameters.Add("@IdEntrenador", SqlDbType.BigInt).Value = (object?)idEntrenador ?? DBNull.Value;
         comando.Parameters.Add("@Deporte", SqlDbType.NVarChar, 50).Value = idDeporte.HasValue || string.IsNullOrWhiteSpace(deporte) ? DBNull.Value : deporte.Trim();
         comando.Parameters.Add("@IdDeporte", SqlDbType.BigInt).Value = (object?)idDeporte ?? DBNull.Value;
+        comando.Parameters.Add("@Administracion", SqlDbType.Bit).Value = administracion;
         var resultado = SqlResultadoProcedimiento.Agregar(comando);
         await conexion.OpenAsync();
         using var reader = await comando.ExecuteReaderAsync();
@@ -32,6 +33,8 @@ public sealed class ClaseData
             var clase = new ClaseDeportiva
             {
                 IdClase = Convert.ToInt64(reader["ID_CLASE"]),
+                IdCancha = reader["ID_CANCHA"] is DBNull ? null : Convert.ToInt64(reader["ID_CANCHA"]),
+                NombreCancha = reader["NOMBRE_CANCHA"] is DBNull ? null : reader["NOMBRE_CANCHA"].ToString(),
                 IdDeporte = reader["ID_DEPORTE"] is DBNull ? 0 : Convert.ToInt64(reader["ID_DEPORTE"]),
                 NombreDeporte = reader["NOMBRE_DEPORTE"].ToString() ?? "Sin disciplina",
                 DeporteActivo = Convert.ToBoolean(reader["DEPORTE_ACTIVO"]),
@@ -56,6 +59,8 @@ public sealed class ClaseData
                     clase.Horarios.Add(new HorarioClase
                     {
                         DiaSemana = Convert.ToInt32(reader["DIA_ISO"]),
+                        IdCancha = reader["ID_CANCHA"] is DBNull ? null : Convert.ToInt64(reader["ID_CANCHA"]),
+                        NombreCancha = reader["NOMBRE_CANCHA"] is DBNull ? null : reader["NOMBRE_CANCHA"].ToString(),
                         HoraInicio = ((TimeSpan)reader["HORA_INICIO"]).ToString(@"hh\:mm"),
                         HoraFin = ((TimeSpan)reader["HORA_FIN"]).ToString(@"hh\:mm")
                     });
@@ -88,6 +93,7 @@ public sealed class ClaseData
         comando.Parameters.Add("@IdEntrenador", SqlDbType.BigInt).Value = idEntrenador;
         comando.Parameters.Add("@IdClase", SqlDbType.BigInt).Value = (object?)idClase ?? DBNull.Value;
         comando.Parameters.Add("@IdDeporte", SqlDbType.BigInt).Value = solicitud.IdDeporte;
+        comando.Parameters.Add("@IdCancha", SqlDbType.BigInt).Value = solicitud.IdCancha;
         comando.Parameters.Add("@NombreClase", SqlDbType.NVarChar, 100).Value = solicitud.NombreClase.Trim();
         comando.Parameters.Add("@Descripcion", SqlDbType.NVarChar, 2000).Value = solicitud.Descripcion.Trim();
         var precio = comando.Parameters.Add("@Precio", SqlDbType.Decimal);
@@ -103,6 +109,19 @@ public sealed class ClaseData
         var idGuardado = await comando.ExecuteScalarAsync();
         resultado.Comprobar();
         return Convert.ToInt64(idGuardado);
+    }
+
+    public async Task Eliminar(long idClase, long? idEntrenador = null, bool administracion = false)
+    {
+        using var conexion = new SqlConnection(_cadenaSql);
+        using var comando = new SqlCommand("CLASE_BORRAR", conexion) { CommandType = CommandType.StoredProcedure };
+        comando.Parameters.Add("@IdClase", SqlDbType.BigInt).Value = idClase;
+        comando.Parameters.Add("@IdEntrenador", SqlDbType.BigInt).Value = (object?)idEntrenador ?? DBNull.Value;
+        comando.Parameters.Add("@Administracion", SqlDbType.Bit).Value = administracion;
+        var resultado = SqlResultadoProcedimiento.Agregar(comando);
+        await conexion.OpenAsync();
+        await comando.ExecuteNonQueryAsync();
+        resultado.Comprobar();
     }
 
     public async Task CambiarDisponibilidad(long idEntrenador, long idClase, bool disponible)

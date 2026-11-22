@@ -65,6 +65,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         contenido.append(horarios);
         if (!clase.horarios.length) contenido.append(elemento("p", "", "Horarios por confirmar."));
         contenido.append(elemento("p", "", clase.ubicacion || "Ubicación por confirmar."),
+            elemento("p", "", clase.nombreCancha || "Cancha por asignar"),
             elemento("p", "catalogo-cupos", clase.cuposDisponibles == null
                 ? "Cupo por confirmar" : `${clase.cuposDisponibles} de ${clase.cupoMaximo} cupos disponibles`));
         card.append(foto, contenido);
