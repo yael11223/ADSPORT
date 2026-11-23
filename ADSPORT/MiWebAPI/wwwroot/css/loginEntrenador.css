@@ -1,27 +1,417 @@
-.trainer-login-page { margin: 0; color: #fff; background: #090909; font-family: "Inter", sans-serif; }
-.trainer-login-page * { box-sizing: border-box; }
-.trainer-login { max-width: 1440px; min-height: 78vh; margin: auto; padding: 90px 5%; display: grid; grid-template-columns: 1.2fr 1fr; align-items: center; gap: 8%; background: radial-gradient(ellipse at 12% 40%, #ff6a0015, transparent 50%); }
-.trainer-eyebrow { display: block; color: #ff6a00; font-size: 11px; font-weight: 800; letter-spacing: 2.4px; margin-bottom: 20px; }
-.trainer-login h1, .trainer-login h2 { font-family: "Barlow Condensed", sans-serif; font-weight: 800; line-height: 1; }
-.trainer-login h1 { font-size: clamp(48px, 5.9vw, 88px); letter-spacing: -.7px; margin: 0 0 26px; }
-.trainer-login h1 span { color: #ff6a00; }
-.trainer-login p { color: #b0b0b0; font-size: 14px; line-height: 1.8; }
-.trainer-login__intro > p { max-width: 420px; }
-.trainer-login__line { width: 68px; height: 4px; background: #ff6a00; margin: 34px 0 20px; }
-.trainer-login__caption { font-size: 10px; letter-spacing: 2px; color: #b0b0b0; }
-.trainer-login__card { padding: 38px; border: 1px solid #303030; border-top: 3px solid #ff6a00; border-radius: 18px; background: #151515; }
-.trainer-login h2 { font-size: 42px; margin: 0 0 15px; }
-.trainer-login__card .trainer-eyebrow { font-size: 9px; letter-spacing: 1.7px; }
-.trainer-login label { display: block; margin: 21px 0 9px; font-size: 12px; font-weight: 600; }
-.trainer-login input { width: 100%; min-height: 48px; border: 1px solid #3b3b3b; border-radius: 8px; padding: 12px; color: #fff; background: #090909; font: inherit; font-size: 14px; }
-.trainer-login input:focus-visible, .trainer-login button:focus-visible, .trainer-login a:focus-visible { outline: 2px solid #ff6a00; outline-offset: 4px; }
-.trainer-password-field { display: flex; align-items: stretch; border: 1px solid #3b3b3b; border-radius: 8px; background: #090909; }
-.trainer-password-field input { border: 0; min-width: 0; }
-.trainer-password-field button { border: 0; background: transparent; color: #ff9a52; font-size: 11px; padding: 10px 14px; }
-.trainer-login__submit { width: 100%; display: flex; justify-content: space-between; gap: 12px; min-height: 50px; margin-top: 27px; padding: 15px 20px; border: 0; border-radius: 8px; background: #ff6a00; color: #090909; font-size: 12px; font-weight: 800; }
-.trainer-login__submit:hover { background: #ff8c38; }
-.trainer-login__submit:disabled { opacity: .65; cursor: wait; }
-.trainer-login__card .trainer-login__message { margin: 18px 0 0; color: #ffb5ad; background: #ff4b3810; padding: 12px; border-left: 2px solid #ff6a00; }
-.trainer-login__card .trainer-login__help { margin: 25px 0 16px; font-size: 11px; }
-.trainer-login__client { display: inline-block; color: #e6e6e6; font-size: 12px; text-underline-offset: 5px; }
-@media (max-width: 800px) { .trainer-login { grid-template-columns: 1fr; padding: 45px 6%; gap: 35px; } .trainer-login__card { max-width: 550px; width: 100%; padding: 28px 24px; } .trainer-login__line, .trainer-login__caption { display: none; } }
+/* ==========================================================
+   ADSPORT - ACCESO DE ENTRENADORES
+   Estética unificada con LoginUsuario.css y registro.css
+   ========================================================== */
+
+:root {
+    --naranja: #ff6a00;
+    --negro: #080808;
+    --blanco: #ffffff;
+    --gris: #b5b5b5;
+    --borde: #363636;
+    --font-titulo: "Barlow Condensed", sans-serif;
+    --font-cuerpo: "Inter", Arial, Helvetica, sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-height: 100vh;
+    padding: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: var(--negro);
+    color: var(--blanco);
+    font-family: var(--font-cuerpo);
+}
+
+.contenedor {
+    width: 100%;
+    max-width: 1400px;
+    min-height: 680px;
+    display: grid;
+    grid-template-columns: 1.4fr 0.9fr;
+    border: 1px solid #333;
+    border-radius: 22px;
+    overflow: hidden;
+    background: var(--negro);
+    box-shadow: 0 20px 70px rgba(0, 0, 0, 0.4);
+}
+
+/* PANEL IZQUIERDO */
+
+.presentacion {
+    padding: 65px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0.92), rgba(0, 0, 0, 0.60)), url("/Accet/LogEntrenador.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    transition: background-position 0.8s ease;
+    animation: entradaIzquierda 0.9s ease-out both;
+}
+
+.marca {
+    display: flex;
+    align-items: center;
+    animation: entradaPanel 0.7s ease-out 0.15s both;
+}
+
+.marca-enlace {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+    .marca-enlace:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+    }
+
+.nombre-marca {
+    color: var(--blanco);
+    font-family: var(--font-titulo);
+    font-size: 36px;
+    font-weight: 900;
+    font-style: italic;
+    line-height: 1;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+    .nombre-marca span {
+        color: var(--naranja);
+    }
+
+.eslogan {
+    margin-top: 55px;
+}
+
+.etiqueta {
+    color: var(--blanco);
+    font-size: 10px;
+    font-weight: bold;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+}
+
+.eslogan .etiqueta {
+    animation: entradaPanel 0.7s ease-out 0.25s both;
+}
+
+.subtitulo {
+    margin-top: 35px;
+    font-size: 10px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    animation: entradaPanel 0.7s ease-out 0.4s both;
+}
+
+    .subtitulo span,
+    .pie span {
+        color: var(--naranja);
+        padding: 0 8px;
+    }
+
+.eslogan h1 {
+    margin-top: 32px;
+    font-family: var(--font-titulo);
+    font-size: clamp(52px, 5.5vw, 90px);
+    line-height: 0.94;
+    font-weight: 900;
+    font-style: italic;
+    letter-spacing: -1px;
+    text-transform: uppercase;
+    animation: entradaPanel 0.8s ease-out 0.5s both;
+}
+
+    .eslogan h1 > span:first-child {
+        display: block;
+        color: var(--naranja);
+        text-shadow: 0 0 0 transparent;
+        transition: text-shadow 0.3s ease;
+    }
+
+        .eslogan h1 > span:first-child:hover {
+            text-shadow: 0 0 22px rgba(255, 106, 0, 0.35);
+        }
+
+    .eslogan h1 .punto-final {
+        color: var(--naranja);
+    }
+
+.descripcion {
+    max-width: 440px;
+    margin-top: 30px;
+    color: #c3c3c3;
+    font-size: 14px;
+    line-height: 1.9;
+    animation: entradaPanel 0.8s ease-out 0.65s both;
+}
+
+.pie {
+    margin-top: 60px;
+    color: #bcbcbc;
+    font-size: 10px;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+/* PANEL DEL LOGIN */
+
+.panel-login {
+    padding: 65px 55px;
+    border-left: 1px solid rgba(255, 106, 0, 0.35);
+    background: radial-gradient(circle at 100% 0%, rgba(255, 106, 0, 0.12), transparent 38%), linear-gradient(160deg, #191919, #0c0c0c);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    animation: entradaDerecha 0.9s ease-out both;
+}
+
+.encabezado {
+    text-align: center;
+    margin-bottom: 38px;
+    animation: entradaPanel 0.7s ease-out 0.25s both;
+}
+
+    .encabezado .etiqueta {
+        color: #d2d2d2;
+    }
+
+    .encabezado h2 {
+        margin-top: 20px;
+        font-family: var(--font-titulo);
+        font-size: clamp(38px, 3.6vw, 52px);
+        font-weight: 900;
+        font-style: italic;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+    }
+
+        .encabezado h2 span {
+            color: var(--naranja);
+        }
+
+    .encabezado > p:last-child {
+        margin-top: 12px;
+        color: var(--gris);
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+#formLoginEntrenador {
+    animation: entradaPanel 0.7s ease-out 0.4s both;
+}
+
+.campo {
+    margin-bottom: 24px;
+}
+
+    .campo label {
+        display: block;
+        margin-bottom: 12px;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .campo input {
+        width: 100%;
+        height: 54px;
+        padding: 0 16px;
+        border: 1px solid #404040;
+        border-radius: 11px;
+        background: #202020;
+        color: white;
+        font-family: var(--font-cuerpo);
+        font-size: 14px;
+        outline: none;
+        transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+    }
+
+        .campo input::placeholder {
+            color: #888;
+        }
+
+        .campo input:focus {
+            background: #252525;
+            border-color: var(--naranja);
+            box-shadow: 0 0 0 3px rgba(255, 106, 0, 0.15);
+        }
+
+.contenedor-password {
+    position: relative;
+}
+
+    .contenedor-password input {
+        padding-right: 50px;
+    }
+
+.mostrar-password {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    background: transparent;
+    color: #bbb;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+    .mostrar-password:hover {
+        color: var(--naranja);
+    }
+
+/* BOTÓN ENTRAR A MI PANEL */
+
+.btn-ingresar {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    min-height: 55px;
+    margin-top: 6px;
+    padding: 0 20px;
+    border: none;
+    border-radius: 11px;
+    background: var(--naranja);
+    color: white;
+    font-family: var(--font-cuerpo);
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+    .btn-ingresar:hover {
+        background: #ff7a1a;
+        box-shadow: 0 8px 25px rgba(255, 106, 0, 0.25);
+        transform: translateY(-3px);
+    }
+
+    .btn-ingresar:active {
+        transform: translateY(0) scale(0.99);
+    }
+
+    .btn-ingresar:disabled {
+        opacity: 0.7;
+        cursor: wait;
+        transform: none;
+    }
+
+.flecha {
+    display: inline-block;
+    font-size: 25px;
+    font-weight: normal;
+    transition: transform 0.25s ease;
+}
+
+.btn-ingresar:hover .flecha {
+    transform: translateX(6px);
+}
+
+/* SEPARADOR Y ACCESO DE CLIENTES */
+
+.separador {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin: 32px 0 26px;
+    color: #999;
+    font-size: 9px;
+    letter-spacing: 2px;
+    white-space: nowrap;
+}
+
+    .separador::before,
+    .separador::after {
+        content: "";
+        height: 1px;
+        background: #333;
+        flex: 1;
+    }
+
+.registro {
+    text-align: center;
+    color: #bdbdbd;
+    font-size: 12px;
+    line-height: 1.7;
+    animation: entradaPanel 0.7s ease-out 0.6s both;
+}
+
+.crear-cuenta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 14px 16px;
+    margin-top: 17px;
+    border: 1px solid #484848;
+    border-radius: 11px;
+    color: white;
+    font-weight: bold;
+    text-decoration: none;
+    transition: color 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+}
+
+    .crear-cuenta span {
+        display: inline-block;
+        color: var(--naranja);
+        font-size: 20px;
+        transition: transform 0.25s ease;
+    }
+
+    .crear-cuenta:hover {
+        background: rgba(255, 106, 0, 0.06);
+        border-color: var(--naranja);
+        color: var(--naranja);
+    }
+
+        .crear-cuenta:hover span {
+            transform: translateX(6px);
+        }
+
+.seguridad {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 9px;
+    margin-top: 32px;
+    color: #aaa;
+    font-size: 11px;
+}
+
+.punto {
+    color: var(--naranja);
+}
+
+/* MENSAJES DE ERROR */
+
+.mensaje {
+    padding: 12px 14px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(255, 92, 108, 0.4);
+    border-radius: 9px;
+    background: rgba(255, 92, 108, 0.12);
+    color: #ff8a96;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+    .mensaje[hidden] {
+        display: none !important;
+    }
+
+/* ================================
+   ANIMACIONES DE INICIO ADSPORT

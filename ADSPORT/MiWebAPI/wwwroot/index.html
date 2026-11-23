@@ -3,41 +3,45 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#090909">
 
     <title>ADSPORT | Panel de administración</title>
+
+    <!-- Fuentes oficiales ADSPORT -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;0,800;0,900;1,800;1,900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
           rel="stylesheet">
 
-    <link rel="stylesheet" href="/css/styles.css">
-    <link rel="stylesheet" href="/css/animaciones.css?v=1">
+    <link rel="stylesheet" href="/css/styles.css?v=5">
 </head>
 <body class="adsport-dashboard">
 
-    <!-- BARRA SUPERIOR -->
-    <nav class="adsport-navbar">
-        <div class="adsport-brand">
-            <div class="adsport-brand-icon">A</div>
-            <div>
-                <span class="adsport-brand-name">ADSPORT</span>
+    <!-- BARRA SUPERIOR CONTINUA -->
+    <header class="adsport-topbar">
+        <nav class="adsport-navbar" aria-label="Barra superior de administración">
+            <a href="/index.html" class="adsport-brand" aria-label="Inicio del panel ADSPORT">
+                <span class="adsport-brand-name">AD<span>SPORT</span></span>
                 <span class="adsport-brand-subtitle">ADMINISTRACIÓN DEL CLUB</span>
-            </div>
-        </div>
+            </a>
 
-        <div class="navbar-user">
-            <div class="user-avatar">U</div>
-            <div class="user-info">
-                <span class="user-label">Sesión activa</span>
-                <span id="nombreUsuario" class="user-name">Usuario</span>
+            <div class="navbar-user">
+                <div class="user-avatar" aria-hidden="true">U</div>
+                <div class="user-info">
+                    <span class="user-label">Sesión activa</span>
+                    <span id="nombreUsuario" class="user-name">Usuario</span>
+                </div>
+                <button type="button"
+                        class="btn-logout"
+                        onclick="cerrarSesion()">
+                    <span aria-hidden="true">↪</span>
+                    Cerrar sesión
+                </button>
             </div>
-            <button type="button"
-                    class="btn-logout"
-                    onclick="cerrarSesion()">
-                <span aria-hidden="true">↪</span>
-                Cerrar sesión
-            </button>
-        </div>
-    </nav>
+        </nav>
+    </header>
 
     <!-- CONTENIDO PRINCIPAL -->
     <p id="avisoSesion" class="alert alert-light m-3" role="status">Comprobando tu sesión…</p>
@@ -65,14 +69,16 @@
                     desde un solo lugar.
                 </p>
 
-                <a href="empleados.html" class="btn-orange">
-                    <span>Administrar profesores</span>
-                    <span class="button-arrow" aria-hidden="true">→</span>
-                </a>
-                <a href="deportes.html" class="btn-orange" style="margin-top: 12px;">
-                    <span>Administrar deportes</span>
-                    <span class="button-arrow" aria-hidden="true">→</span>
-                </a>
+                <div class="hero-actions">
+                    <a href="empleados.html" class="btn-orange">
+                        <span>ADMINISTRAR EMPLEADOS</span>
+                        <span class="button-arrow" aria-hidden="true">→</span>
+                    </a>
+                    <a href="deportes.html" class="btn-outline-orange" id="btnHeroDeportes">
+                        <span>ADMINISTRAR DEPORTES</span>
+                        <span class="button-arrow" aria-hidden="true">→</span>
+                    </a>
+                </div>
             </div>
 
             <div class="hero-side-info">
@@ -92,12 +98,12 @@
             <div class="section-heading">
                 <div>
                     <span class="section-eyebrow">CENTRO DE OPERACIONES</span>
-                    <h2>Módulos del sistema<span>.</span></h2>
+                    <h2>MÓDULOS DEL SISTEMA<span>.</span></h2>
                     <p>Selecciona una herramienta para continuar.</p>
                 </div>
 
                 <div class="module-count">
-                    <span>07</span>
+                    <span id="contadorModulos">04</span>
                     <small>MÓDULOS</small>
                 </div>
             </div>
@@ -114,7 +120,7 @@
 
                     <div class="card-symbol employee-symbol">E</div>
 
-                    <h3>Profesores</h3>
+                    <h3>EMPLEADOS</h3>
 
                     <p>
                         Administra los registros de los profesores,
@@ -123,58 +129,33 @@
                     </p>
 
                     <a href="empleados.html" class="card-link">
-                        Abrir módulo
+                        ABRIR MÓDULO
                         <span aria-hidden="true">↗</span>
                     </a>
                 </article>
 
-                <!-- DEPORTES: los permisos se comprueban en la API administrativa. -->
-                <article class="dashboard-card employee-card">
+                <!-- DEPORTES -->
+                <article class="dashboard-card employee-card" id="moduloDeportesAdmin">
                     <div class="card-topline">
                         <span class="card-number">02 / CATÁLOGO</span>
                         <span class="card-icon" aria-hidden="true">◇</span>
                     </div>
                     <div class="card-symbol employee-symbol">D</div>
-                    <h3>Deportes</h3>
+                    <h3>DEPORTES</h3>
                     <p>Registra disciplinas, administra sus imágenes y organiza los deportes del catálogo público.</p>
-                    <a href="deportes.html" class="card-link">Abrir módulo <span aria-hidden="true">↗</span></a>
-                </article>
-
-
-                <article class="dashboard-card employee-card">
-                    <div class="card-topline"><span class="card-number">03 / USUARIOS</span></div>
-                    <div class="card-symbol employee-symbol">U</div>
-                    <h3>Usuarios y roles</h3>
-                    <p>Consulta todos los usuarios, asigna roles y descarga su identificación QR.</p>
-                    <a href="usuarios.html" class="card-link">Abrir módulo</a>
-                </article>
-
-                <article class="dashboard-card employee-card">
-                    <div class="card-topline"><span class="card-number">04 / INSTALACIONES</span></div>
-                    <div class="card-symbol employee-symbol">C</div>
-                    <h3>Canchas</h3>
-                    <p>Registra canchas, asigna un deporte y consulta sus horarios libres y ocupados.</p>
-                    <a href="canchas.html" class="card-link">Abrir módulo</a>
-                </article>
-
-                <article class="dashboard-card employee-card">
-                    <div class="card-topline"><span class="card-number">05 / HORARIOS</span></div>
-                    <div class="card-symbol employee-symbol">H</div>
-                    <h3>Cronograma</h3>
-                    <p>Revisa las clases de la semana y filtra por profesor, cancha o deporte.</p>
-                    <a href="cronograma.html" class="card-link">Abrir módulo</a>
+                    <a href="deportes.html" class="card-link">ABRIR MÓDULO <span aria-hidden="true">↗</span></a>
                 </article>
 
                 <!-- API -->
                 <article class="dashboard-card api-card">
                     <div class="card-topline">
-                        <span class="card-number">06 / DESARROLLO</span>
-                        <span class="card-icon" aria-hidden="true">&lt;/&gt;</span>
+                        <span class="card-number">03 / DESARROLLO</span>
+                        <span class="card-icon" aria-hidden="true"></></span>
                     </div>
 
                     <div class="card-symbol api-symbol"></></div>
 
-                    <h3>API y servicios</h3>
+                    <h3>API Y SERVICIOS</h3>
 
                     <p>
                         Consulta y prueba los endpoints disponibles
@@ -182,7 +163,7 @@
                     </p>
 
                     <a href="/swagger" class="card-link">
-                        Abrir Swagger
+                        ABRIR SWAGGER
                         <span aria-hidden="true">↗</span>
                     </a>
                 </article>
@@ -190,13 +171,13 @@
                 <!-- BASE DE DATOS -->
                 <article class="dashboard-card database-card">
                     <div class="card-topline">
-                        <span class="card-number">07 / INFRAESTRUCTURA</span>
+                        <span class="card-number">04 / INFRAESTRUCTURA</span>
                         <span class="card-icon" aria-hidden="true">▤</span>
                     </div>
 
                     <div class="card-symbol database-symbol">DB</div>
 
-                    <h3>Base de datos</h3>
+                    <h3>BASE DE DATOS</h3>
 
                     <p>
                         La información se gestiona mediante SQL Server
@@ -223,10 +204,37 @@
     <script src="/js/auth.js"></script>
     <script src="/js/admin.js"></script>
     <script>
-        Admin.ready.then(autenticado => {
-            if (autenticado) mostrarUsuario("nombreUsuario");
-        });
+                protegerPagina();
+                mostrarUsuario("nombreUsuario");
+
+                function verificarYMostrarDeportes() {
+                    let todoElAlmacen = "";
+
+                    for (let i = 0; i < sessionStorage.length; i++) {
+                        const k = sessionStorage.key(i);
+                        todoElAlmacen += " " + k + " " + sessionStorage.getItem(k);
+                    }
+                    for (let i = 0; i < localStorage.length; i++) {
+                        const k = localStorage.key(i);
+                        todoElAlmacen += " " + k + " " + localStorage.getItem(k);
+                    }
+
+                    const nombreEnPantalla = (document.getElementById("nombreUsuario")?.textContent || "").toUpperCase();
+                    const textoCompleto = (todoElAlmacen + " " + nombreEnPantalla).toUpperCase();
+
+                    if (textoCompleto.includes("ADMIN") && !textoCompleto.includes("ENTRENADOR")) {
+                        const cardDeportes = document.getElementById("moduloDeportesAdmin");
+                        const btnHero = document.getElementById("btnHeroDeportes");
+                        const contador = document.getElementById("contadorModulos");
+
+                        if (cardDeportes) cardDeportes.style.display = "flex";
+                        if (btnHero) btnHero.style.display = "inline-flex";
+                        if (contador) contador.textContent = "04";
+                    }
+                }
+
+                verificarYMostrarDeportes();
+                document.addEventListener("DOMContentLoaded", verificarYMostrarDeportes);
     </script>
-    <script src="/js/animaciones.js?v=1" defer></script>
 </body>
 </html>

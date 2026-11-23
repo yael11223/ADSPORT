@@ -1,4 +1,4 @@
-/* ==========================================================
+﻿/* ==========================================================
    ADSPORT - COMPONENTES COMPARTIDOS
    Archivo: layout.js
    ========================================================== */
@@ -26,44 +26,6 @@ document.addEventListener("DOMContentLoaded", () => {
         "natacion.html"
     ];
 
-    async function cargarDeportesEnMenu() {
-        const menu = document.querySelector(".nav-dropdown__menu");
-        if (!menu) return;
-        try {
-            const respuesta = await fetch("/api/Deporte", { cache: "no-store" });
-            if (!respuesta.ok) throw new Error("No fue posible consultar los deportes.");
-            const deportes = await respuesta.json();
-            const titulo = document.createElement("span");
-            titulo.className = "nav-dropdown__titulo";
-            titulo.textContent = "EXPLORA LOS DEPORTES";
-            menu.replaceChildren(titulo);
-            for (const deporte of deportes) {
-                const enlace = document.createElement("a");
-                enlace.className = "nav-dropdown__item";
-                enlace.dataset.deporteId = String(deporte.idDeporte);
-                enlace.href = "/tenis.html?" + new URLSearchParams({
-                    idDeporte: deporte.idDeporte, deporte: deporte.nombreDeporte
-                });
-                enlace.textContent = deporte.nombreDeporte;
-                menu.append(enlace);
-            }
-            if (!deportes.length) {
-                const vacio = document.createElement("span");
-                vacio.className = "nav-dropdown__item";
-                vacio.textContent = "Sin deportes disponibles";
-                menu.append(vacio);
-            }
-            const todos = document.createElement("a");
-            todos.className = "nav-dropdown__todos";
-            todos.href = "/tenis.html?deporte=todos";
-            todos.textContent = "VER TODAS LAS CLASES →";
-            menu.append(todos);
-        } catch (error) {
-            console.error("ADSPORT - Error al cargar deportes:", error);
-        }
-    }
-
-
     // ========================================
     // 1. CARGAR COMPONENTES
     // ========================================
@@ -90,6 +52,46 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    async function cargarDeportesEnMenu() {
+        const menuClases = document.querySelector(".nav-dropdown__menu");
+        if (!menuClases) return;
+
+        try {
+            const res = await fetch(API_DEPORTE, { cache: "no-store" });
+            if (!res.ok) return;
+
+            const deportes = await res.json();
+            const params = new URLSearchParams(window.location.search);
+            const idActual = params.get("idDeporte");
+
+            let html = `<span class="nav-dropdown__label" style="display:block; font-size:0.7rem; opacity:0.7; padding:6px 12px;">EXPLORA LOS DEPORTES</span>`;
+
+            if (!deportes || deportes.length === 0) {
+                html += `<span style="display:block; padding:8px 12px; font-size:0.85rem; color:#888;">Sin deportes registrados</span>`;
+            } else {
+                html += deportes.map(d => {
+                    const activo = String(d.idDeporte) === String(idActual) ? "activo" : "";
+                    const url = `/tenis.html?idDeporte=${d.idDeporte}&deporte=${encodeURIComponent(d.nombreDeporte)}`;
+                    return `
+                        <a href="${url}" class="nav-dropdown__item ${activo}" style="display:block; width:100%; padding:8px 12px;">
+                            <span>🏅 ${d.nombreDeporte.toUpperCase()}</span>
+                        </a>
+                    `;
+                }).join("");
+            }
+
+            html += `
+                <a href="/tenis.html?deporte=todos" class="btn-ver-todas" style="margin-top:8px; background:#ff6b00; color:#fff; font-weight:700; border-radius:6px; text-align:center; display:block; width:100%; padding:8px 12px;">
+                    VER TODAS LAS CLASES →
+                </a>
+            `;
+
+            menuClases.innerHTML = html;
+        } catch (error) {
+            console.error("ADSPORT - Error al cargar deportes en el menú:", error);
+        }
+    }
+
     function marcarPaginaActiva() {
         const paginaActual = window.location.pathname
             .split("/")
@@ -110,8 +112,6 @@ document.addEventListener("DOMContentLoaded", () => {
             seccionActiva = seccionActual === "#clases" ? "clases" : "inicio";
         } else if (paginaActual === "nosotros.html") {
             seccionActiva = "nosotros";
-        } else if (paginaActual === "instalaciones.html") {
-            seccionActiva = "instalaciones";
         } else if (paginaActual === "tenis.html" || paginaActual === "clases.html") {
             seccionActiva = "clases";
         }
@@ -126,31 +126,28 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
 
-        // Marcar el deporte seleccionado.
+        // Marcar el deporte seleccionado en el submenú
         if (PAGINAS_DEPORTES.includes(paginaActual)) {
             const enlacesDeportes = document.querySelectorAll(".nav-dropdown__menu a");
+            const parametros = new URLSearchParams(window.location.search);
+            const idActual = parametros.get("idDeporte");
+            const nombreActual = parametros.get("deporte") || "Tenis";
 
             enlacesDeportes.forEach(enlace => {
+                enlace.classList.remove("activo");
+                enlace.removeAttribute("aria-current");
 
                 const ruta = enlace.getAttribute("href");
-
                 if (!ruta) return;
 
                 const destino = new URL(ruta, window.location.origin);
-                const parametros = new URLSearchParams(window.location.search);
-                const idActual = parametros.get("idDeporte");
-                const nombreActual = parametros.get("deporte") || "Tenis";
-                const coincide = idActual ? destino.searchParams.get("idDeporte") === idActual :
-                    (destino.searchParams.get("deporte") || "Tenis").localeCompare(nombreActual, "es", { sensitivity: "base" }) === 0;
+                const coincide = idActual
+                    ? destino.searchParams.get("idDeporte") === idActual
+                    : (destino.searchParams.get("deporte") || "").localeCompare(nombreActual, "es", { sensitivity: "base" }) === 0;
 
                 if (destino.pathname.toLowerCase() === "/" + paginaActual && coincide) {
-
                     enlace.classList.add("activo");
-
-                    enlace.setAttribute(
-                        "aria-current",
-                        "page"
-                    );
+                    enlace.setAttribute("aria-current", "page");
                 }
             });
         }
@@ -255,11 +252,19 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             const usuario = await respuesta.json();
-            const nombreCompleto = usuario.nombreCompleto || [usuario.nombre, usuario.apellidoPaterno, usuario.apellidoMaterno].filter(Boolean).join(" ");
-            const primerNombre = (usuario.nombre || nombreCompleto || "Mi cuenta").trim().split(/\s+/)[0];
             esEntrenador = (usuario.nombreRol || "").trim().toUpperCase() === "ENTRENADOR";
+
             const enlacePerfil = document.getElementById("enlaceMiPerfil");
-            if (enlacePerfil) enlacePerfil.href = esEntrenador ? "/perfilEntrenador.html" : "/perfilCliente.html";
+            if (enlacePerfil) {
+                enlacePerfil.href = esEntrenador ? "/perfilEntrenador.html" : "/perfilCliente.html";
+            }
+
+            const nombreCompleto = [usuario.nombre, usuario.apellidoPaterno, usuario.apellidoMaterno]
+                .filter(Boolean)
+                .join(" ")
+                .trim() || "Mi cuenta";
+
+            const primerNombre = (usuario.nombre || "MI CUENTA").trim().split(/\s+/)[0].toUpperCase();
 
             const nombreHeader = document.getElementById("nombreUsuarioHeader");
             if (nombreHeader) nombreHeader.textContent = primerNombre;
@@ -323,13 +328,10 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         try {
-
             const csrf = await fetch("/api/Entrenador/csrf", { cache: "no-store" }).then(r => r.json());
             const respuesta = await fetch(esEntrenador ? "/api/Entrenador/logout" : API_LOGOUT, {
-
                 method: "POST",
                 credentials: "same-origin",
-
                 headers: {
                     "Accept": "application/json",
                     "X-CSRF-TOKEN": csrf.token
@@ -341,7 +343,6 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             actualizarMenuSesion(false);
-
             window.location.replace(esEntrenador ? "/loginEntrenador.html" : PAGINA_LOGIN);
 
         } catch (error) {
@@ -366,10 +367,7 @@ document.addEventListener("DOMContentLoaded", () => {
         configurarMenus();
         establecerPerfilPredeterminado();
 
-        window.addEventListener(
-            "hashchange",
-            marcarPaginaActiva
-        );
+        window.addEventListener("hashchange", marcarPaginaActiva);
         window.addEventListener("adsport:deporte-cambiado", marcarPaginaActiva);
 
         const botonCerrar = document.getElementById("btnCerrarSesion");

@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const tabla = document.getElementById("horariosPublicos");
     const dias = ["", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
     const moneda = new Intl.NumberFormat("es-MX", { style: "currency", currency: "MXN" });
+    const FOTO_HERO_DEFAULT = "https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=2000&q=85";
     let peticion;
     let deportes = [];
     let deporteNoDisponible = false;
@@ -36,10 +37,14 @@ document.addEventListener("DOMContentLoaded", async () => {
             "Encuentra clases, conoce a los entrenadores y consulta sus horarios disponibles.";
         document.querySelector(".tenis-hero__contenido p").textContent =
             seleccionado?.descripcion || `Encuentra tu próxima clase${deporte ? " de " + deporte : " deportiva"} y conoce sus horarios y entrenadores.`;
-        const fotos = { tenis: "tenis.png", boxeo: "boxeo.png", baloncesto: "baloncesto.png" };
+        const fotos = {
+            tenis: "https://images.unsplash.com/photo-1622279457486-62dcc4a431d6?auto=format&fit=crop&w=2000&q=85",
+            boxeo: "https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?auto=format&fit=crop&w=2000&q=85",
+            baloncesto: "https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=2000&q=85"
+        };
         const foto = document.querySelector(".tenis-hero__imagen");
-        foto.onerror = () => { foto.onerror = null; foto.src = "/Accet/Inicio.jpg"; };
-        foto.src = seleccionado?.imagenUrl || (fotos[nombreNormalizado] ? `/img/nosotros/${fotos[nombreNormalizado]}` : "/Accet/Inicio.jpg");
+        foto.onerror = () => { foto.onerror = null; foto.src = FOTO_HERO_DEFAULT; };
+        foto.src = seleccionado?.imagenUrl || fotos[nombreNormalizado] || FOTO_HERO_DEFAULT;
         foto.alt = deporte ? `ADSPORT: ${deporte}` : "Deportes ADSPORT";
         document.querySelector(".tenis-hero__inferior span").textContent = "ENTRENA A TU RITMO";
     }
@@ -65,7 +70,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         contenido.append(horarios);
         if (!clase.horarios.length) contenido.append(elemento("p", "", "Horarios por confirmar."));
         contenido.append(elemento("p", "", clase.ubicacion || "Ubicación por confirmar."),
-            elemento("p", "", clase.nombreCancha || "Cancha por asignar"),
             elemento("p", "catalogo-cupos", clase.cuposDisponibles == null
                 ? "Cupo por confirmar" : `${clase.cuposDisponibles} de ${clase.cupoMaximo} cupos disponibles`));
         card.append(foto, contenido);
