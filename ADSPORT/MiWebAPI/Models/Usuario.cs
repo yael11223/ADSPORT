@@ -1,20 +1,27 @@
-﻿namespace ADSPORT.Models
+using System.ComponentModel.DataAnnotations;
+
+namespace ADSPORT.Models;
+
+public class Usuario
 {
-    public class Usuario
-    {
-        public int IdUsuario { get; set;}
-        public int IdRol {  get; set;}
-        public string? NombreRol { get; set; } 
-        public string? Nombre { get; set;}
-        public string? ApellidoPaterno { get; set;}
-        public string? ApellidoMaterno { get; set;}
-        public string? Correo { get; set;}
-        public long Telefono { get; set;}
-        public string? Estatus { get; set;}
-        public string? CodigoQr {  get; set;}
-        public string? FechaUltimaModificacion { get; set;}
-        
-
-
-    }
+    public long IdUsuario { get; set; }
+    [Range(1, long.MaxValue)]
+    public long IdRol { get; set; }
+    public string? NombreRol { get; set; }
+    [Required, StringLength(100)]
+    public string Nombre { get; set; } = string.Empty;
+    [Required, StringLength(100)]
+    public string? ApellidoPaterno { get; set; }
+    [StringLength(100)]
+    public string? ApellidoMaterno { get; set; }
+    [Required, EmailAddress, StringLength(100)]
+    public string? Correo { get; set; }
+    [StringLength(100)]
+    public string? Telefono { get; set; }
+    [Required, RegularExpression("(?i)^(activo|inactivo)$")]
+    public string Estatus { get; set; } = "ACTIVO";
+    public string? CodigoQr { get; set; }
+    public string? FechaUltimaModificacion { get; set; }
+    public byte[]? Foto { get; set; }
+    public bool TieneFoto { get; set; }
 }

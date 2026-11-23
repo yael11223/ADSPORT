@@ -5,5 +5,7 @@ namespace MiWebAPI.Models
         public int NumeroError { get; set; }
         public string Respuesta { get; set; } = string.Empty;
         public bool IsSuccess => NumeroError == 0;
+        public long? IdUsuario { get; set; }
+        public string? CodigoQr { get; set; }
     }
 }

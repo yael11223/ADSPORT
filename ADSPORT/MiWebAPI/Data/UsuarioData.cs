@@ -1,219 +1,110 @@
-﻿using ADSPORT.Models;
+using ADSPORT.Models;
 using MiWebAPI.Models;
 using System.Data;
 using System.Data.SqlClient;
 
-namespace ADSPORT.Data
+namespace ADSPORT.Data;
+
+public sealed class UsuarioData(IConfiguration configuration)
 {
-    public class UsuarioData
+    private readonly string _conexion = configuration.GetConnectionString("CadenaSQL")
+        ?? throw new InvalidOperationException("Falta configurar CadenaSQL.");
+
+    public async Task<List<Usuario>> Lista(string? rol = null)
     {
-        private readonly string conexion;
-
-        public UsuarioData(IConfiguration configuration)
-        {
-            conexion = configuration.GetConnectionString("CadenaSQL")!;
-        }
-
-        public async Task<List<Usuario>> Lista()
-        {
-            List<Usuario> lista = new List<Usuario>();
-
-            using (var con = new SqlConnection(conexion))
-            {
-                await con.OpenAsync();
-                SqlCommand cmd = new SqlCommand("USUARIO_LISTA", con)
-                {
-                    CommandType = CommandType.StoredProcedure
-                };
-
-                using (var reader = await cmd.ExecuteReaderAsync())
-                {
-                    while (await reader.ReadAsync())
-                    {
-                        lista.Add(new Usuario
-                        {
-                            IdUsuario = Convert.ToInt32(reader[0]),
-                            IdRol = Convert.ToInt32(reader[1]),
-                            NombreRol = reader[2]?.ToString(),
-                            Nombre = reader[3]?.ToString(),
-                            ApellidoPaterno = reader[4]?.ToString(),
-                            ApellidoMaterno = reader[5]?.ToString(),
-                            Correo = reader[6]?.ToString(),
-                            Telefono = Convert.ToInt64(reader[7]),
-                            Estatus = reader[8]?.ToString(),
-                            CodigoQr = reader[9]?.ToString(),
-                            FechaUltimaModificacion = reader[10]?.ToString()
-                        });
-                    }
-                }
-            }
-            return lista;
-        }
-
-        public async Task<Usuario?> Obtener(int Id)
-        {
-            Usuario? objeto = null;
-
-            using (var con = new SqlConnection(conexion))
-            {
-                await con.OpenAsync();
-                SqlCommand cmd = new SqlCommand("USUARIO_BUSCAR_POR_ID", con)
-                {
-                    CommandType = CommandType.StoredProcedure
-                };
-                cmd.Parameters.AddWithValue("@id_usuario", Id);
-
-                using (var reader = await cmd.ExecuteReaderAsync())
-                {
-                    if (await reader.ReadAsync())
-                    {
-                        objeto = new Usuario
-                        {
-                            IdUsuario = Convert.ToInt32(reader[0]),
-                            IdRol = Convert.ToInt32(reader[1]),
-                            Nombre = reader[2]?.ToString(),
-                            ApellidoPaterno = reader[3]?.ToString(),
-                            ApellidoMaterno = reader[4]?.ToString(),
-                            Correo = reader[5]?.ToString(),
-                            Telefono = Convert.ToInt64(reader[6]),
-                            Estatus = reader[7]?.ToString(),
-                            CodigoQr = reader[8]?.ToString(),
-                            FechaUltimaModificacion = reader[9]?.ToString()
-                        };
-                    }
-                }
-            }
-            return objeto;
-        }
-
-        public async Task<RespuestaOperacion> Crear(Usuario objeto)
-        {
-            using (var con = new SqlConnection(conexion))
-            {
-                SqlCommand cmd = new SqlCommand("USUARIO_AGREGA", con)
-                {
-                    CommandType = CommandType.StoredProcedure
-                };
-                cmd.Parameters.AddWithValue("@id_rol", objeto.IdRol);
-                cmd.Parameters.AddWithValue("@nombre", objeto.Nombre);
-                cmd.Parameters.AddWithValue("@apellido_paterno", objeto.ApellidoPaterno);
-                cmd.Parameters.AddWithValue("@apellido_materno", objeto.ApellidoMaterno);
-                cmd.Parameters.AddWithValue("@correo", objeto.Correo);
-                cmd.Parameters.AddWithValue("@telefono", objeto.Telefono);
-                cmd.Parameters.AddWithValue("@estatus", objeto.Estatus);
-                cmd.Parameters.AddWithValue("@codigo_qr", objeto.CodigoQr ?? string.Empty);
-
-                SqlParameter numeroError = new SqlParameter("@numeroError", SqlDbType.Int) { Direction = ParameterDirection.Output };
-                SqlParameter respuesta = new SqlParameter("@respuesta", SqlDbType.VarChar, 1000) { Direction = ParameterDirection.Output };
-
-                cmd.Parameters.Add(numeroError);
-                cmd.Parameters.Add(respuesta);
-
-                try
-                {
-                    await con.OpenAsync();
-                    await cmd.ExecuteNonQueryAsync();
-
-                    return new RespuestaOperacion
-                    {
-                        NumeroError = Convert.ToInt32(numeroError.Value),
-                        Respuesta = respuesta.Value?.ToString() ?? string.Empty
-                    };
-                }
-                catch (Exception ex)
-                {
-                    return new RespuestaOperacion
-                    {
-                        NumeroError = -1,
-                        Respuesta = ex.Message
-                    };
-                }
-            }
-        }
-
-        public async Task<RespuestaOperacion> Editar(Usuario objeto)
-        {
-            using (var con = new SqlConnection(conexion))
-            {
-                SqlCommand cmd = new SqlCommand("USUARIO_ACTUALIZA", con)
-                {
-                    CommandType = CommandType.StoredProcedure
-                };
-                cmd.Parameters.AddWithValue("@id_usuario", objeto.IdUsuario);
-                cmd.Parameters.AddWithValue("@id_rol", objeto.IdRol);
-                cmd.Parameters.AddWithValue("@nombre", objeto.Nombre);
-                cmd.Parameters.AddWithValue("@apellido_paterno", objeto.ApellidoPaterno);
-                cmd.Parameters.AddWithValue("@apellido_materno", objeto.ApellidoMaterno);
-                cmd.Parameters.AddWithValue("@correo", objeto.Correo);
-                cmd.Parameters.AddWithValue("@telefono", objeto.Telefono);
-                cmd.Parameters.AddWithValue("@estatus", objeto.Estatus);
-                cmd.Parameters.AddWithValue("@codigo_qr", objeto.CodigoQr ?? string.Empty);
-
-                SqlParameter numeroError = new SqlParameter("@numeroError", SqlDbType.Int) { Direction = ParameterDirection.Output };
-                SqlParameter respuesta = new SqlParameter("@respuesta", SqlDbType.VarChar, 1000) { Direction = ParameterDirection.Output };
-
-                cmd.Parameters.Add(numeroError);
-                cmd.Parameters.Add(respuesta);
-
-                try
-                {
-                    await con.OpenAsync();
-                    await cmd.ExecuteNonQueryAsync();
-
-                    return new RespuestaOperacion
-                    {
-                        NumeroError = Convert.ToInt32(numeroError.Value),
-                        Respuesta = respuesta.Value?.ToString() ?? string.Empty
-                    };
-                }
-                catch (Exception ex)
-                {
-                    return new RespuestaOperacion
-                    {
-                        NumeroError = -1,
-                        Respuesta = ex.Message
-                    };
-                }
-            }
-        }
-
-        public async Task<RespuestaOperacion> Eliminar(int id)
-        {
-            using (var con = new SqlConnection(conexion))
-            {
-                // Nombre corregido según SQL Server: USUARIO_ELIMINA
-                SqlCommand cmd = new SqlCommand("USUARIO_ELIMINA", con)
-                {
-                    CommandType = CommandType.StoredProcedure
-                };
-                cmd.Parameters.AddWithValue("@id_usuario", id);
-
-                SqlParameter numeroError = new SqlParameter("@numeroError", SqlDbType.Int) { Direction = ParameterDirection.Output };
-                SqlParameter respuesta = new SqlParameter("@respuesta", SqlDbType.VarChar, 1000) { Direction = ParameterDirection.Output };
-
-                cmd.Parameters.Add(numeroError);
-                cmd.Parameters.Add(respuesta);
-
-                try
-                {
-                    await con.OpenAsync();
-                    await cmd.ExecuteNonQueryAsync();
-
-                    return new RespuestaOperacion
-                    {
-                        NumeroError = Convert.ToInt32(numeroError.Value),
-                        Respuesta = respuesta.Value?.ToString() ?? string.Empty
-                    };
-                }
-                catch (Exception ex)
-                {
-                    return new RespuestaOperacion
-                    {
-                        NumeroError = -1,
-                        Respuesta = ex.Message
-                    };
-                }
-            }
-        }
+        using var conexion = new SqlConnection(_conexion);
+        using var comando = CrearComando("USUARIO_LISTA", conexion);
+        comando.Parameters.Add("@Rol", SqlDbType.VarChar, 100).Value = (object?)rol ?? DBNull.Value;
+        await conexion.OpenAsync();
+        using var lector = await comando.ExecuteReaderAsync();
+        var usuarios = new List<Usuario>();
+        while (await lector.ReadAsync()) usuarios.Add(Leer(lector));
+        return usuarios;
     }
+
+    public async Task<Usuario?> Obtener(long id)
+    {
+        using var conexion = new SqlConnection(_conexion);
+        using var comando = CrearComando("USUARIO_BUSCAR_POR_ID", conexion);
+        comando.Parameters.Add("@id_usuario", SqlDbType.BigInt).Value = id;
+        await conexion.OpenAsync();
+        using var lector = await comando.ExecuteReaderAsync();
+        return await lector.ReadAsync() ? Leer(lector, incluirFoto: true) : null;
+    }
+
+    public async Task<RespuestaOperacion> Crear(Usuario usuario, string hash)
+    {
+        using var conexion = new SqlConnection(_conexion);
+        using var comando = CrearComando("USUARIO_AGREGA", conexion);
+        AgregarDatos(comando, usuario);
+        comando.Parameters.Add("@password_hash", SqlDbType.VarChar, 60).Value = hash;
+        var id = comando.Parameters.Add("@id_usuario", SqlDbType.BigInt);
+        id.Direction = ParameterDirection.Output;
+        var codigo = comando.Parameters.Add("@codigo_generado", SqlDbType.VarChar, 128);
+        codigo.Direction = ParameterDirection.Output;
+        var resultado = SqlResultadoProcedimiento.Agregar(comando);
+        await conexion.OpenAsync();
+        await comando.ExecuteNonQueryAsync();
+        resultado.Comprobar();
+        return new RespuestaOperacion { IdUsuario = Convert.ToInt64(id.Value), CodigoQr = codigo.Value.ToString(),
+            Respuesta = "Usuario registrado con sus credenciales y su código QR." };
+    }
+
+    public async Task<RespuestaOperacion> Editar(Usuario usuario)
+    {
+        using var conexion = new SqlConnection(_conexion);
+        using var comando = CrearComando("USUARIO_ACTUALIZA", conexion);
+        comando.Parameters.Add("@id_usuario", SqlDbType.BigInt).Value = usuario.IdUsuario;
+        AgregarDatos(comando, usuario);
+        var resultado = SqlResultadoProcedimiento.Agregar(comando);
+        await conexion.OpenAsync();
+        await comando.ExecuteNonQueryAsync();
+        resultado.Comprobar();
+        return new RespuestaOperacion { IdUsuario = usuario.IdUsuario, Respuesta = "Usuario actualizado. Su código QR se conserva." };
+    }
+
+    public Task<RespuestaOperacion> Eliminar(long id) => EjecutarAccion(id, "USUARIO_BORRAR",
+        "Usuario eliminado definitivamente de la base de datos. Las reservas y pagos se conservaron.");
+
+    public Task<RespuestaOperacion> Desactivar(long id) => EjecutarAccion(id, "USUARIO_ELIMINA",
+        "Usuario desactivado. Se conservan sus clases, reservas y código QR.");
+
+    private async Task<RespuestaOperacion> EjecutarAccion(long id, string procedimiento, string mensaje)
+    {
+        using var conexion = new SqlConnection(_conexion);
+        using var comando = CrearComando(procedimiento, conexion);
+        comando.Parameters.Add("@id_usuario", SqlDbType.BigInt).Value = id;
+        var resultado = SqlResultadoProcedimiento.Agregar(comando);
+        await conexion.OpenAsync();
+        await comando.ExecuteNonQueryAsync();
+        resultado.Comprobar();
+        return new RespuestaOperacion { Respuesta = mensaje };
+    }
+
+    private static SqlCommand CrearComando(string nombre, SqlConnection conexion) => new(nombre, conexion) { CommandType = CommandType.StoredProcedure };
+
+    private static void AgregarDatos(SqlCommand comando, Usuario usuario)
+    {
+        comando.Parameters.Add("@id_rol", SqlDbType.BigInt).Value = usuario.IdRol;
+        comando.Parameters.Add("@nombre", SqlDbType.VarChar, 100).Value = usuario.Nombre.Trim();
+        comando.Parameters.Add("@apellido_paterno", SqlDbType.VarChar, 100).Value = (object?)usuario.ApellidoPaterno?.Trim() ?? DBNull.Value;
+        comando.Parameters.Add("@apellido_materno", SqlDbType.VarChar, 100).Value = (object?)usuario.ApellidoMaterno?.Trim() ?? DBNull.Value;
+        comando.Parameters.Add("@correo", SqlDbType.VarChar, 100).Value = usuario.Correo!.Trim().ToLowerInvariant();
+        comando.Parameters.Add("@telefono", SqlDbType.VarChar, 100).Value = (object?)usuario.Telefono?.Trim() ?? DBNull.Value;
+        comando.Parameters.Add("@estatus", SqlDbType.VarChar, 50).Value = usuario.Estatus.ToUpperInvariant();
+        comando.Parameters.Add("@foto", SqlDbType.VarBinary, -1).Value = (object?)usuario.Foto ?? DBNull.Value;
+        // El identificador QR se genera en SQL y no se toma del navegador.
+    }
+
+    private static Usuario Leer(SqlDataReader lector, bool incluirFoto = false) => new()
+    {
+        IdUsuario = Convert.ToInt64(lector["ID_USUARIO"]), IdRol = Convert.ToInt64(lector["ID_ROL"]),
+        Nombre = lector["NOMBRE"].ToString() ?? string.Empty,
+        ApellidoPaterno = lector["APELLIDO_PATERNO"].ToString(), ApellidoMaterno = lector["APELLIDO_MATERNO"].ToString(),
+        NombreRol = lector["NOMBRE_ROL"].ToString(), Correo = lector["CORREO"].ToString(), Telefono = lector["TELEFONO"].ToString(),
+        Estatus = lector["ESTATUS"].ToString() ?? string.Empty, CodigoQr = lector["CODIGO_QR"].ToString(),
+        FechaUltimaModificacion = lector["FECHA__ULTIMA_MODIFICACION"].ToString(),
+        TieneFoto = Convert.ToBoolean(lector["TIENE_FOTO"]),
+        Foto = incluirFoto && lector["FOTO"] is byte[] foto ? foto : null
+    };
 }

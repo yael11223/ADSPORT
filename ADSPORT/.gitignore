@@ -1,0 +1,8 @@
+.vs/
+**/bin/
+**/obj/
+.artifacts/
+.dotnet-home/
+**/*.csproj.user
+**/*.pubxml.user
+**/__pycache__/

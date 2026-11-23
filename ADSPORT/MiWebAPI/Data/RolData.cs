@@ -1,4 +1,4 @@
-﻿using ADSPORT.Models;
+using ADSPORT.Models;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -120,30 +120,17 @@ namespace ADSPORT.Data
             }
         }
 
+
         public async Task<(bool esExito, string mensaje)> EliminarRolAsync(int idRol)
         {
-            using (var conexion = new SqlConnection(_cadenaSQL))
-            {
-                await conexion.OpenAsync();
-                using (var comando = new SqlCommand("ROL_ELIMINA", conexion))
-                {
-                    comando.CommandType = CommandType.StoredProcedure;
-                    comando.Parameters.AddWithValue("@IdRol", idRol);
-
-                    var paramResultado = comando.Parameters.Add("@Resultado", SqlDbType.Bit);
-                    paramResultado.Direction = ParameterDirection.Output;
-
-                    var paramMensaje = comando.Parameters.Add("@Mensaje", SqlDbType.VarChar, 500);
-                    paramMensaje.Direction = ParameterDirection.Output;
-
-                    await comando.ExecuteNonQueryAsync();
-
-                    bool esExito = Convert.ToBoolean(paramResultado.Value);
-                    string mensaje = paramMensaje.Value?.ToString() ?? "";
-
-                    return (esExito, mensaje);
-                }
-            }
+            using var conexion = new SqlConnection(_cadenaSQL);
+            using var comando = new SqlCommand("ROL_BORRAR", conexion) { CommandType = CommandType.StoredProcedure };
+            comando.Parameters.Add("@IdRol", SqlDbType.BigInt).Value = idRol;
+            var resultado = SqlResultadoProcedimiento.Agregar(comando);
+            await conexion.OpenAsync();
+            await comando.ExecuteNonQueryAsync();
+            resultado.Comprobar();
+            return (true, "Rol eliminado definitivamente. Los usuarios conservaron sus cuentas y pasaron a un rol básico.");
         }
     }
 }

@@ -15,7 +15,7 @@ async function cargarRoles() {
         if (selectRol) {
             selectRol.innerHTML = '<option value="">Seleccionar rol</option>';
             roles.forEach(rol => {
-                selectRol.innerHTML += `<option value="${rol.idRol}">${rol.nombreRol}</option>`;
+                selectRol.add(new Option(rol.nombreRol, rol.idRol));
             });
         }
     } catch (error) {
@@ -38,7 +38,7 @@ function configurarFormularioRol() {
         if (!nombre) return;
 
         try {
-            const respuesta = await fetch("/api/Rol", {
+            const respuesta = await solicitarAdmin("/api/Rol", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ nombreRol: nombre })

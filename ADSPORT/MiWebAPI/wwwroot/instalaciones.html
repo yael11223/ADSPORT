@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Conoce las instalaciones de ADSPORT: fotografías de nuestras canchas, deportes y horarios de apertura.">
+    <title>Nuestras instalaciones | ADSPORT</title>
+    <link rel="stylesheet" href="/css/componentes.css">
+    <link rel="stylesheet" href="/css/instalaciones.css">
+    <link rel="stylesheet" href="/css/animaciones.css?v=1">
+</head>
+<body class="instalaciones-page">
+    <div id="contenedor-header"></div>
+    <main class="instalaciones-contenido">
+        <header class="instalaciones-portada">
+            <p class="instalaciones-etiqueta">ADSPORT / CONOCE NUESTROS ESPACIOS</p>
+            <h1>NUESTRAS<br><span>INSTALACIONES.</span></h1>
+            <p>Conoce nuestras canchas, encuentra tu deporte y consulta los horarios en los que abrimos.</p>
+        </header>
+        <section aria-labelledby="tituloInstalaciones">
+            <div class="instalaciones-controles">
+                <div>
+                    <h2 id="tituloInstalaciones">ESPACIOS PARA TU DEPORTE</h2>
+                    <p id="totalInstalaciones" class="instalaciones-ayuda" role="status"></p>
+                </div>
+                <div class="instalaciones-filtro">
+                    <label for="deporteInstalaciones">Filtrar por deporte</label>
+                    <select id="deporteInstalaciones"><option value="">Todos los deportes</option></select>
+                </div>
+                <button id="actualizarInstalaciones" class="instalaciones-boton instalaciones-boton--secundario" type="button">Actualizar</button>
+            </div>
+            <p id="estadoInstalaciones" class="instalaciones-estado" role="status" aria-live="polite">Cargando instalaciones…</p>
+            <div id="galeriaInstalaciones" class="instalaciones-galeria" aria-busy="true"></div>
+        </section>
+    </main>
+    <dialog id="visorInstalacion" class="instalaciones-visor" aria-labelledby="tituloVisorInstalacion">
+        <div class="instalaciones-visor-cabecera"><h2 id="tituloVisorInstalacion"></h2><button id="cerrarVisorInstalacion" class="instalaciones-boton instalaciones-boton--secundario" type="button">Cerrar</button></div>
+        <img id="fotoVisorInstalacion" alt="">
+    </dialog>
+    <noscript><p class="instalaciones-estado">Activa JavaScript para ver las fotografías y los horarios de nuestras instalaciones.</p></noscript>
+    <div id="contenedor-footer"></div>
+    <script src="/js/layout.js"></script>
+    <script src="/js/instalaciones.js"></script>
+    <script src="/js/animaciones.js?v=1" defer></script>
+</body>
+</html>

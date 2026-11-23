@@ -150,9 +150,9 @@ document.addEventListener("DOMContentLoaded", () => {
         desplazamientoSuave(bienvenida);
     });
 
-    btnVerHorarios?.addEventListener("click", () => {
-        desplazamientoSuave(seccionClases);
-    });
+    if (btnVerHorarios?.tagName !== "A") {
+        btnVerHorarios?.addEventListener("click", () => desplazamientoSuave(seccionClases));
+    }
 
     /* SECUENCIA DE IMÁGENES AL SCROLL */
     const videoSection = document.querySelector(".video-scroll-section");
@@ -255,7 +255,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     /* TARJETAS SUPERPUESTAS */
-    const tarjetas = [...document.querySelectorAll(".stack-card")];
+    let tarjetas = [...document.querySelectorAll(".stack-card")];
     const contenedorTarjetas = document.querySelector(".clases-stack");
 
     function actualizarTarjetas() {
@@ -347,19 +347,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     window.addEventListener("scroll", solicitarActualizacion, { passive: true });
     window.addEventListener("resize", solicitarActualizacion, { passive: true });
-
-    /* RESERVAS */
-    const botonesReserva = document.querySelectorAll(".clase-button");
-
-    botonesReserva.forEach(boton => {
-        boton.addEventListener("click", () => {
-            const deporte = boton.dataset.clase || "deporte";
-            alert(
-                "ADSPORT\n\n" +
-                `Has seleccionado: ${deporte.toUpperCase()}\n\n` +
-                "Próximamente podrás reservar tu clase desde esta sección."
-            );
-        });
+    window.addEventListener("adsport:deportes-cargados", () => {
+        tarjetas = [...document.querySelectorAll(".stack-card")];
+        solicitarActualizacion();
     });
 
     /* INICIALIZAR */

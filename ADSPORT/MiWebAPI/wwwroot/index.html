@@ -44,7 +44,8 @@
     </header>
 
     <!-- CONTENIDO PRINCIPAL -->
-    <main class="dashboard-main">
+    <p id="avisoSesion" class="alert alert-light m-3" role="status">Comprobando tu sesión…</p>
+    <main id="adminContenido" class="dashboard-main" hidden>
 
         <!-- BIENVENIDA -->
         <section class="dashboard-hero">
@@ -122,8 +123,8 @@
                     <h3>EMPLEADOS</h3>
 
                     <p>
-                        Administra los registros del personal,
-                        consulta información y realiza altas,
+                        Administra los registros de los profesores,
+                        consulta sus clases y realiza altas,
                         modificaciones y bajas.
                     </p>
 
@@ -200,8 +201,8 @@
 
     </main>
 
-    <!-- AUTENTICACIÓN ORIGINAL -->
     <script src="/js/auth.js"></script>
+    <script src="/js/admin.js"></script>
     <script>
                 protegerPagina();
                 mostrarUsuario("nombreUsuario");
