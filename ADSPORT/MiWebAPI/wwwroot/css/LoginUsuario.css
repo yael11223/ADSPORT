@@ -1,9 +1,11 @@
 ﻿:root {
-    --naranja: #ff6900;
+    --naranja: #ff6a00;
     --negro: #080808;
     --blanco: #ffffff;
     --gris: #b5b5b5;
     --borde: #363636;
+    --font-titulo: "Barlow Condensed", sans-serif;
+    --font-cuerpo: "Inter", Arial, Helvetica, sans-serif;
 }
 
 * {
@@ -20,7 +22,7 @@ body {
     align-items: center;
     background: var(--negro);
     color: var(--blanco);
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: var(--font-cuerpo);
 }
 
 .contenedor {
@@ -38,42 +40,48 @@ body {
 
 /* PANEL IZQUIERDO */
 
-
 .presentacion {
     padding: 65px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    background: linear-gradient( 90deg, rgba(0, 0, 0, 0.92), rgba(0, 0, 0, 0.60) ), url("/Accet/Inicio.jpg");
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0.92), rgba(0, 0, 0, 0.60)), url("/Accet/LogUsuario.jpg");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
 }
 
-
 .marca {
     display: flex;
     align-items: center;
-    gap: 14px;
 }
 
-.logo {
-    width: 46px;
-    height: 46px;
-    border-radius: 12px;
-    background: var(--naranja);
-    display: grid;
-    place-items: center;
-    font-size: 25px;
-    font-weight: 900;
+.marca-enlace {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    transition: opacity 0.25s ease, transform 0.25s ease;
 }
+
+    .marca-enlace:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+    }
 
 .nombre-marca {
-    font-size: 23px;
+    color: var(--blanco);
+    font-family: var(--font-titulo);
+    font-size: 36px;
     font-weight: 900;
     font-style: italic;
-    letter-spacing: 1px;
+    line-height: 1;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
 }
+
+    .nombre-marca span {
+        color: var(--naranja);
+    }
 
 .eslogan {
     margin-top: 55px;
@@ -94,30 +102,31 @@ body {
     letter-spacing: 2px;
 }
 
-.subtitulo span,
-.pie span {
-    color: var(--naranja);
-    padding: 0 8px;
-}
+    .subtitulo span,
+    .pie span {
+        color: var(--naranja);
+        padding: 0 8px;
+    }
 
 .eslogan h1 {
     margin-top: 32px;
-    font-size: clamp(44px, 5vw, 78px);
-    line-height: 0.98;
-    font-weight: 950;
+    font-family: var(--font-titulo);
+    font-size: clamp(56px, 6vw, 96px);
+    line-height: 0.94;
+    font-weight: 900;
     font-style: italic;
-    letter-spacing: -3px;
+    letter-spacing: -1px;
     text-transform: uppercase;
 }
 
-.eslogan h1 > span:first-child {
-    display: block;
-    color: var(--naranja);
-}
+    .eslogan h1 > span:first-child {
+        display: block;
+        color: var(--naranja);
+    }
 
-.eslogan h1 .punto-final {
-    color: var(--naranja);
-}
+    .eslogan h1 .punto-final {
+        color: var(--naranja);
+    }
 
 .descripcion {
     max-width: 440px;
@@ -139,14 +148,8 @@ body {
 
 .panel-login {
     padding: 65px 55px;
-    border-left: 1px solid rgba(255, 105, 0, 0.35);
-    background:
-        radial-gradient(
-            circle at 100% 0%,
-            rgba(255, 105, 0, 0.12),
-            transparent 38%
-        ),
-        linear-gradient(160deg, #191919, #0c0c0c);
+    border-left: 1px solid rgba(255, 106, 0, 0.35);
+    background: radial-gradient(circle at 100% 0%, rgba(255, 106, 0, 0.12), transparent 38%), linear-gradient(160deg, #191919, #0c0c0c);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -157,67 +160,71 @@ body {
     margin-bottom: 42px;
 }
 
-.encabezado .etiqueta {
-    color: #d2d2d2;
-}
+    .encabezado .etiqueta {
+        color: #d2d2d2;
+    }
 
-.encabezado h2 {
-    margin-top: 23px;
-    font-size: clamp(32px, 3vw, 43px);
-    font-weight: 900;
-    letter-spacing: -1.5px;
-}
+    .encabezado h2 {
+        margin-top: 20px;
+        font-family: var(--font-titulo);
+        font-size: clamp(38px, 3.6vw, 52px);
+        font-weight: 900;
+        font-style: italic;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+    }
 
-.encabezado h2 span {
-    color: var(--naranja);
-}
+        .encabezado h2 span {
+            color: var(--naranja);
+        }
 
-.encabezado > p:last-child {
-    margin-top: 15px;
-    color: var(--gris);
-    font-size: 13px;
-}
+    .encabezado > p:last-child {
+        margin-top: 12px;
+        color: var(--gris);
+        font-size: 13px;
+    }
 
 .campo {
     margin-bottom: 24px;
 }
 
-.campo label {
-    display: block;
-    margin-bottom: 12px;
-    font-size: 12px;
-    font-weight: bold;
-}
+    .campo label {
+        display: block;
+        margin-bottom: 12px;
+        font-size: 12px;
+        font-weight: bold;
+    }
 
-.campo input {
-    width: 100%;
-    height: 54px;
-    padding: 0 16px;
-    border: 1px solid #404040;
-    border-radius: 11px;
-    background: #202020;
-    color: white;
-    font-size: 14px;
-    outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
-}
+    .campo input {
+        width: 100%;
+        height: 54px;
+        padding: 0 16px;
+        border: 1px solid #404040;
+        border-radius: 11px;
+        background: #202020;
+        color: white;
+        font-family: var(--font-cuerpo);
+        font-size: 14px;
+        outline: none;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
 
-.campo input::placeholder {
-    color: #888;
-}
+        .campo input::placeholder {
+            color: #888;
+        }
 
-.campo input:focus {
-    border-color: var(--naranja);
-    box-shadow: 0 0 0 3px rgba(255, 105, 0, 0.12);
-}
+        .campo input:focus {
+            border-color: var(--naranja);
+            box-shadow: 0 0 0 3px rgba(255, 106, 0, 0.12);
+        }
 
 .contenedor-password {
     position: relative;
 }
 
-.contenedor-password input {
-    padding-right: 50px;
-}
+    .contenedor-password input {
+        padding-right: 50px;
+    }
 
 .mostrar-password {
     position: absolute;
@@ -231,9 +238,9 @@ body {
     cursor: pointer;
 }
 
-.mostrar-password:hover {
-    color: var(--naranja);
-}
+    .mostrar-password:hover {
+        color: var(--naranja);
+    }
 
 .opciones {
     display: flex;
@@ -242,15 +249,15 @@ body {
     margin-bottom: 27px;
 }
 
-.opciones a {
-    color: #bcbcbc;
-    text-decoration: none;
-    font-size: 12px;
-}
+    .opciones a {
+        color: #bcbcbc;
+        text-decoration: none;
+        font-size: 12px;
+    }
 
-.opciones a:hover {
-    color: var(--naranja);
-}
+        .opciones a:hover {
+            color: var(--naranja);
+        }
 
 /* BOTÓN INGRESAR */
 
@@ -262,6 +269,7 @@ body {
     border-radius: 11px;
     background: var(--naranja);
     color: white;
+    font-family: var(--font-cuerpo);
     font-size: 14px;
     font-weight: 800;
     cursor: pointer;
@@ -271,16 +279,16 @@ body {
     transition: background 0.2s, transform 0.2s;
 }
 
-.btn-ingresar:hover {
-    background: #e85f00;
-    transform: translateY(-2px);
-}
+    .btn-ingresar:hover {
+        background: #e85f00;
+        transform: translateY(-2px);
+    }
 
-.btn-ingresar:disabled {
-    opacity: 0.7;
-    cursor: wait;
-    transform: none;
-}
+    .btn-ingresar:disabled {
+        opacity: 0.7;
+        cursor: wait;
+        transform: none;
+    }
 
 .flecha {
     font-size: 25px;
@@ -300,13 +308,13 @@ body {
     white-space: nowrap;
 }
 
-.separador::before,
-.separador::after {
-    content: "";
-    height: 1px;
-    background: #333;
-    flex: 1;
-}
+    .separador::before,
+    .separador::after {
+        content: "";
+        height: 1px;
+        background: #333;
+        flex: 1;
+    }
 
 .registro {
     text-align: center;
@@ -330,15 +338,15 @@ body {
     transition: border-color 0.2s, color 0.2s;
 }
 
-.crear-cuenta span {
-    color: var(--naranja);
-    font-size: 20px;
-}
+    .crear-cuenta span {
+        color: var(--naranja);
+        font-size: 20px;
+    }
 
-.crear-cuenta:hover {
-    border-color: var(--naranja);
-    color: var(--naranja);
-}
+    .crear-cuenta:hover {
+        border-color: var(--naranja);
+        color: var(--naranja);
+    }
 
 .seguridad {
     display: flex;
@@ -388,9 +396,9 @@ body {
         margin-top: 45px;
     }
 
-    .eslogan h1 {
-        font-size: 48px;
-    }
+        .eslogan h1 {
+            font-size: 54px;
+        }
 
     .pie {
         margin-top: 40px;
@@ -399,7 +407,7 @@ body {
     .panel-login {
         padding: 45px 35px;
         border-left: none;
-        border-top: 1px solid rgba(255, 105, 0, 0.35);
+        border-top: 1px solid rgba(255, 106, 0, 0.35);
     }
 }
 
@@ -410,8 +418,8 @@ body {
     }
 
     .eslogan h1 {
-        font-size: 40px;
-        letter-spacing: -2px;
+        font-size: 46px;
+        letter-spacing: -1px;
     }
 
     .subtitulo {
@@ -420,16 +428,14 @@ body {
     }
 
     .encabezado h2 {
-        font-size: 34px;
+        font-size: 38px;
     }
 }
-
 
 /* ================================
    ANIMACIONES DE INICIO ADSPORT
 ================================ */
 
-/* Entrada general */
 @keyframes entradaPanel {
     from {
         opacity: 0;
@@ -442,7 +448,6 @@ body {
     }
 }
 
-/* Panel izquierdo */
 @keyframes entradaIzquierda {
     from {
         opacity: 0;
@@ -455,7 +460,6 @@ body {
     }
 }
 
-/* Panel de login */
 @keyframes entradaDerecha {
     from {
         opacity: 0;
@@ -476,7 +480,6 @@ body {
     animation: entradaDerecha 0.9s ease-out both;
 }
 
-/* Aparición progresiva del contenido */
 .marca {
     animation: entradaPanel 0.7s ease-out 0.15s both;
 }
@@ -509,28 +512,25 @@ body {
     animation: entradaPanel 0.7s ease-out 0.6s both;
 }
 
-/* Brillo naranja del título */
 .eslogan h1 > span:first-child {
     text-shadow: 0 0 0 transparent;
     transition: text-shadow 0.3s ease;
 }
 
     .eslogan h1 > span:first-child:hover {
-        text-shadow: 0 0 22px rgba(255, 105, 0, 0.35);
+        text-shadow: 0 0 22px rgba(255, 106, 0, 0.35);
     }
 
-/* Efecto en los campos */
 .campo input {
     transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
 }
 
     .campo input:focus {
         background: #252525;
-        border-color: #ff6900;
-        box-shadow: 0 0 0 3px rgba(255, 105, 0, 0.15);
+        border-color: #ff6a00;
+        box-shadow: 0 0 0 3px rgba(255, 106, 0, 0.15);
     }
 
-/* Botón de inicio */
 .btn-ingresar {
     position: relative;
     overflow: hidden;
@@ -539,7 +539,7 @@ body {
 
     .btn-ingresar:hover {
         background: #ff7a1a;
-        box-shadow: 0 8px 25px rgba(255, 105, 0, 0.25);
+        box-shadow: 0 8px 25px rgba(255, 106, 0, 0.25);
         transform: translateY(-3px);
     }
 
@@ -547,7 +547,6 @@ body {
         transform: translateY(0) scale(0.99);
     }
 
-    /* Movimiento de la flecha */
     .btn-ingresar .flecha {
         display: inline-block;
         transition: transform 0.25s ease;
@@ -557,14 +556,13 @@ body {
         transform: translateX(6px);
     }
 
-/* Botón crear cuenta */
 .crear-cuenta {
     transition: color 0.25s ease, border-color 0.25s ease, background 0.25s ease;
 }
 
     .crear-cuenta:hover {
-        background: rgba(255, 105, 0, 0.06);
-        border-color: #ff6900;
+        background: rgba(255, 106, 0, 0.06);
+        border-color: #ff6a00;
     }
 
     .crear-cuenta span {
@@ -576,14 +574,12 @@ body {
         transform: rotate(90deg);
     }
 
-/* Imagen de fondo con movimiento sutil */
 .presentacion {
     background-size: cover;
     background-position: center;
     transition: background-position 0.8s ease;
 }
 
-/* Respeta la configuración de accesibilidad */
 @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
@@ -603,7 +599,7 @@ body {
     z-index: 99999;
     display: grid;
     place-items: center;
-    background: radial-gradient( circle at center, rgba(255, 105, 0, 0.12), transparent 35% ), #080808;
+    background: radial-gradient(circle at center, rgba(255, 106, 0, 0.12), transparent 35%), #080808;
     transition: opacity 0.65s ease, visibility 0.65s ease;
 }
 
@@ -625,25 +621,28 @@ body {
     margin: 0 auto 20px;
     display: grid;
     place-items: center;
-    background: #ff6900;
+    background: #ff6a00;
     border-radius: 20px;
     color: white;
-    font-size: 40px;
+    font-family: var(--font-titulo);
+    font-size: 46px;
     font-weight: 900;
-    box-shadow: 0 0 35px rgba(255, 105, 0, 0.35);
+    font-style: italic;
+    box-shadow: 0 0 35px rgba(255, 106, 0, 0.35);
     animation: logoPulso 1.3s ease-in-out infinite;
 }
 
 .loader-contenido h2 {
     color: white;
-    font-size: 32px;
+    font-family: var(--font-titulo);
+    font-size: 38px;
     font-style: italic;
     font-weight: 900;
-    letter-spacing: 2px;
+    letter-spacing: 1px;
 }
 
     .loader-contenido h2 span {
-        color: #ff6900;
+        color: #ff6a00;
     }
 
 .loader-contenido p {
@@ -666,7 +665,7 @@ body {
 .loader-progreso {
     width: 100%;
     height: 100%;
-    background: linear-gradient( 90deg, #b83e00, #ff6900, #ffb16e );
+    background: linear-gradient(90deg, #b83e00, #ff6a00, #ffb16e);
     transform: scaleX(0);
     transform-origin: left;
     animation: progresoCarga 1.4s ease-in-out forwards;
@@ -694,11 +693,11 @@ body {
 
 @keyframes logoPulso {
     0%, 100% {
-        box-shadow: 0 0 18px rgba(255, 105, 0, 0.2);
+        box-shadow: 0 0 18px rgba(255, 106, 0, 0.2);
     }
 
     50% {
-        box-shadow: 0 0 42px rgba(255, 105, 0, 0.55);
+        box-shadow: 0 0 42px rgba(255, 106, 0, 0.55);
     }
 }
 
@@ -724,12 +723,10 @@ body {
     }
 }
 
-/* Primero se muestra el cargador */
 .intro-loader:not(.oculto) ~ .contenedor {
     visibility: hidden;
 }
 
-/* Cuando termina la carga, se activa la animación del login */
 .intro-loader.oculto ~ .contenedor {
     visibility: visible;
 }
@@ -742,7 +739,6 @@ body {
         animation: entradaDerecha 0.9s ease-out both;
     }
 
-    /* Reactivar las animaciones del contenido */
     .intro-loader.oculto ~ .contenedor .marca,
     .intro-loader.oculto ~ .contenedor .eslogan .etiqueta,
     .intro-loader.oculto ~ .contenedor .eslogan .subtitulo,

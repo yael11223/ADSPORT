@@ -47,6 +47,7 @@
     ====================================================== -->
 
     <link rel="stylesheet" href="css/Nosotros.css">
+    <link rel="stylesheet" href="/css/componentes.css">
 
 </head>
 
@@ -57,6 +58,7 @@
     <!-- =====================================================
          1. PANTALLA DE CARGA
     ====================================================== -->
+    <div id="contenedor-header"></div>
 
     <div class="page-loader" id="pageLoader">
 
@@ -110,52 +112,6 @@
              id="pageProgressBar"></div>
 
     </div>
-
-
-
-    <!-- =====================================================
-         4. ENCABEZADO
-    ====================================================== -->
-
-    <header class="nosotros-header">
-
-        <div class="container-fluid px-4 px-lg-5">
-
-            <div class="d-flex justify-content-between align-items-center">
-
-                <a href="index.html"
-                   class="brand-logo"
-                   aria-label="ADSPORT - Inicio">
-
-                    AD<span>SPORT</span>
-
-                </a>
-
-                <nav class="header-navigation" aria-label="Navegación principal">
-
-                    <a href="index.html">
-                        INICIO
-                    </a>
-
-                    <a href="#nosotros" class="active">
-                        NOSOTROS
-                    </a>
-
-                    <a href="#comunidad">
-                        COMUNIDAD
-                    </a>
-
-                    <a href="#unete" class="header-cta">
-                        ÚNETE
-                    </a>
-
-                </nav>
-
-            </div>
-
-        </div>
-
-    </header>
 
 
 
@@ -252,15 +208,20 @@
 
 
                             <a href="#historia"
-                               class="story-button magnetic-button"
-                               data-magnetic>
+                               class="story-button">
 
                                 <span>
                                     DESCUBRE NUESTRA HISTORIA
                                 </span>
 
-                                <span class="button-arrow">
-                                    ↗
+                                <span class="button-arrow" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" fill="none">
+                                        <path d="M4 12h15M13 5l7 7-7 7"
+                                              stroke="currentColor"
+                                              stroke-width="2"
+                                              stroke-linecap="round"
+                                              stroke-linejoin="round" />
+                                    </svg>
                                 </span>
 
                             </a>
@@ -424,15 +385,20 @@
 
 
                             <a href="#misionVision"
-                               class="story-button magnetic-button"
-                               data-magnetic>
+                               class="story-button">
 
                                 <span>
                                     CONOCE NUESTRA ESENCIA
                                 </span>
 
-                                <span class="button-arrow">
-                                    ↗
+                                <span class="button-arrow" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" fill="none">
+                                        <path d="M4 12h15M13 5l7 7-7 7"
+                                              stroke="currentColor"
+                                              stroke-width="2"
+                                              stroke-linecap="round"
+                                              stroke-linejoin="round" />
+                                    </svg>
                                 </span>
 
                             </a>
@@ -619,15 +585,20 @@
 
 
                             <a href="#comunidad"
-                               class="story-button magnetic-button"
-                               data-magnetic>
+                               class="story-button">
 
                                 <span>
                                     DESCUBRE NUESTRA COMUNIDAD
                                 </span>
 
-                                <span class="button-arrow">
-                                    ↗
+                                <span class="button-arrow" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" fill="none">
+                                        <path d="M4 12h15M13 5l7 7-7 7"
+                                              stroke="currentColor"
+                                              stroke-width="2"
+                                              stroke-linecap="round"
+                                              stroke-linejoin="round" />
+                                    </svg>
                                 </span>
 
                             </a>
@@ -1066,15 +1037,20 @@
 
 
                             <a href="#unete"
-                               class="story-button magnetic-button"
-                               data-magnetic>
+                               class="story-button">
 
                                 <span>
                                     FORMA PARTE DE ADSPORT
                                 </span>
 
-                                <span class="button-arrow">
-                                    ↗
+                                <span class="button-arrow" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" fill="none">
+                                        <path d="M4 12h15M13 5l7 7-7 7"
+                                              stroke="currentColor"
+                                              stroke-width="2"
+                                              stroke-linecap="round"
+                                              stroke-linejoin="round" />
+                                    </svg>
                                 </span>
 
                             </a>
@@ -1204,16 +1180,21 @@
                             </p>
 
 
-                            <a href="index.html#clases"
-                               class="join-button magnetic-button"
-                               data-magnetic>
+                            <a href="/Registro.html"
+                               class="join-button">
 
                                 <span>
-                                    EXPLORAR ACTIVIDADES
+                                    ÚNETE AHORA
                                 </span>
 
-                                <span class="button-arrow">
-                                    ↗
+                                <span class="button-arrow" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" fill="none">
+                                        <path d="M4 12h15M13 5l7 7-7 7"
+                                              stroke="currentColor"
+                                              stroke-width="2"
+                                              stroke-linecap="round"
+                                              stroke-linejoin="round" />
+                                    </svg>
                                 </span>
 
                             </a>
@@ -1245,121 +1226,7 @@
          11. PIE DE PÁGINA
     ====================================================== -->
 
-    <footer class="nosotros-footer">
-
-        <div class="container-fluid px-4 px-lg-5">
-
-            <div class="row gy-4 align-items-start">
-
-
-                <!-- MARCA -->
-
-                <div class="col-12 col-lg-4">
-
-                    <a href="index.html" class="footer-logo">
-
-                        AD<span>SPORT</span>
-
-                    </a>
-
-                    <p class="footer-description">
-
-                        Tu deporte. Tu momento.
-                        Una nueva forma de vivir
-                        experiencias deportivas.
-
-                    </p>
-
-                </div>
-
-
-
-                <!-- NAVEGACIÓN -->
-
-                <div class="col-6 col-lg-4">
-
-                    <h3 class="footer-heading">
-                        EXPLORA
-                    </h3>
-
-                    <ul class="footer-links">
-
-                        <li>
-                            <a href="index.html">Inicio</a>
-                        </li>
-
-                        <li>
-                            <a href="#masQueUnClub">Nosotros</a>
-                        </li>
-
-                        <li>
-                            <a href="#historia">Historia</a>
-                        </li>
-
-                        <li>
-                            <a href="#comunidad">Comunidad</a>
-                        </li>
-
-                    </ul>
-
-                </div>
-
-
-
-                <!-- INFORMACIÓN -->
-
-                <div class="col-6 col-lg-4">
-
-                    <h3 class="footer-heading">
-                        ADSPORT
-                    </h3>
-
-                    <ul class="footer-links">
-
-                        <li>
-                            <a href="#misionVision">Nuestra esencia</a>
-                        </li>
-
-                        <li>
-                            <a href="#estiloVida">Estilo de vida</a>
-                        </li>
-
-                        <li>
-                            <a href="#unete">Únete</a>
-                        </li>
-
-                    </ul>
-
-                </div>
-
-            </div>
-
-
-
-            <div class="footer-divider"></div>
-
-
-
-            <!-- COPYRIGHT -->
-
-            <div class="footer-bottom">
-
-                <p>
-                    © <span id="currentYear">2026</span>
-                    ADSPORT. Todos los derechos reservados.
-                </p>
-
-                <a href="#nosotros" class="back-to-top">
-
-                    VOLVER ARRIBA ↑
-
-                </a>
-
-            </div>
-
-        </div>
-
-    </footer>
+    <div id="contenedor-footer"></div>
 
 
 
@@ -1397,6 +1264,7 @@
     ====================================================== -->
 
     <script src="js/Nosotros.js" defer></script>
+    <script src="/js/layout.js?v=1"></script>
 
 </body>
 

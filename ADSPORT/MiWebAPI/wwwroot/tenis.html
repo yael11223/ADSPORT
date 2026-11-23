@@ -1,0 +1,222 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#090909">
+    <meta name="description" content="Conoce las clases de ADSPORT, nuestros entrenadores, precios y horarios disponibles.">
+    <title id="pageTitle">Clases y Disciplinas | ADSPORT</title>
+
+    <!-- FUENTES EXACTAS DEL INICIO -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,500;0,600;0,700;0,800;0,900;1,800;1,900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- ESTILOS DE COMPONENTES (HEADER Y FOOTER) -->
+    <link rel="stylesheet" href="/css/componentes.css">
+
+    <!-- ESTILOS UNIFICADOS DE LA PÁGINA DE CLASES -->
+    <link rel="stylesheet" href="/css/tenis.css?v=4">
+    <link rel="stylesheet" href="/css/clases.css?v=4">
+</head>
+
+<body>
+
+    <!-- HEADER COMPARTIDO -->
+    <div id="contenedor-header"></div>
+
+    <main class="tenis-page">
+
+        <!-- 1. PORTADA PRINCIPAL (MISMO ESTILO QUE EL HERO DEL INICIO) -->
+        <section class="tenis-hero" aria-labelledby="titulo-tenis">
+
+            <img src="https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=2000&q=85"
+                 alt="Deportes ADSPORT"
+                 class="tenis-hero__imagen">
+
+            <div class="tenis-hero__overlay"></div>
+
+            <div class="tenis-hero__contenido">
+
+                <span class="tenis-hero__etiqueta">
+                    TU DEPORTE. TU MOMENTO.
+                </span>
+
+                <h1 id="titulo-tenis">
+                    DEPORTES
+                </h1>
+
+                <p id="heroDescripcionDeporte">
+                    ENTRENA. SUPÉRATE. CONQUISTA TUS METAS.
+                </p>
+
+                <a href="#entrenadores" class="explore-button">
+                    <span>EXPLORAR CLASES</span>
+
+                    <span class="explore-arrow" aria-hidden="true">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                            <path d="M4 12h15M13 5l7 7-7 7"
+                                  stroke="currentColor"
+                                  stroke-width="2"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round" />
+                        </svg>
+                    </span>
+                </a>
+
+            </div>
+
+            <div class="tenis-hero__inferior">
+                <span>ENTRENA A TU RITMO</span>
+                <span>ADSPORT</span>
+            </div>
+
+        </section>
+
+        <!-- 2. INFORMACIÓN DEL DEPORTE -->
+        <section class="tenis-info" id="informacion">
+
+            <div class="tenis-container">
+
+                <div class="tenis-info__encabezado">
+
+                    <div>
+                        <p class="section-label">CONOCE EL DEPORTE</p>
+                        <h2>
+                            DESCUBRE<br>
+                            <span id="subtituloDeporte">LA DISCIPLINA.</span>
+                        </h2>
+                    </div>
+
+                    <p id="infoDescripcionDeporte">
+                        En ADSPORT podrás conocer diferentes entrenadores y encontrar clases que se adapten a tus necesidades y disponibilidad.
+                    </p>
+
+                </div>
+
+                <div class="tenis-beneficios">
+
+                    <article class="tenis-beneficio">
+                        <span class="tenis-beneficio__numero">01</span>
+                        <h3>TÉCNICA</h3>
+                        <p>Desarrolla precisión, control y coordinación durante tus entrenamientos.</p>
+                    </article>
+
+                    <article class="tenis-beneficio">
+                        <span class="tenis-beneficio__numero">02</span>
+                        <h3>CONDICIÓN FÍSICA</h3>
+                        <p>Mejora tu resistencia, velocidad y agilidad dentro de la cancha.</p>
+                    </article>
+
+                    <article class="tenis-beneficio">
+                        <span class="tenis-beneficio__numero">03</span>
+                        <h3>APRENDIZAJE</h3>
+                        <p>Aprende a tu ritmo con el acompañamiento de un entrenador.</p>
+                    </article>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- 3. CATÁLOGO DE ENTRENADORES Y CLASES -->
+        <section class="tenis-entrenadores" id="entrenadores" aria-labelledby="tituloCatalogo">
+            <div class="tenis-container">
+
+                <div class="tenis-seccion-header">
+                    <div>
+                        <p class="section-label">ENTRENA CON NOSOTROS</p>
+                        <h2 id="tituloCatalogo">CLASES<br><span>DISPONIBLES.</span></h2>
+                    </div>
+                    <p>Conoce a los entrenadores, sus precios y horarios publicados en ADSPORT.</p>
+                </div>
+
+                <div class="catalogo-filtros">
+                    <label for="filtroDeporte">DISCIPLINA</label>
+                    <select id="filtroDeporte">
+                        <option value="">Todos los deportes</option>
+                    </select>
+                    <button id="recargarClases" type="button" class="tenis-btn tenis-btn--secundario">
+                        <span>ACTUALIZAR</span>
+                        <span class="btn-icono" aria-hidden="true">↻</span>
+                    </button>
+                </div>
+
+                <p id="estadoCatalogo" role="status" aria-live="polite">Cargando clases disponibles…</p>
+
+                <div class="tenis-entrenadores__grid" id="catalogoClases" aria-busy="true"></div>
+
+            </div>
+        </section>
+
+        <!-- 4. HORARIOS SEMANALES -->
+        <section class="tenis-calendario" id="horarios" aria-labelledby="tituloHorarios">
+            <div class="tenis-container">
+
+                <div class="tenis-seccion-header">
+                    <div>
+                        <p class="section-label">PLANIFICA TU SEMANA</p>
+                        <h2 id="tituloHorarios">HORARIOS<br><span>SEMANALES.</span></h2>
+                    </div>
+                    <p>Consulta los días y horas disponibles para organizar tus sesiones de entrenamiento.</p>
+                </div>
+
+                <div class="tenis-calendario__contenedor">
+                    <table class="tenis-calendario__tabla">
+                        <caption>Horarios de las clases disponibles en el catálogo.</caption>
+                        <thead>
+                            <tr>
+                                <th scope="col">Clase / entrenador</th>
+                                <th scope="col">Lunes</th>
+                                <th scope="col">Martes</th>
+                                <th scope="col">Miércoles</th>
+                                <th scope="col">Jueves</th>
+                                <th scope="col">Viernes</th>
+                                <th scope="col">Sábado</th>
+                                <th scope="col">Domingo</th>
+                            </tr>
+                        </thead>
+                        <tbody id="horariosPublicos"></tbody>
+                    </table>
+                </div>
+
+                <p class="tenis-calendario__aviso">Consulta con ADSPORT para inscripciones. Los precios y cupos corresponden a las clases publicadas.</p>
+
+            </div>
+        </section>
+
+        <!-- 5. SECCIÓN FINAL CTA -->
+        <section class="tenis-cta">
+            <div class="tenis-container tenis-cta__contenido">
+                <div>
+                    <p class="section-label">COMIENZA TU ENTRENAMIENTO</p>
+                    <h2>TU PRÓXIMO<br><span>RETO TE ESPERA.</span></h2>
+                    <p>Descubre nuevas habilidades, conoce a nuestros entrenadores y encuentra tu próxima clase.</p>
+                </div>
+
+                <a href="/Registro.html" class="explore-button">
+                    <span>ÚNETE A ADSPORT</span>
+                    <span class="explore-arrow" aria-hidden="true">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                            <path d="M4 12h15M13 5l7 7-7 7"
+                                  stroke="currentColor"
+                                  stroke-width="2"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round" />
+                        </svg>
+                    </span>
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <div id="contenedor-footer"></div>
+
+    <script src="/js/layout.js?v=6"></script>
+    <script src="/js/clases.js?v=4" defer></script>
+</body>
+
+</html>
