@@ -1,6 +1,7 @@
 "use strict";
 
 document.addEventListener("DOMContentLoaded", () => {
+    const conexion = window.ADSPORTConexion;
     window.addEventListener("adsport:perfil-actualizado",evento=>mostrarPerfil(evento.detail));
     const porId = (id) => document.getElementById(id);
     const dias = ["", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
@@ -28,6 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function aviso(id, texto, error = false) {
+        if (error) texto = conexion.mensajeError(new Error(texto));
         const nodo = porId(id);
         nodo.textContent = texto;
         nodo.hidden = !texto;
@@ -35,30 +37,20 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     async function solicitar(ruta, opciones = {}) {
-        let respuesta;
         try {
-            respuesta = await fetch(ruta, { credentials: "same-origin", cache: "no-store", ...opciones });
-        } catch {
-            throw new Error("No fue posible conectar con ADSPORT. Revisa tu conexión e intenta nuevamente.");
-        }
-        const datos = await respuesta.json().catch(() => null);
-        if (respuesta.status === 401) {
-            porId("panelEntrenador").hidden = true;
-            window.location.replace("/loginEntrenador.html");
-            throw new Error("Tu sesión terminó. Inicia sesión nuevamente.");
-        }
-        if (!respuesta.ok) {
-            if (respuesta.status === 403) {
+            return await conexion.solicitar(ruta, opciones);
+        } catch (error) {
+            if (error.status === 401) {
+                porId("panelEntrenador").hidden = true;
+                window.location.replace("/loginEntrenador.html");
+                throw new Error("Tu sesión terminó. Inicia sesión nuevamente.");
+            }
+            if (error.status === 403) {
                 porId("panelEntrenador").hidden = true;
                 porId("accesoEntrenador").hidden = false;
             }
-            const errores = datos?.errors ? Object.values(datos.errors).flat().join(" ") : "";
-            throw new Error(datos?.respuesta || errores || (respuesta.status === 403
-                ? "Esta cuenta no tiene acceso activo de entrenador. Inicia sesión con tus credenciales de entrenador."
-                : "No fue posible completar la solicitud. Intenta nuevamente."));
+            throw error;
         }
-        if (datos === null) throw new Error("ADSPORT no devolvió una respuesta válida.");
-        return datos;
     }
 
     async function modificar(ruta, metodo, datos) {
@@ -439,7 +431,7 @@ document.addEventListener("DOMContentLoaded", () => {
         cargando = true;
         porId("btnActualizarEntrenador").disabled = true;
         porId("btnNuevaClase").disabled = true;
-        aviso("avisoEntrenador", "Cargando tu panel…");
+        aviso("avisoEntrenador", conexion.textos.conectando);
         porId("accesoEntrenador").hidden = true;
         try {
             const perfil = await solicitar("/api/Entrenador/perfil");

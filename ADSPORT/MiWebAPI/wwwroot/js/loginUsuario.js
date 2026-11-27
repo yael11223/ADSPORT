@@ -1,5 +1,6 @@
 ﻿
 document.addEventListener("DOMContentLoaded", () => {
+    const conexion = window.ADSPORTConexion;
 
     // ========================================
     // ADSPORT - LOGIN DE USUARIOS REGISTRADOS
@@ -45,9 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function mostrarError(texto) {
 
-        mensajeLogin.textContent = texto;
-        mensajeLogin.classList.remove("d-none");
-        mensajeLogin.hidden = false;
+        conexion.mostrar(mensajeLogin, texto);
     }
 
     // ========================================
@@ -172,7 +171,9 @@ document.addEventListener("DOMContentLoaded", () => {
         iniciandoSesion = true;
         btnLogin.disabled = true;
 
-        cambiarTextoBoton("Iniciando sesión...");
+        cambiarTextoBoton("Conectando…");
+        btnLogin.setAttribute("aria-busy", "true");
+        conexion.mostrar(mensajeLogin, conexion.textos.conectando, true);
 
         try {
 
@@ -180,7 +181,7 @@ document.addEventListener("DOMContentLoaded", () => {
             // 4. CONSULTAR API DE LOGIN
             // ========================================
 
-            const respuesta = await fetch(API_LOGIN, {
+            const resultado = await conexion.solicitar(API_LOGIN, {
 
                 method: "POST",
 
@@ -204,31 +205,17 @@ document.addEventListener("DOMContentLoaded", () => {
             // 5. COMPROBAR RESPUESTA DEL SERVIDOR
             // ========================================
 
-            const tipoContenido =
-                respuesta.headers.get("content-type") || "";
-
-            if (!tipoContenido.includes("application/json")) {
-
-                throw new Error(
-                    "El servidor no devolvió una respuesta JSON válida."
-                );
-            }
-
-            const resultado = await respuesta.json();
-
             // ========================================
             // 6. VALIDAR RESULTADO DE LA API
             // ========================================
 
             if (
-                !respuesta.ok ||
                 resultado.isSuccess !== true ||
                 Number(resultado.numeroError) !== 0
             ) {
 
                 throw new Error(
-                    resultado.respuesta ||
-                    "Correo o contraseña incorrectos."
+                    conexion.textos.conexion
                 );
             }
 
@@ -266,14 +253,14 @@ document.addEventListener("DOMContentLoaded", () => {
             );
 
             mostrarError(
-                error.message ||
-                "No fue posible conectar con el servidor."
+                conexion.mensajeError(error)
             );
 
         } finally {
 
             iniciandoSesion = false;
             btnLogin.disabled = false;
+            btnLogin.setAttribute("aria-busy", "false");
 
             cambiarTextoBoton("Ingresar");
         }

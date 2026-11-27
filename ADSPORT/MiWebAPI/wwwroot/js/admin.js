@@ -1,6 +1,8 @@
 "use strict";
 
 window.Admin = (() => {
+    const mensajeConexion = "No se pudo conectar con ADSPORT. Intenta de nuevo.";
+    const tecnico = /\b(?:HTTP|SQL|JSON|TypeError|SyntaxError|NetworkError|Failed to fetch|Unexpected token|Gateway|Service Unavailable)\b|\b(?:error|c[oó]digo|status)\s*[:=#-]?\s*\d{3,}[a-z]*\b/i;
     const dias = ["", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
     function nodo(tag, clase, texto) {
         const n = document.createElement(tag);
@@ -9,6 +11,7 @@ window.Admin = (() => {
         return n;
     }
     function aviso(id, texto = "", error = false) {
+        if (error && tecnico.test(texto)) texto = mensajeConexion;
         const n = document.getElementById(id);
         if (!n) return;
         n.textContent = texto;
@@ -16,15 +19,20 @@ window.Admin = (() => {
         n.classList.toggle("admin-notice--error", error);
     }
     async function api(ruta, opciones = {}) {
-        const respuesta = await solicitarAdmin(ruta, opciones);
+        let respuesta;
+        try { respuesta = await solicitarAdmin(ruta, opciones); }
+        catch { throw new Error(mensajeConexion); }
         const datos = await respuesta.json().catch(() => null);
         if (respuesta.status === 401) {
             window.location.replace("/login.html");
             throw new Error("Tu sesión terminó. Vuelve a iniciar sesión.");
         }
         if (!respuesta.ok || datos === null) {
+            if (respuesta.status >= 500 || respuesta.status === 408 || datos === null)
+                throw new Error(mensajeConexion);
             const detalle = datos?.errors ? Object.values(datos.errors).flat().join(" ") : "";
-            throw new Error(datos?.respuesta || detalle || "No fue posible completar la solicitud. HTTP " + respuesta.status);
+            const mensaje = datos?.respuesta || detalle || "No se pudo completar la solicitud. Intenta de nuevo.";
+            throw new Error(tecnico.test(mensaje) ? mensajeConexion : mensaje);
         }
         return datos;
     }

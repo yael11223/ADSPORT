@@ -21,7 +21,7 @@
 
 body {
     min-height: 100vh;
-    padding: 24px;
+    padding: clamp(12px, 2.5vw, 32px);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -32,10 +32,10 @@ body {
 
 .contenedor {
     width: 100%;
-    max-width: 1400px;
+    max-width: 1200px;
     min-height: 680px;
     display: grid;
-    grid-template-columns: 1.4fr 0.9fr;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
     border: 1px solid #333;
     border-radius: 22px;
     overflow: hidden;
@@ -46,7 +46,8 @@ body {
 /* PANEL IZQUIERDO */
 
 .presentacion {
-    padding: 65px;
+    min-width: 0;
+    padding: clamp(32px, 4vw, 56px);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -124,13 +125,14 @@ body {
 .eslogan h1 {
     margin-top: 32px;
     font-family: var(--font-titulo);
-    font-size: clamp(52px, 5.5vw, 90px);
+    font-size: clamp(40px, 4.6vw, 68px);
     line-height: 0.94;
     font-weight: 900;
     font-style: italic;
     letter-spacing: -1px;
     text-transform: uppercase;
     animation: entradaPanel 0.8s ease-out 0.5s both;
+    overflow-wrap: anywhere;
 }
 
     .eslogan h1 > span:first-child {
@@ -168,7 +170,8 @@ body {
 /* PANEL DEL LOGIN */
 
 .panel-login {
-    padding: 65px 55px;
+    min-width: 0;
+    padding: clamp(28px, 3.5vw, 48px);
     border-left: 1px solid rgba(255, 106, 0, 0.35);
     background: radial-gradient(circle at 100% 0%, rgba(255, 106, 0, 0.12), transparent 38%), linear-gradient(160deg, #191919, #0c0c0c);
     display: flex;
@@ -204,7 +207,7 @@ body {
     .encabezado > p:last-child {
         margin-top: 12px;
         color: var(--gris);
-        font-size: 13px;
+        font-size: 14px;
         line-height: 1.6;
     }
 
@@ -219,7 +222,7 @@ body {
     .campo label {
         display: block;
         margin-bottom: 12px;
-        font-size: 12px;
+        font-size: 14px;
         font-weight: bold;
     }
 
@@ -252,20 +255,30 @@ body {
 }
 
     .contenedor-password input {
-        padding-right: 50px;
+        padding-right: 62px;
     }
 
 .mostrar-password {
     position: absolute;
-    right: 14px;
+    right: 6px;
     top: 50%;
     transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
     border: none;
     background: transparent;
     color: #bbb;
     font-size: 20px;
     cursor: pointer;
+    border-radius: 8px;
 }
+
+.mostrar-password svg { width: 22px; height: 22px; }
+.mostrar-password .ojo-cerrado,
+.mostrar-password[aria-pressed="true"] .ojo-abierto { display: none; }
+.mostrar-password[aria-pressed="true"] .ojo-cerrado { display: block; }
 
     .mostrar-password:hover {
         color: var(--naranja);
@@ -283,13 +296,14 @@ body {
     border: none;
     border-radius: 11px;
     background: var(--naranja);
-    color: white;
+    color: var(--negro);
     font-family: var(--font-cuerpo);
     font-size: 14px;
     font-weight: 800;
     cursor: pointer;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
+    gap: 12px;
     align-items: center;
     transition: background 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
 }
@@ -345,14 +359,15 @@ body {
 .registro {
     text-align: center;
     color: #bdbdbd;
-    font-size: 12px;
+    font-size: 14px;
     line-height: 1.7;
     animation: entradaPanel 0.7s ease-out 0.6s both;
 }
 
 .crear-cuenta {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
+    gap: 12px;
     align-items: center;
     width: 100%;
     padding: 14px 16px;
@@ -367,8 +382,8 @@ body {
 
     .crear-cuenta span {
         display: inline-block;
-        color: var(--naranja);
-        font-size: 20px;
+        color: inherit;
+        font-size: 14px;
         transition: transform 0.25s ease;
     }
 
@@ -379,7 +394,7 @@ body {
     }
 
         .crear-cuenta:hover span {
-            transform: translateX(6px);
+            transform: none;
         }
 
 .seguridad {
@@ -389,7 +404,7 @@ body {
     gap: 9px;
     margin-top: 32px;
     color: #aaa;
-    font-size: 11px;
+    font-size: 13px;
 }
 
 .punto {
@@ -415,3 +430,76 @@ body {
 
 /* ================================
    ANIMACIONES DE INICIO ADSPORT
+================================ */
+
+.icono-acceso { width: 22px; height: 22px; flex-shrink: 0; }
+.btn-ingresar[aria-busy="true"] .icono-acceso { display: none; }
+.boton-cargando {
+    width: 22px; height: 22px; flex-shrink: 0;
+    border: 2px solid currentColor; border-right-color: transparent;
+    border-radius: 50%; animation: girarAcceso .7s linear infinite;
+}
+.boton-cargando[hidden] { display: none; }
+.mostrar-password:focus-visible,
+.btn-ingresar:focus-visible,
+.crear-cuenta:focus-visible,
+.marca-enlace:focus-visible { outline: 3px solid #ffb77e; outline-offset: 4px; }
+
+@keyframes girarAcceso { to { transform: rotate(360deg); } }
+@keyframes entradaPanel { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes entradaIzquierda { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes entradaDerecha { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+
+/* El cargador es una capa independiente y nunca ocupa una columna del formulario. */
+.intro-loader {
+    position: fixed; inset: 0; z-index: 99999;
+    display: grid; place-items: center;
+    background: radial-gradient(circle at center, #ff6a001a, transparent 45%), #080808;
+    transition: opacity .35s ease, visibility .35s ease;
+}
+.intro-loader.oculto { opacity: 0; visibility: hidden; pointer-events: none; }
+.loader-contenido { width: min(320px, 80vw); text-align: center; }
+.loader-logo {
+    width: 68px; height: 68px; margin: 0 auto 20px;
+    display: grid; place-items: center; border-radius: 18px;
+    color: #080808; background: var(--naranja);
+    font-family: var(--font-titulo); font-size: 44px; font-style: italic; font-weight: 900;
+}
+.loader-contenido h2 { font-family: var(--font-titulo); font-size: 36px; font-style: italic; }
+.loader-contenido h2 span { color: var(--naranja); }
+.loader-contenido p { margin-top: 14px; font-size: 12px; letter-spacing: 2px; line-height: 1.5; }
+.loader-linea { height: 4px; margin-top: 28px; background: #292929; border-radius: 4px; overflow: hidden; }
+.loader-progreso { width: 100%; height: 100%; background: var(--naranja); transform-origin: left; animation: progresoCarga 1.4s ease forwards; }
+.loader-texto { display: block; margin-top: 14px; font-size: 12px; color: var(--gris); letter-spacing: 1px; }
+@keyframes progresoCarga { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+@media (max-width: 900px) {
+    body { align-items: flex-start; }
+    .contenedor { max-width: 580px; min-height: 0; grid-template-columns: minmax(0, 1fr); border-radius: 18px; }
+    .presentacion { padding: 24px 28px; background-position: center 40%; }
+    .nombre-marca { font-size: 30px; }
+    .eslogan { margin-top: 18px; }
+    .eslogan .etiqueta, .subtitulo, .descripcion, .pie { display: none; }
+    .eslogan h1 { margin-top: 0; font-size: clamp(26px, 5.5vw, 38px); line-height: 1.12; letter-spacing: -.5px; }
+    .eslogan h1 > span:first-child { display: inline; }
+    .eslogan h1 br { display: none; }
+    .panel-login { padding: 30px 28px; border-left: none; border-top: 1px solid #ff6a0059; }
+    .encabezado { margin-bottom: 26px; }
+    .encabezado h2 { margin-top: 12px; font-size: 36px; }
+    .encabezado .etiqueta { font-size: 11px; letter-spacing: 2px; line-height: 1.6; }
+    .campo { margin-bottom: 20px; }
+    .campo input { font-size: 16px; }
+    .separador { margin: 26px 0 20px; }
+    .seguridad { margin-top: 24px; line-height: 1.5; text-align: center; }
+}
+
+@media (max-width: 420px) {
+    .presentacion, .panel-login { padding-left: 20px; padding-right: 20px; }
+    .eslogan h1 { font-size: 26px; }
+    .encabezado h2 { font-size: 32px; }
+    .btn-ingresar, .crear-cuenta { min-height: 54px; padding: 12px 14px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
