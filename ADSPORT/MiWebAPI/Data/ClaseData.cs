@@ -8,10 +8,12 @@ namespace ADSPORT.Data;
 public sealed class ClaseData
 {
     private readonly string _cadenaSql;
+    private readonly bool _pagosPrueba;
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
 
     public ClaseData(IConfiguration configuration)
     {
+        _pagosPrueba = configuration.GetValue("MercadoPago:ModoPrueba", true);
         _cadenaSql = configuration.GetConnectionString("CadenaSQL")
             ?? throw new InvalidOperationException("Falta configurar CadenaSQL.");
     }
@@ -26,6 +28,11 @@ public sealed class ClaseData
         comando.Parameters.Add("@Administracion", SqlDbType.Bit).Value = administracion;
         var resultado = SqlResultadoProcedimiento.Agregar(comando);
         await conexion.OpenAsync();
+        // Las bases anteriores a 011 todavía no tienen este parámetro. La consulta
+        // de clases debe seguir funcionando durante la actualización de pagos.
+        using (var firma = new SqlCommand("SELECT COUNT(*) FROM sys.parameters WHERE object_id=OBJECT_ID(N'dbo.ENTRENADOR_CLASES_CONSULTAR') AND name=N'@ModoPrueba'", conexion))
+            if (Convert.ToInt32(await firma.ExecuteScalarAsync()) > 0)
+                comando.Parameters.Add("@ModoPrueba", SqlDbType.Bit).Value = _pagosPrueba;
         using var reader = await comando.ExecuteReaderAsync();
         var clases = new Dictionary<long, ClaseDeportiva>();
         while (await reader.ReadAsync())

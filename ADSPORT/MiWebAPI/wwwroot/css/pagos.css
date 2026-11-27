@@ -1,0 +1,70 @@
+/* Amplía el perfil existente; conserva sus fuentes, colores y componentes compartidos. */
+.pagos-page { width: min(1120px, 92%); margin: 48px auto 72px; color: #fff; }
+.pagos-page [hidden] { display: none !important; }
+.pagos-heading, .pagos-panel__cabecera { display: flex; align-items: center; justify-content: space-between; gap: 18px; flex-wrap: wrap; }
+.pagos-heading { margin-bottom: 30px; }
+.pagos-page h1, .pagos-page h2, .pagos-page h3 { font-family: "Barlow Condensed", sans-serif; line-height: 1.1; margin: 0 0 16px; }
+.pagos-page h1 { font-size: clamp(38px, 6vw, 64px); }
+.pagos-page h1 span, .pagos-link, .pagos-aviso a { color: #ff6a00; }
+.pagos-page h2 { font-size: 32px; overflow-wrap: anywhere; }
+.pagos-page h3 { font-size: 21px; margin-top: 24px; }
+.pagos-label { color: #ff914d; font-size: 11px; font-weight: 800; letter-spacing: 2px; margin: 0 0 10px; }
+.pagos-link { font-size: 12px; font-weight: 800; text-decoration: none; }
+.pagos-panel { border: 1px solid #303030; border-radius: 18px; background: #151515; padding: clamp(20px, 4vw, 34px); margin-bottom: 24px; }
+.pagos-muted { color: #b9b9b9; font-size: 13px; line-height: 1.7; margin: 12px 0; }
+.pagos-badge { display: inline-block; border: 1px solid #805527; border-radius: 30px; padding: 7px 12px; color: #ffbb73; font-size: 11px; font-weight: 700; }
+.pagos-compra { display: grid; grid-template-columns: 1.2fr 1fr; gap: 32px; margin-top: 26px; }
+.pagos-compra label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 10px; }
+.pagos-compra select { width: 100%; min-height: 48px; padding: 12px; background: #222; border: 1px solid #555; border-radius: 9px; color: white; font: inherit; font-size: 14px; }
+.pagos-sesiones { padding: 0; margin: 16px 0 0; list-style: none; display: grid; gap: 10px; }
+.pagos-sesiones li { padding: 12px; border-left: 3px solid #ff6a00; background: #202020; border-radius: 0 8px 8px 0; font-size: 13px; line-height: 1.7; overflow-wrap: anywhere; }
+.pagos-sesiones small { display: block; color: #b9b9b9; }
+.pagos-resumen { padding: 24px; background: #202020; border-radius: 14px; }
+.pagos-total { display: block; font-size: clamp(27px, 4vw, 36px); overflow-wrap: anywhere; }
+.pagos-resumen p { color: #c4c4c4; font-size: 13px; line-height: 1.7; margin: 16px 0; }
+.pagos-btn { display: inline-flex; align-items: center; justify-content: center; min-height: 45px; padding: 12px 18px; border: 1px solid #ff6a00; border-radius: 30px; background: #ff6a00; color: #090909; font: inherit; font-size: 11px; font-weight: 800; cursor: pointer; text-decoration: none; transition: background .2s, transform .2s; }
+.pagos-btn:hover:not(:disabled) { background: #ff914d; transform: translateY(-2px); }
+.pagos-btn:disabled { opacity: .55; cursor: default; }
+.pagos-btn--secundario { background: transparent; color: #ff914d; }
+.pagos-btn--secundario:hover:not(:disabled) { background: #3a2415; }
+.pagos-page :focus-visible { outline: 3px solid #ff914d; outline-offset: 4px; }
+.pagos-aviso { padding: 16px 20px; margin: 18px 0; background: #252525; border: 1px solid #555; border-radius: 10px; font-size: 14px; line-height: 1.7; }
+.pagos-aviso--error { border-color: #e48282; color: #ffb3b3; }
+.pagos-historial { display: grid; gap: 14px; margin-top: 22px; }
+.pago-item { padding: 20px; background: #202020; border: 1px solid #363636; border-radius: 12px; overflow-wrap: anywhere; }
+.pago-item--seleccionado { border-color: #ff6a00; }
+.pago-item h3 { font-size: 25px; margin: 0; }
+.pago-item__top, .pago-item__acciones { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.pago-item__acciones { justify-content: flex-start; margin-top: 14px; }
+.pago-estado { color: #ffbb73; font-size: 12px; font-weight: 700; }
+.pago-estado--aprobado { color: #77dfa4; }
+.pago-estado--error { color: #ffb3b3; }
+.pago-item small { display: block; margin-top: 8px; color: #b9b9b9; font-size: 11px; }
+.perfil-pago-clase { border-bottom: 1px solid #353535; padding: 14px 0; }
+.perfil-pago-clase h4 { font-size: 16px; margin: 0 0 7px; }
+.perfil-pago-clase p { font-size: 12px; color: #b9b9b9; margin: 6px 0; }
+.pago-desglose { margin: 0 0 22px; font-size: 14px; }
+.pago-desglose div { display: flex; justify-content: space-between; gap: 18px; margin: 9px 0; }
+.pago-desglose dt { color: #c4c4c4; font-weight: 400; }
+.pago-desglose dd { margin: 0; text-align: right; }
+.pago-politicas { margin: 18px 0; border: 1px solid #555; padding: 12px; border-radius: 9px; }
+.pago-politicas summary { cursor: pointer; color: #ffbb73; font-size: 13px; font-weight: 700; }
+.pago-politicas h4 { margin-bottom: 6px; }
+.pago-politicas p { margin-top: 6px; }
+.pagos-compra .pago-aceptacion { display: flex; align-items: flex-start; gap: 12px; line-height: 1.7; font-size: 13px; font-weight: 400; margin: 20px 0; cursor: pointer; }
+.pago-aceptacion input { accent-color: #ff6a00; width: 20px; height: 20px; flex: 0 0 20px; margin-top: 2px; }
+.pago-confirmacion { border-color: #54b780; scroll-margin-top: 100px; }
+.pago-confirmacion h2 { color: #8be3ae; }
+.pago-acceso { display: grid; grid-template-columns: minmax(180px,250px) 1fr; gap: 28px; align-items: center; margin-top: 24px; }
+.pago-acceso img { width: 100%; max-width: 250px; height: auto; border-radius: 12px; background: white; }
+.pago-codigo { overflow-wrap: anywhere; font-family: monospace; font-size: 12px; line-height: 1.8; }
+.pago-uso-acceso { color:#9be1b5; font-size:13px; line-height:1.8; margin-top:18px; }
+.pago-sesiones-acceso { list-style:none; padding:0; margin:14px 0; display:grid; gap:9px; }
+.pago-sesiones-acceso li { padding:12px 14px; border:1px solid #444; border-radius:8px; font-size:12px; line-height:1.7; overflow-wrap:anywhere; }
+.pago-sesiones-acceso strong,.pago-sesiones-acceso small { display:block; margin-top:5px; font-size:11px; color:#bbb; }
+.pago-sesiones-acceso .pago-sesion-utilizada { border-color:#54a674; }
+.pago-sesion-utilizada strong { color:#9be1b5; }
+.pago-acceso[hidden] { display:none; }
+@media(max-width: 600px) { .pago-acceso { grid-template-columns: 1fr; } .pago-acceso img { justify-self: center; } }
+@media(max-width: 700px) { .pagos-compra { grid-template-columns: 1fr; gap: 20px; } .pagos-page { margin-top: 30px; } .pagos-resumen { padding: 20px; } .pagos-btn { max-width: 100%; } }
+@media(prefers-reduced-motion: reduce) { .pagos-btn { transition: none; } .pagos-btn:hover:not(:disabled) { transform: none; } }

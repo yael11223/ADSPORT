@@ -14,7 +14,8 @@
             ".admin-slot", ".admin-schedule-row", ".trainer-class", ".trainer-agenda-day",
             ".trainer-schedule-row", ".instalacion-tarjeta", ".sports-preview", ".admin-court-preview",
             "#listaUsuarios > tr", "#tablaDeportesBody > tr",
-            "#formSolicitarRecuperacion", "#formRestablecerPassword", "#recuperacionCompletada"
+            "#formSolicitarRecuperacion", "#formRestablecerPassword", "#recuperacionCompletada",
+            ".pagos-heading", ".pagos-panel", ".pago-item"
         ].join(",");
         const avisos = ".admin-notice,.trainer-notice,.sports-notice,.instalaciones-estado,.recuperacion-aviso";
         const preparadas = new WeakSet(), vistas = new WeakSet(), firmasAviso = new WeakMap();

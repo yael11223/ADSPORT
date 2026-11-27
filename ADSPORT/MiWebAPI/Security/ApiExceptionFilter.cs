@@ -9,6 +9,12 @@ public sealed class ApiExceptionFilter(ILogger<ApiExceptionFilter> logger) : IEx
 {
     public void OnException(ExceptionContext context)
     {
+        if (context.Exception is ADSPORT.Services.PagoProveedorException proveedor)
+        {
+            context.Result = new ObjectResult(new { isSuccess = false, numeroError = 503, respuesta = proveedor.Message }) { StatusCode = 503 };
+            context.ExceptionHandled = true;
+            return;
+        }
         var numero = context.Exception is ProcedimientoException procedimiento ? procedimiento.NumeroError : 500;
         var status = numero switch { 400 or 51000 or 51001 => 400, 403 or 51003 => 403,
             404 or 51004 => 404, 409 or 51002 or 51009 => 409, _ => context.Exception is SqlException ? 503 : 500 };

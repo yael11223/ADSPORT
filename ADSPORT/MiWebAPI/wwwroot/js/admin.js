@@ -43,6 +43,8 @@ window.Admin = (() => {
                 return;
             }
             document.getElementById("adminContenido").hidden = false;
+            const nombreSesion = document.getElementById("nombreUsuario");
+            if (nombreSesion) nombreSesion.textContent = sesion.nombre || "Administración";
             aviso("avisoSesion");
             resolve(true);
         } catch (error) {

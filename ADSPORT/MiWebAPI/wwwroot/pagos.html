@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#090909">
+    <title>Mis clases y pagos | ADSPORT</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/componentes.css">
+    <link rel="stylesheet" href="/css/Perfil.css?v=2">
+    <link rel="stylesheet" href="/css/pagos.css?v=4">
+    <link rel="stylesheet" href="/css/animaciones.css?v=2">
+    <script src="/js/layout.js?v=9" defer></script>
+    <script src="/js/pagos.js?v=7" defer></script>
+    <script src="/js/animaciones.js?v=2" defer></script>
+</head>
+<body class="profile-page">
+    <div id="contenedor-header"></div>
+    <main class="pagos-page">
+        <div class="pagos-heading">
+            <div><p class="pagos-label">MI CUENTA ADSPORT</p><h1>MIS CLASES <span>Y PAGOS</span></h1></div>
+            <a class="pagos-link" href="/tenis.html?deporte=todos">EXPLORAR CLASES ↗</a>
+        </div>
+        <p id="avisoPagos" class="pagos-aviso" role="status" aria-live="polite" hidden></p>
+        <p id="avisoSesionPago" class="pagos-aviso" hidden>Inicia sesión para pagar una clase y consultar tu historial. <a id="enlaceLoginPago" href="/LoginUsuario.html">INICIAR SESIÓN →</a></p>
+        <section id="confirmacionPago" class="pagos-panel pago-confirmacion" aria-labelledby="tituloConfirmacionPago" hidden>
+            <p class="pagos-label">TU LUGAR ESTÁ CONFIRMADO</p>
+            <h2 id="tituloConfirmacionPago">¡PAGO CONFIRMADO!</h2>
+            <p id="detalleConfirmacionPago"></p>
+            <p id="pedidoConfirmacionPago" class="pago-codigo"></p>
+            <p id="estadoUsoAccesoPago" class="pago-uso-acceso" role="status" aria-live="polite"></p>
+            <ul id="sesionesAccesoPago" class="pago-sesiones-acceso" aria-label="Asistencia por sesión"></ul>
+            <div id="detalleQrPago" class="pago-acceso">
+                <img id="qrAccesoPago" alt="QR personal de acceso a tu clase durante la semana pagada" width="250" height="250">
+                <div><h3>TU ACCESO A CLASE</h3><p id="vigenciaAccesoPago"></p><p>Preséntalo al entrenador en cada sesión. El acceso es personal.</p><p id="codigoAccesoPago" class="pago-codigo"></p><a id="descargarQrPago" class="pagos-btn" download="acceso-ADSPORT.png">DESCARGAR QR</a><p id="correoConfirmacionPago" class="pagos-muted"></p></div>
+            </div>
+        </section>
+        <section id="seleccionPago" class="pagos-panel" aria-labelledby="tituloClasePago" hidden>
+            <div class="pagos-panel__cabecera"><span class="pagos-label">TU SIGUIENTE SEMANA</span></div>
+            <h2 id="tituloClasePago">Cargando clase…</h2>
+            <p id="profesorPago" class="pagos-muted"></p>
+            <form id="formPago" class="pagos-compra">
+                <div>
+                    <label for="semanaPago">Elige tu semana · lunes a domingo</label>
+                    <select id="semanaPago" name="semana" required disabled></select>
+                    <p id="cuposPago" class="pagos-muted"></p>
+                    <h3>SESIONES DE LA SEMANA</h3>
+                    <ul id="sesionesPago" class="pagos-sesiones"></ul>
+                </div>
+                <div class="pagos-resumen">
+                    <dl class="pago-desglose"><div><dt>Subtotal semanal</dt><dd id="subtotalPago">—</dd></div><div><dt>IVA (16%)</dt><dd id="ivaPago">—</dd></div></dl>
+                    <span class="pagos-label">TOTAL SEMANAL</span>
+                    <strong id="totalPago" class="pagos-total">—</strong>
+                    <p>Un pago por esta clase y semana. Incluye sus sesiones programadas. Las sesiones ya realizadas no se reponen.</p>
+                    <p>Sin renovación ni cargos automáticos.</p>
+                    <details class="pago-politicas"><summary>Leer políticas de compra y acceso</summary><div id="politicasPago"><p>Cargando políticas…</p></div></details>
+                    <label class="pago-aceptacion" for="aceptarPoliticas"><input id="aceptarPoliticas" type="checkbox" required><span>He leído y acepto las políticas, la clase y semana elegidas y el total con IVA.</span></label>
+                    <button id="btnPagarClase" class="pagos-btn" type="submit" aria-describedby="ayudaPago" disabled>CONTINUAR A MERCADO PAGO ↗</button>
+                    <a id="continuarPagoLocal" class="pagos-btn pagos-btn--secundario" target="_blank" rel="noopener noreferrer" hidden>CONTINUAR PAGO EN OTRA PESTAÑA ↗</a>
+                    <p id="ayudaPago" class="pagos-muted">Elige tu forma de pago en Mercado Pago.</p>
+                </div>
+            </form>
+        </section>
+        <section class="pagos-panel" aria-labelledby="tituloHistorialPagos">
+            <div class="pagos-panel__cabecera"><div><p class="pagos-label">TUS INSCRIPCIONES SEMANALES</p><h2 id="tituloHistorialPagos">HISTORIAL DE PAGOS</h2></div><button class="pagos-btn pagos-btn--secundario" id="btnActualizarPagos" type="button">ACTUALIZAR</button></div>
+            <p class="pagos-muted">La inscripción se confirma después de verificar el pago. Aquí puedes consultar su estado y continuar un pago pendiente.</p>
+            <div id="historialPagos" class="pagos-historial" aria-live="polite"><p class="pagos-muted">Cargando historial…</p></div>
+        </section>
+        <noscript><p class="pagos-aviso">Activa JavaScript para seleccionar la semana y consultar tus pagos.</p></noscript>
+    </main>
+    <div id="contenedor-footer"></div>
+<script src="/js/precarga.js?v=1" defer></script>
+</body>
+</html>

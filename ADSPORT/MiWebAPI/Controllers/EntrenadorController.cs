@@ -66,6 +66,7 @@ public sealed class EntrenadorController : ControllerBase
                 new Claim(ClaimTypes.NameIdentifier, cuenta.IdUsuario.ToString(CultureInfo.InvariantCulture)),
                 new Claim(ClaimTypes.Name, cuenta.NombreCompleto),
                 new Claim(ClaimTypes.Role, "ENTRENADOR"),
+                new Claim("ADSPORT.Acceso", "ENTRENADOR"),
                 SesionRecuperacionPassword.CrearClaim(inicioSesion)
             }, CookieAuthenticationDefaults.AuthenticationScheme);
 

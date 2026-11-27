@@ -15,15 +15,17 @@ namespace MiWebAPI.Controllers
     public class LoginUsuarioController : ControllerBase
     {
         private readonly LoginUsuarioData _loginUsuarioData;
+        private readonly IEntrenadorCuentaData _cuentas;
 
         // ========================================
         // CONSTRUCTOR
         // ========================================
 
         public LoginUsuarioController(
-            LoginUsuarioData loginUsuarioData)
+            LoginUsuarioData loginUsuarioData, IEntrenadorCuentaData cuentas)
         {
             _loginUsuarioData = loginUsuarioData;
+            _cuentas = cuentas;
         }
 
         // ========================================
@@ -83,12 +85,22 @@ namespace MiWebAPI.Controllers
                 });
             }
 
-            // ========================================
-            // CREAR IDENTIDAD DEL USUARIO
-            // ========================================
+            var cuenta = await _cuentas.ObtenerAsync(resultado.IdUsuario);
+            if (cuenta?.EsUsuarioActivo != true)
+                return StatusCode(403, new
+                {
+                    isSuccess = false,
+                    numeroError = 403,
+                    respuesta = cuenta?.EsEntrenadorActivo == true
+                        ? "Esta cuenta es de profesor. Inicia sesión desde el acceso de entrenadores."
+                        : "Este acceso es exclusivo para cuentas de usuario activas."
+                });
 
             var claims = new List<Claim>
             {
+                new Claim(ClaimTypes.Name, cuenta.NombreCompleto),
+                new Claim(ClaimTypes.Role, cuenta.NombreRol.Trim().ToUpperInvariant()),
+                new Claim("ADSPORT.Acceso", "USUARIO"),
                 new Claim(
                     ClaimTypes.NameIdentifier,
                     resultado.IdUsuario.ToString()
@@ -137,7 +149,7 @@ namespace MiWebAPI.Controllers
 
         [HttpGet("sesion")]
         [AllowAnonymous]
-        public IActionResult ConsultarSesion()
+        public async Task<IActionResult> ConsultarSesion()
         {
             // Comprobar la identidad autenticada
             // mediante la cookie de ASP.NET Core.
@@ -150,6 +162,8 @@ namespace MiWebAPI.Controllers
                 return Ok(new
                 {
                     autenticado = false,
+                    esUsuario = false,
+                    esEntrenador = false,
                     idUsuario = (string?)null
                 });
             }
@@ -159,9 +173,16 @@ namespace MiWebAPI.Controllers
                 ClaimTypes.NameIdentifier
             );
 
+            var cuenta = long.TryParse(idUsuario, out var id) && id > 0 ? await _cuentas.ObtenerAsync(id) : null;
+            bool accesoProfesor = User.IsInRole("ENTRENADOR") && User.FindFirstValue("ADSPORT.Acceso") is null or "ENTRENADOR";
+            bool esUsuario = cuenta?.EsUsuarioActivo == true && !accesoProfesor;
+            bool esEntrenador = cuenta?.EsEntrenadorActivo == true && accesoProfesor;
+
             return Ok(new
             {
-                autenticado = true,
+                autenticado = esUsuario || esEntrenador,
+                esUsuario,
+                esEntrenador,
                 idUsuario = idUsuario
             });
         }

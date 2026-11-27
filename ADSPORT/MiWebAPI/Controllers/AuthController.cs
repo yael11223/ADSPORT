@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using ADSPORT.Data;
+using ADSPORT.Models;
+using ADSPORT.Security;
 
 namespace MiWebAPI.Controllers
 {
@@ -12,11 +15,13 @@ namespace MiWebAPI.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly IConfiguration _configuration;
+        private readonly LoginUsuarioData _login;
+        private readonly IEntrenadorCuentaData _cuentas;
 
-        public AuthController(IConfiguration configuration)
+        public AuthController(LoginUsuarioData login,IEntrenadorCuentaData cuentas)
         {
-            _configuration = configuration;
+            _login=login;
+            _cuentas=cuentas;
         }
 
         [HttpGet("csrf")]
@@ -27,11 +32,13 @@ namespace MiWebAPI.Controllers
         }
 
         [HttpGet("sesion")]
-        public IActionResult Sesion() => Ok(new
+        public async Task<IActionResult> Sesion()
         {
-            autenticado = User.Identity?.IsAuthenticated == true &&
-                User.HasClaim("ADSPORT.Administrador", "true")
-        });
+            var cuenta=User.Identity?.IsAuthenticated==true && User.HasClaim("ADSPORT.Administrador","true")
+                && long.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier),out var id) ? await _cuentas.ObtenerAsync(id) : null;
+            return Ok(new { autenticado=cuenta?.EsAdministradorActivo==true,
+                nombre=cuenta?.EsAdministradorActivo==true ? cuenta.NombreCompleto : null });
+        }
 
         [HttpPost("logout")]
         [Authorize(Policy = "SoloAdministrador")]
@@ -46,17 +53,11 @@ namespace MiWebAPI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
-            string correoConfigurado = _configuration["DemoLogin:Correo"] ?? string.Empty;
-            string passwordConfigurado = _configuration["DemoLogin:Password"] ?? string.Empty;
-            string nombreConfigurado = _configuration["DemoLogin:Nombre"] ?? "Usuario";
-
-            bool credencialesCorrectas =
-                !string.IsNullOrWhiteSpace(correoConfigurado) &&
-                !string.IsNullOrWhiteSpace(passwordConfigurado) &&
-                string.Equals(request.Correo, correoConfigurado, StringComparison.OrdinalIgnoreCase) &&
-                request.Password == passwordConfigurado;
-
-            if (!credencialesCorrectas)
+            var inicio=DateTime.UtcNow;
+            var resultado=await _login.IniciarSesion(new LoginUsuario { Correo=request.Correo,Password=request.Password });
+            if (resultado.NumeroError==500)
+                return StatusCode(503,new { isSuccess=false,numeroError=503,respuesta="No fue posible consultar la cuenta administrativa." });
+            if (resultado.NumeroError!=200)
             {
                 return Unauthorized(new
                 {
@@ -65,12 +66,18 @@ namespace MiWebAPI.Controllers
                     respuesta = "Correo o contraseña incorrectos"
                 });
             }
+            var cuenta=await _cuentas.ObtenerAsync(resultado.IdUsuario);
+            if (cuenta?.EsAdministradorActivo!=true)
+                return StatusCode(403,new { isSuccess=false,numeroError=403,respuesta="Este acceso requiere una cuenta de administrador activa." });
 
             var identidad = new ClaimsIdentity(new[]
             {
-                new Claim(ClaimTypes.NameIdentifier, "administrador-demo"),
-                new Claim(ClaimTypes.Name, nombreConfigurado),
-                new Claim("ADSPORT.Administrador", "true")
+                new Claim(ClaimTypes.NameIdentifier,cuenta.IdUsuario.ToString(System.Globalization.CultureInfo.InvariantCulture)),
+                new Claim(ClaimTypes.Name,cuenta.NombreCompleto),
+                new Claim(ClaimTypes.Role,cuenta.NombreRol.Trim().ToUpperInvariant()),
+                new Claim("ADSPORT.Administrador", "true"),
+                new Claim("ADSPORT.Acceso","ADMINISTRADOR"),
+                SesionRecuperacionPassword.CrearClaim(inicio)
             }, CookieAuthenticationDefaults.AuthenticationScheme);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
                 new ClaimsPrincipal(identidad), new AuthenticationProperties
@@ -86,8 +93,8 @@ namespace MiWebAPI.Controllers
                 respuesta = "Inicio de sesión correcto",
                 usuario = new
                 {
-                    nombre = nombreConfigurado,
-                    correo = correoConfigurado
+                    nombre = cuenta.NombreCompleto,
+                    correo = cuenta.Correo
                 }
             });
         }

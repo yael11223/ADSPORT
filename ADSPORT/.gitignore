@@ -5,4 +5,6 @@
 .dotnet-home/
 **/*.csproj.user
 **/*.pubxml.user
+**/appsettings.Local.json
+**/secrets.json
 **/__pycache__/

@@ -100,7 +100,7 @@
                     tienes acceso a esa dirección.
                 </p>
 
-                <form id="formCorreo" novalidate>
+                <form id="formCorreo" method="post" novalidate>
                     <div class="grupo-campos">
                         <div class="campo completo">
                             <label for="correo">Correo electrónico <span>*</span></label>
@@ -120,7 +120,7 @@
                         Introduce una dirección de correo electrónico válida.
                     </p>
 
-                    <button type="button" class="boton-principal" data-siguiente="pantallaVerificacion">
+                    <button type="submit" class="boton-principal" data-siguiente="pantallaVerificacion">
                         <span>Enviar código</span>
                         <span class="flecha">⟶</span>
                     </button>
@@ -136,7 +136,7 @@
                 </p>
                 <p class="correo-destino" id="correoDestino">usuario@correo.com</p>
 
-                <form id="formVerificacion" novalidate>
+                <form id="formVerificacion" method="post" novalidate>
                     <div class="campo completo">
                         <label for="codigo">Código de verificación <span>*</span></label>
                         <input type="text" id="codigo" name="codigo" placeholder="Introduce el código" maxlength="6" inputmode="numeric" autocomplete="one-time-code" required>
@@ -160,7 +160,7 @@
                         El código introducido no es válido. Comprueba los datos e inténtalo de nuevo.
                     </p>
 
-                    <button type="button" class="boton-principal" data-siguiente="pantallaDatos">
+                    <button type="submit" class="boton-principal" data-siguiente="pantallaDatos">
                         <span>Verificar y continuar</span>
                         <span class="flecha">⟶</span>
                     </button>
@@ -178,7 +178,7 @@
                     Tu correo está confirmado. Ahora necesitamos algunos datos para completar tu perfil.
                 </p>
 
-                <form id="formDatos" novalidate>
+                <form id="formDatos" method="post" novalidate>
                     <div class="grupo-campos">
                         <div class="campo completo">
                             <label for="nombre">Nombre <span>*</span></label>
@@ -206,7 +206,7 @@
                         Revisa los campos obligatorios antes de continuar.
                     </p>
 
-                    <button type="button" class="boton-principal" data-siguiente="pantallaPassword">
+                    <button type="submit" class="boton-principal" data-siguiente="pantallaPassword">
                         <span>Continuar</span>
                         <span class="flecha">⟶</span>
                     </button>
@@ -225,7 +225,7 @@
                     Elige una contraseña segura para proteger tu cuenta de ADSPORT.
                 </p>
 
-                <form id="formPassword" novalidate>
+                <form id="formPassword" method="post" novalidate>
                     <div class="grupo-campos">
                         <div class="campo completo">
                             <label for="password">Contraseña <span>*</span></label>
@@ -254,7 +254,7 @@
                         Revisa las contraseñas e inténtalo de nuevo.
                     </p>
 
-                    <button type="button" class="boton-principal" data-siguiente="pantallaFinal">
+                    <button type="submit" class="boton-principal" data-siguiente="pantallaFinal">
                         <span>Confirmar contraseña</span>
                         <span class="flecha">⟶</span>
                     </button>
@@ -314,8 +314,9 @@
     </div>
 
     <script src="js/app.js"></script>
-    <script src="js/registro.js?v=12"></script>
+    <script src="js/registro.js?v=13"></script>
     <script src="js/config.js"></script>
     <script src="js/intro-loader.js"></script>
+<script src="/js/precarga.js?v=1" defer></script>
 </body>
 </html>

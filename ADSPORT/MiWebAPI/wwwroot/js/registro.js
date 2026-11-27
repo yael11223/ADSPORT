@@ -605,6 +605,15 @@ document.addEventListener("DOMContentLoaded", () => {
     // BOTONES SIGUIENTE
     // ========================================
 
+    // También cubre requestSubmit/Enter; jamás enviar correo o código mediante GET.
+    document.querySelectorAll("#formCorreo,#formVerificacion,#formDatos,#formPassword").forEach(form => {
+        form.addEventListener("submit", evento => {
+            evento.preventDefault();
+            const siguiente = form.querySelector("[data-siguiente]");
+            if (siguiente && !siguiente.disabled) siguiente.click();
+        });
+    });
+
     document.querySelectorAll("[data-siguiente]")
         .forEach(boton => {
 

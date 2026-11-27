@@ -9,8 +9,10 @@ namespace ADSPORT.Controllers;
 [Route("api/Administracion")]
 [Authorize(Policy = "SoloAdministrador")]
 [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
-public sealed class AdministracionController(CanchaData canchas, ClaseData clases) : ControllerBase
+public sealed class AdministracionController(CanchaData canchas, ClaseData clases,AdministracionData datos) : ControllerBase
 {
+    [HttpGet("inicio")]
+    public async Task<IActionResult> Inicio() => Ok(await datos.Inicio());
     [HttpGet("clases")]
     public async Task<IActionResult> Clases() => Ok(await clases.Consultar(null, administracion: true));
 

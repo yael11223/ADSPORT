@@ -45,7 +45,8 @@ class ServidorCorreoPruebas:
                         mensaje = BytesParser(policy=policy.default).parsebytes(b"".join(partes))
                         texto = mensaje.get_body(preferencelist=("plain",))
                         receptor.mensajes.append({"para": str(mensaje["To"]), "asunto": str(mensaje["Subject"]),
-                            "texto": texto.get_content() if texto else ""})
+                            "texto": texto.get_content() if texto else "", "message_id": str(mensaje["Message-ID"]),
+                            "adjuntos": [{"nombre": parte.get_filename(), "contenido": parte.get_payload(decode=True)} for parte in mensaje.iter_attachments()]})
                         self.wfile.write(b"250 Guardado solo en memoria de pruebas\r\n")
                     elif comando == "QUIT":
                         self.wfile.write(b"221 Adios\r\n")
@@ -64,10 +65,10 @@ class ServidorCorreoPruebas:
         self.servidor.server_close()
         self.hilo.join(timeout=2)
 
-    def codigo(self, correo, desde=0):
+    def codigo(self, correo, desde=0, asunto="Recupera tu contraseña | ADSPORT"):
         for _ in range(200):
             for mensaje in self.mensajes[desde:]:
-                if correo in mensaje["para"] and mensaje["asunto"] == "Recupera tu contraseña | ADSPORT":
+                if correo in mensaje["para"] and mensaje["asunto"] == asunto:
                     return re.search(r"\b[0-9]{6}\b", mensaje["texto"])[0]
             time.sleep(.025)
         raise AssertionError("No se recibió el correo de recuperación de prueba.")
@@ -84,7 +85,7 @@ def probar_recuperacion(database, browser, admin, anon, api, base, check, smtp, 
 
     id_usuario = nuevo("Recuperación", correo)
     original = api(admin,"GET","/api/Usuario/"+str(id_usuario))
-    sesion_anterior = browser.new_context()
+    sesion_anterior = browser.new_context(reduced_motion="reduce")
     api(sesion_anterior,"POST","/api/LoginUsuario/login",{"correo":correo,"password":password},csrf=False)
     check("La sesión previa a la recuperación es válida",api(sesion_anterior,"GET","/api/LoginUsuario/sesion")["autenticado"])
 

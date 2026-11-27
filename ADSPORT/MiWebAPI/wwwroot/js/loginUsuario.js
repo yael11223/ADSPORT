@@ -248,7 +248,15 @@ document.addEventListener("DOMContentLoaded", () => {
             // en localStorage o sessionStorage.
 
             console.log("Login SQL correcto. Abriendo indexUsuario.html");
-            window.location.replace("/indexUsuario.html");
+            const regreso = new URLSearchParams(window.location.search).get("returnUrl");
+            let destino = "/indexUsuario.html";
+            if (regreso) {
+                try {
+                    const urlRegreso = new URL(regreso, window.location.origin);
+                    if (urlRegreso.origin === window.location.origin && urlRegreso.pathname === "/pagos.html") destino = urlRegreso.pathname + urlRegreso.search;
+                } catch { /* Un parámetro inválido no impide iniciar sesión. */ }
+            }
+            window.location.replace(destino);
 
         } catch (error) {
 

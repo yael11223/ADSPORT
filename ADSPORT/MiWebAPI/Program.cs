@@ -23,17 +23,31 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<CorreoService>();
 builder.Services.AddSingleton<UsuarioData>();
+builder.Services.AddScoped<PerfilData>();
+builder.Services.AddScoped<AdministracionData>();
 builder.Services.AddScoped<RolData>();
 builder.Services.AddScoped<VerificacionData>();
+builder.Services.AddScoped<RegistroVerificado>();
 builder.Services.AddScoped<RecuperacionPasswordData>();
 builder.Services.AddSingleton<ColaCorreoRecuperacion>();
 builder.Services.AddHostedService(sp => sp.GetRequiredService<ColaCorreoRecuperacion>());
 builder.Services.AddScoped<LoginUsuarioData>();
 builder.Services.AddScoped<IEntrenadorCuentaData, EntrenadorCuentaData>();
 builder.Services.AddScoped<ClaseData>();
+builder.Services.Configure<MercadoPagoOpciones>(builder.Configuration.GetSection("MercadoPago"));
+builder.Services.AddScoped<PagoClaseData>();
+builder.Services.AddScoped<AsistenciaClaseData>();
+builder.Services.AddHostedService<ConfirmacionesPagos>();
+builder.Services.AddHttpClient<MercadoPagoService>(cliente =>
+{
+    cliente.Timeout = TimeSpan.FromSeconds(10);
+    cliente.MaxResponseContentBufferSize = 256 * 1024;
+}).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler { AllowAutoRedirect = false });
+builder.Services.AddHostedService<ConciliacionPagos>();
 builder.Services.AddScoped<DeporteData>();
 builder.Services.AddScoped<CanchaData>();
 builder.Services.AddScoped<IAuthorizationHandler, EntrenadorAuthorizationHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, AdministradorAuthorizationHandler>();
 builder.Services.AddAntiforgery(options =>
 {
     options.HeaderName = "X-CSRF-TOKEN";
@@ -59,6 +73,13 @@ builder.Services.AddRateLimiter(options =>
             {
                 PermitLimit = limite, Window = TimeSpan.FromMinutes(1), QueueLimit = 0, AutoReplenishment = true
             }));
+    options.AddPolicy("pagos", context => RateLimitPartition.GetFixedWindowLimiter(
+        (context.Connection.RemoteIpAddress?.ToString() ?? "sin-direccion") + ":" +
+        (context.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "anonimo"),
+        _ => new FixedWindowRateLimiterOptions { PermitLimit = 30, Window = TimeSpan.FromMinutes(1), QueueLimit = 0, AutoReplenishment = true }));
+    options.AddPolicy("asistencias", context => RateLimitPartition.GetFixedWindowLimiter(
+        context.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "anonimo",
+        _ => new FixedWindowRateLimiterOptions { PermitLimit = 120, Window = TimeSpan.FromMinutes(1), QueueLimit = 0, AutoReplenishment = true }));
 });
 
 builder.Services.AddCors(options =>
@@ -119,7 +140,8 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("SoloAdministrador", policy => policy
         .AddAuthenticationSchemes(CookieAuthenticationDefaults.AuthenticationScheme)
         .RequireAuthenticatedUser()
-        .RequireClaim("ADSPORT.Administrador", "true"));
+        .RequireClaim("ADSPORT.Administrador", "true")
+        .AddRequirements(new AdministradorRequirement()));
 });
 
 var app = builder.Build();

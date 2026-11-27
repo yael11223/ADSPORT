@@ -1,0 +1,24 @@
+.perfil-portada-personalizada { background-position:center; background-size:cover; padding:28px !important; border-radius:16px; }
+.perfil-portada-personalizada .profile-main-description { color:#ececec; }
+.perfil-acciones { display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
+.perfil-editor { width:min(720px,94vw); max-height:90vh; overflow:auto; padding:26px; border:1px solid #454545; border-radius:16px; color:#fff; background:#151515; font-family:Inter,Arial,sans-serif; }
+.perfil-editor::backdrop { background:rgb(0 0 0 / .75); }
+.perfil-editor__cabecera { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:20px; }
+.perfil-editor h2 { margin:0; font-family:"Barlow Condensed",sans-serif; font-size:32px; }
+.perfil-editor__cerrar { border:0; background:none; color:#fff; font-size:30px; cursor:pointer; }
+.perfil-editor__campos,.perfil-editor__imagenes { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.perfil-editor label { display:block; margin:0 0 7px; color:#eee; font-size:13px; }
+.perfil-editor input[type=text],.perfil-editor input[type=tel] { width:100%; min-height:44px; padding:10px 12px; border:1px solid #555; border-radius:8px; background:#222; color:#fff; font:inherit; }
+.perfil-editor input[type=file] { width:100%; font-size:12px; color:#ddd; }
+.perfil-editor input[type=file]::file-selector-button { padding:8px 12px; border:1px solid #ff6a00; border-radius:8px; background:#282828; color:#ff914d; cursor:pointer; }
+.perfil-editor__imagenes { margin:22px 0; }
+.perfil-editor__imagen { min-width:0; padding:14px; border:1px solid #353535; border-radius:10px; }
+.perfil-editor__imagen img { display:block; width:100%; height:125px; margin:0 0 12px; object-fit:cover; border-radius:8px; background:#252525; }
+.perfil-editor__imagen:first-child img { width:125px; border-radius:50%; margin-inline:auto; }
+.perfil-editor__quitar { display:flex !important; gap:8px; align-items:center; margin-top:12px !important; }
+.perfil-editor small { display:block; margin:10px 0; color:#aaa; font-size:12px; line-height:1.6; }
+.perfil-editor__aviso { color:#ffbaab; font-size:13px; line-height:1.6; }
+.perfil-editor__pie { display:flex; justify-content:flex-end; gap:12px; flex-wrap:wrap; margin-top:22px; }
+.perfil-editor button:disabled { opacity:.5; cursor:wait; }
+.perfil-editor :focus-visible { outline:2px solid #ff914d; outline-offset:3px; }
+@media(max-width:560px) { .perfil-editor__campos,.perfil-editor__imagenes { grid-template-columns:1fr; } .perfil-editor { padding:20px; } .perfil-portada-personalizada { padding:20px !important; } }

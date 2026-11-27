@@ -27,10 +27,13 @@ public sealed class EntrenadorAuthorizationHandler : AuthorizationHandler<Entren
         if (requirement.PermitirAdministrador && context.User.Identity?.IsAuthenticated == true
             && context.User.HasClaim("ADSPORT.Administrador", "true"))
         {
-            context.Succeed(requirement);
+            if (long.TryParse(context.User.FindFirstValue(ClaimTypes.NameIdentifier),out var idAdmin)
+                && (await _datos.ObtenerAsync(idAdmin))?.EsAdministradorActivo==true) context.Succeed(requirement);
             return;
         }
         if (context.User.Identity?.IsAuthenticated != true
+            || !context.User.IsInRole("ENTRENADOR")
+            || context.User.FindFirstValue("ADSPORT.Acceso") is not (null or "ENTRENADOR")
             || !long.TryParse(context.User.FindFirstValue(ClaimTypes.NameIdentifier), out var id)
             || id <= 0) return;
 

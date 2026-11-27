@@ -30,7 +30,8 @@ namespace ADSPORT.Data
         )> IniciarSesion(LoginUsuario objeto)
         {
             if (string.IsNullOrWhiteSpace(objeto.Correo) ||
-                string.IsNullOrWhiteSpace(objeto.Password))
+                string.IsNullOrWhiteSpace(objeto.Password) ||
+                objeto.Correo.Trim().Length > 100 || System.Text.Encoding.UTF8.GetByteCount(objeto.Password) > 72)
             {
                 return (400, "Correo y contraseña obligatorios.", 0);
             }

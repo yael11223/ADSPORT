@@ -13,6 +13,10 @@
    ========================================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
+    window.addEventListener("adsport:perfil-actualizado",evento=>{
+        mostrarInformacionUsuario(evento.detail);
+        cargarFotografiaUsuario(evento.detail);
+    });
 
     iniciarPerfil();
 
@@ -60,6 +64,10 @@ async function iniciarPerfil() {
         }
 
         const sesion = await respuestaSesion.json();
+        if (sesion.esEntrenador === true) {
+            window.location.replace("/perfilEntrenador.html");
+            return;
+        }
 
         // Si no tiene sesión, regresar al login
         if (!sesion.autenticado) {
@@ -276,7 +284,7 @@ function cargarFotografiaUsuario(usuario) {
     // ¿El usuario tiene fotografía en SQL Server?
     if (usuario.tieneFoto === true) {
 
-        imagen.src = API_FOTO;
+        imagen.src = usuario.fotoUrl || API_FOTO;
 
     } else {
 

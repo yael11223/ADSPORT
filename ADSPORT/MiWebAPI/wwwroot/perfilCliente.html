@@ -49,6 +49,8 @@
 
     <link rel="stylesheet"
           href="/css/Perfil.css?v=2">
+    <link rel="stylesheet" href="/css/perfil-edicion.css?v=1">
+    <link rel="stylesheet" href="/css/pagos.css?v=4">
 
 </head>
 
@@ -96,17 +98,20 @@
 
             <!-- BOTÓN DE EDICIÓN -->
             <!-- Se conectará con perfil.js -->
+            <div class="perfil-acciones">
 
             <button type="button"
                     class="btn-edit-profile"
                     id="btnEditarPerfil"
                     disabled
-                    title="Edición de perfil próximamente">
+                    title="Cargando tu perfil">
 
                 <span aria-hidden="true">✎</span>
                 EDITAR MI PERFIL
 
             </button>
+            <button type="button" class="btn-edit-profile" id="btnCambiarFondo" disabled>CAMBIAR FONDO</button>
+            </div>
 
         </section>
 
@@ -167,7 +172,7 @@
                                 id="btnCambiarFoto"
                                 class="btn-change-avatar"
                                 disabled
-                                title="Cambio de fotografía próximamente"
+                                title="Cargando tu perfil"
                                 aria-label="Cambiar foto de perfil">
 
                             <span aria-hidden="true">📷</span>
@@ -622,12 +627,15 @@
          JAVASCRIPT
          ===================================== -->
     <!-- HEADER, FOOTER Y SESIÓN -->
-    <script src="/js/layout.js?v=5"></script>
+    <script src="/js/layout.js?v=9"></script>
 
     <!-- FUNCIONES EXCLUSIVAS DEL PERFIL -->
     <!-- Lo crearemos después del CSS -->
-    <script src="/js/Perfil.js?v=2" defer></script>
+    <script src="/js/Perfil.js?v=4" defer></script>
+    <script src="/js/perfil-edicion.js?v=1" defer></script>
+    <script src="/js/perfil-pagos.js?v=4" defer></script>
 
 
+<script src="/js/precarga.js?v=1" defer></script>
 </body>
 </html>

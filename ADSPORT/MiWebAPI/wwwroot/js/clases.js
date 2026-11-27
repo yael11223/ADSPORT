@@ -1,4 +1,4 @@
-/* Catálogo público: usa las clases publicadas, sin crear reservas ni pagos. */
+/* Catálogo público y acceso a la compra semanal de cada clase. */
 document.addEventListener("DOMContentLoaded", async () => {
     const filtro = document.getElementById("filtroDeporte");
     const catalogo = document.getElementById("catalogoClases");
@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         contenido.append(elemento("h3", "", clase.nombreClase),
             elemento("p", "catalogo-entrenador", clase.entrenadorNombre),
             elemento("p", "catalogo-descripcion", clase.descripcion || "Descripción por confirmar."),
-            elemento("strong", "catalogo-precio", clase.precio == null ? "Precio por confirmar" : `${moneda.format(clase.precio)} por clase`));
+            elemento("strong", "catalogo-precio", clase.precio == null ? "Precio por confirmar" : `${moneda.format(clase.precio)} + IVA por semana`));
         const horarios = elemento("ul", "catalogo-horarios");
         for (const horario of clase.horarios) {
             horarios.append(elemento("li", "", `${dias[horario.diaSemana]} · ${horario.horaInicio} – ${horario.horaFin}`));
@@ -70,13 +70,17 @@ document.addEventListener("DOMContentLoaded", async () => {
         contenido.append(horarios);
         if (!clase.horarios.length) contenido.append(elemento("p", "", "Horarios por confirmar."));
         contenido.append(elemento("p", "", clase.ubicacion || "Ubicación por confirmar."),
+            elemento("p", "", clase.nombreCancha || "Cancha por asignar"),
             elemento("p", "catalogo-cupos", clase.cuposDisponibles == null
-                ? "Cupo por confirmar" : `${clase.cuposDisponibles} de ${clase.cupoMaximo} cupos disponibles`));
+                ? "Cupo por confirmar" : `${clase.cuposDisponibles} de ${clase.cupoMaximo} cupos disponibles esta semana`));
+        const pagar = elemento("a", "tenis-btn tenis-btn--secundario", "ELEGIR SEMANA Y PAGAR ↗");
+        pagar.href = "/pagos.html?idClase=" + encodeURIComponent(clase.idClase);
+        contenido.append(pagar);
         card.append(foto, contenido);
         return card;
     }
 
-    async function cargar() {
+    async function cargar(actualizarDeportes = false) {
         peticion?.abort();
         peticion = new AbortController();
         const signal = peticion.signal;
@@ -84,14 +88,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         catalogo.replaceChildren();
         tabla.replaceChildren();
         catalogo.setAttribute("aria-busy", "true");
-        portada();
-        if (deporteNoDisponible) {
-            estado.textContent = "Este deporte no está disponible. Selecciona otro para consultar sus clases.";
-            document.getElementById("titulo-tenis").textContent = "DEPORTE NO DISPONIBLE";
-            catalogo.setAttribute("aria-busy", "false");
-            return;
-        }
         try {
+            if (actualizarDeportes) await cargarDeportes(signal);
+            portada();
+            if (deporteNoDisponible) {
+                estado.textContent = "Este deporte no está disponible. Selecciona otro para consultar sus clases.";
+                document.getElementById("titulo-tenis").textContent = "DEPORTE NO DISPONIBLE";
+                return;
+            }
             const clases = await obtener("/api/Clases" + (filtro.value ? "?idDeporte=" + encodeURIComponent(filtro.value) : ""), signal);
             for (const clase of clases) {
                 catalogo.append(tarjeta(clase));
@@ -131,9 +135,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         window.dispatchEvent(new Event("adsport:deporte-cambiado"));
         cargar();
     });
-    document.getElementById("recargarClases").addEventListener("click", cargar);
-    try {
-        deportes = await obtener("/api/Deporte");
+    async function cargarDeportes(signal) {
+        const actuales = await obtener("/api/Deporte", signal);
+        deportes = actuales;
+        filtro.replaceChildren(new Option("Todos los deportes", ""));
         for (const deporte of deportes) filtro.add(new Option(deporte.nombreDeporte, String(deporte.idDeporte)));
         const parametros = new URLSearchParams(window.location.search);
         const idSolicitado = parametros.get("idDeporte");
@@ -142,9 +147,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             deportes.find(d => d.nombreDeporte.localeCompare(nombreSolicitado, "es", { sensitivity: "base" }) === 0);
         deporteNoDisponible = !seleccionado && (idSolicitado !== null || (parametros.has("deporte") && nombreSolicitado.toLowerCase() !== "todos"));
         filtro.value = seleccionado ? String(seleccionado.idDeporte) : "";
-        await cargar();
-    } catch (error) {
-        estado.textContent = error.message;
-        catalogo.setAttribute("aria-busy", "false");
     }
+    document.getElementById("recargarClases").addEventListener("click", () => cargar(true));
+    await cargar(true);
 });

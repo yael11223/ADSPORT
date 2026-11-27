@@ -99,7 +99,9 @@ namespace ADSPORT.Data
                             return new RespuestaOperacion
                             {
                                 NumeroError = Convert.ToInt32(reader["CODIGO_RESPUESTA"]),
-                                Respuesta = reader["MENSAJE"]?.ToString() ?? string.Empty
+                                Respuesta = reader["MENSAJE"]?.ToString() ?? string.Empty,
+                                IdCodigoVerificado = reader.FieldCount > 2 && reader["ID_CODIGO"] is not DBNull
+                                    ? Convert.ToInt64(reader["ID_CODIGO"]) : null
                             };
                         }
                     }
@@ -231,7 +233,7 @@ namespace ADSPORT.Data
 
         public async Task<RespuestaOperacion> RegistrarCliente(
             UsuarioCliente objeto,
-            string passwordHash)
+            string passwordHash, long idCodigoVerificado)
         {
             using (var con = new SqlConnection(conexion))
             {
@@ -256,6 +258,7 @@ namespace ADSPORT.Data
                 // La contraseña debe venir cifrada con BCrypt desde el controlador
                 cmd.Parameters.Add("@PASSWORD_HASH", SqlDbType.VarChar, 60).Value =
                     (object?)passwordHash ?? DBNull.Value;
+                cmd.Parameters.Add("@ID_CODIGO_VERIFICADO", SqlDbType.BigInt).Value = idCodigoVerificado;
 
                 // ========================================
                 // DATOS OPCIONALES
@@ -291,7 +294,8 @@ namespace ADSPORT.Data
 
                                 Respuesta =
                                     reader["MENSAJE"]?.ToString()
-                                    ?? string.Empty
+                                    ?? string.Empty,
+                                IdUsuario = reader["ID_USUARIO"] is DBNull ? null : Convert.ToInt64(reader["ID_USUARIO"])
                             };
                         }
                     }

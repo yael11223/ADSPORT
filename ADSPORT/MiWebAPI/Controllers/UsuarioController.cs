@@ -11,7 +11,7 @@ namespace ADSPORT.Controllers;
 [ApiController]
 [Route("api/Usuario")]
 [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
-public sealed class UsuarioController(UsuarioData usuarios, ClaseData clases) : ControllerBase
+public sealed class UsuarioController(UsuarioData usuarios, ClaseData clases,PerfilData perfiles) : ControllerBase
 {
     [HttpGet]
     [Authorize(Policy = "SoloAdministrador")]
@@ -85,14 +85,7 @@ public sealed class UsuarioController(UsuarioData usuarios, ClaseData clases) : 
     public async Task<IActionResult> MiPerfil()
     {
         if (!long.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var id)) return Unauthorized();
-        var usuario = await usuarios.Obtener(id);
-        if (usuario is null) return NotFound();
-        return Ok(new
-        {
-            usuario.IdUsuario, usuario.Nombre, usuario.ApellidoPaterno, usuario.ApellidoMaterno,
-            nombreCompleto = string.Join(" ", new[] { usuario.Nombre, usuario.ApellidoPaterno, usuario.ApellidoMaterno }.Where(x => !string.IsNullOrWhiteSpace(x))),
-            usuario.Correo, usuario.Telefono, usuario.NombreRol, usuario.Estatus, usuario.TieneFoto
-        });
+        return Ok(await perfiles.Obtener(id));
     }
 
     [HttpGet("mi-foto")]
@@ -100,8 +93,8 @@ public sealed class UsuarioController(UsuarioData usuarios, ClaseData clases) : 
     public async Task<IActionResult> MiFoto()
     {
         if (!long.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var id)) return Unauthorized();
-        var usuario = await usuarios.Obtener(id);
-        if (usuario?.Foto is not { Length: > 0 } foto) return NotFound();
+        var foto = await perfiles.Imagen(id,false);
+        if (foto is not { Length: > 0 }) return NotFound();
         var tipo = foto.Length >= 3 && foto[0] == 255 && foto[1] == 216 && foto[2] == 255 ? "image/jpeg"
             : foto.Length >= 8 && foto.AsSpan(0, 8).SequenceEqual(new byte[] { 137,80,78,71,13,10,26,10 }) ? "image/png"
             : foto.Length >= 12 && System.Text.Encoding.ASCII.GetString(foto, 0, 4) == "RIFF"

@@ -14,8 +14,12 @@ public static class SesionRecuperacionPassword
 
     public static async Task Validar(CookieValidatePrincipalContext context)
     {
-        if (context.Principal?.HasClaim("ADSPORT.Administrador", "true") == true) return;
-        if (!long.TryParse(context.Principal?.FindFirstValue(ClaimTypes.NameIdentifier), out var id)) return;
+        if (!long.TryParse(context.Principal?.FindFirstValue(ClaimTypes.NameIdentifier), out var id) || id<=0)
+        {
+            context.RejectPrincipal();
+            await context.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return;
+        }
         var inicio = context.Properties.IssuedUtc?.UtcDateTime ?? DateTime.MinValue;
         if (long.TryParse(context.Principal?.FindFirstValue(ClaimInicio), out var ticks)
             && ticks >= DateTime.MinValue.Ticks && ticks <= DateTime.MaxValue.Ticks)

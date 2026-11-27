@@ -7,7 +7,7 @@ using System.Net;
 
 namespace ADSPORT.Services
 {
-    public class CorreoService
+    public partial class CorreoService
     {
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _environment;

@@ -11,16 +11,21 @@ function obtenerUsuario() {
 }
 
 async function protegerPagina() {
-  if (!obtenerUsuario()) window.location.replace("login.html");
   try {
-    const sesion = await fetch("/api/Auth/sesion", { cache: "no-store" }).then(r => r.json());
-    if (!sesion.autenticado) {
+    const respuesta = await fetch("/api/Auth/sesion", { cache: "no-store", credentials: "same-origin" });
+    if (!respuesta.ok) throw new Error("No fue posible comprobar la sesión.");
+    const sesion = await respuesta.json();
+    if (sesion.autenticado !== true) {
       sessionStorage.removeItem(SESSION_KEY);
       window.location.replace("login.html");
+      return false;
     }
+    if (sesion.nombre) sessionStorage.setItem(SESSION_KEY, JSON.stringify({ ...obtenerUsuario(), nombre: sesion.nombre }));
+    return true;
   } catch {
     sessionStorage.removeItem(SESSION_KEY);
     window.location.replace("login.html");
+    return false;
   }
 }
 

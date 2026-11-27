@@ -64,29 +64,38 @@ document.addEventListener("DOMContentLoaded", () => {
             const params = new URLSearchParams(window.location.search);
             const idActual = params.get("idDeporte");
 
-            let html = `<span class="nav-dropdown__label" style="display:block; font-size:0.7rem; opacity:0.7; padding:6px 12px;">EXPLORA LOS DEPORTES</span>`;
-
+            const fragmento = document.createDocumentFragment();
+            const etiqueta = document.createElement("span");
+            etiqueta.className = "nav-dropdown__label";
+            etiqueta.style.cssText = "display:block;font-size:0.7rem;opacity:0.7;padding:6px 12px";
+            etiqueta.textContent = "EXPLORA LOS DEPORTES";
+            fragmento.append(etiqueta);
             if (!deportes || deportes.length === 0) {
-                html += `<span style="display:block; padding:8px 12px; font-size:0.85rem; color:#888;">Sin deportes registrados</span>`;
+                const vacio = document.createElement("span");
+                vacio.style.cssText = "display:block;padding:8px 12px;font-size:0.85rem;color:#888";
+                vacio.textContent = "Sin deportes registrados";
+                fragmento.append(vacio);
             } else {
-                html += deportes.map(d => {
-                    const activo = String(d.idDeporte) === String(idActual) ? "activo" : "";
-                    const url = `/tenis.html?idDeporte=${d.idDeporte}&deporte=${encodeURIComponent(d.nombreDeporte)}`;
-                    return `
-                        <a href="${url}" class="nav-dropdown__item ${activo}" style="display:block; width:100%; padding:8px 12px;">
-                            <span>🏅 ${d.nombreDeporte.toUpperCase()}</span>
-                        </a>
-                    `;
-                }).join("");
+                deportes.forEach(d => {
+                    const enlace = document.createElement("a");
+                    enlace.className = "nav-dropdown__item";
+                    enlace.classList.toggle("activo", String(d.idDeporte) === String(idActual));
+                    enlace.href = "/tenis.html?" + new URLSearchParams({ idDeporte: d.idDeporte, deporte: d.nombreDeporte });
+                    enlace.style.cssText = "display:block;width:100%;padding:8px 12px";
+                    const nombre = document.createElement("span");
+                    nombre.textContent = "🏅 " + d.nombreDeporte.toUpperCase();
+                    enlace.append(nombre);
+                    fragmento.append(enlace);
+                });
             }
+            const todas = document.createElement("a");
+            todas.href = "/tenis.html?deporte=todos";
+            todas.className = "btn-ver-todas";
+            todas.style.cssText = "margin-top:8px;background:#ff6b00;color:#fff;font-weight:700;border-radius:6px;text-align:center;display:block;width:100%;padding:8px 12px";
+            todas.textContent = "VER TODAS LAS CLASES →";
+            fragmento.append(todas);
+            menuClases.replaceChildren(fragmento);
 
-            html += `
-                <a href="/tenis.html?deporte=todos" class="btn-ver-todas" style="margin-top:8px; background:#ff6b00; color:#fff; font-weight:700; border-radius:6px; text-align:center; display:block; width:100%; padding:8px 12px;">
-                    VER TODAS LAS CLASES →
-                </a>
-            `;
-
-            menuClases.innerHTML = html;
         } catch (error) {
             console.error("ADSPORT - Error al cargar deportes en el menú:", error);
         }
@@ -110,6 +119,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (paginaActual === "indexusuario.html" || paginaActual === "") {
             seccionActiva = seccionActual === "#clases" ? "clases" : "inicio";
+        } else if (paginaActual === "instalaciones.html") {
+            seccionActiva = "instalaciones";
         } else if (paginaActual === "nosotros.html") {
             seccionActiva = "nosotros";
         } else if (paginaActual === "tenis.html" || paginaActual === "clases.html") {
@@ -253,6 +264,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const usuario = await respuesta.json();
             esEntrenador = (usuario.nombreRol || "").trim().toUpperCase() === "ENTRENADOR";
+            const enlacePagos = document.getElementById("enlaceMisPagos");
+            if (enlacePagos) enlacePagos.hidden = !["USUARIO", "CLIENTE", "SIN ASIGNAR"].includes((usuario.nombreRol || "").trim().toUpperCase());
 
             const enlacePerfil = document.getElementById("enlaceMiPerfil");
             if (enlacePerfil) {
@@ -273,7 +286,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (nombreMenu) nombreMenu.textContent = nombreCompleto;
 
             if (usuario.tieneFoto === true) {
-                actualizarFotografias(API_FOTO);
+                actualizarFotografias(usuario.fotoUrl || API_FOTO);
             } else {
                 actualizarFotografias(FOTO_DEFAULT);
             }
@@ -387,5 +400,6 @@ document.addEventListener("DOMContentLoaded", () => {
         ]);
     }
 
+    window.addEventListener("adsport:perfil-actualizado",()=>cargarPerfilUsuario());
     iniciarLayout();
 });

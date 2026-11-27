@@ -12,6 +12,12 @@ public sealed class EntrenadorCuenta
     public string Estatus { get; init; } = string.Empty;
     public string NombreRol { get; init; } = string.Empty;
     public bool TieneFoto { get; init; }
+    public bool EsAdministradorActivo => NombreRol.Trim().ToUpperInvariant() is "ADMINISTRADOR" or "ADMIN"
+        && Estatus.Trim().Equals("ACTIVO",StringComparison.OrdinalIgnoreCase);
+
+    public bool EsUsuarioActivo =>
+        NombreRol.Trim().ToUpperInvariant() is "USUARIO" or "CLIENTE" or "SIN ASIGNAR"
+        && Estatus.Trim().Equals("ACTIVO", StringComparison.OrdinalIgnoreCase);
 
     public bool EsEntrenadorActivo =>
         NombreRol.Trim().Equals("ENTRENADOR", StringComparison.OrdinalIgnoreCase)

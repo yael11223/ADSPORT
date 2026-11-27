@@ -1,0 +1,31 @@
+.asistencia-page label { display: block; font-size: 13px; font-weight: 600; margin: 0 0 9px; }
+.asistencia-page input, .asistencia-page select { min-height: 46px; width: 100%; border: 1px solid #555; background: #222; color: white; border-radius: 8px; padding: 11px; font: inherit; font-size: 13px; color-scheme: dark; }
+.asistencia-filtros { display: grid; grid-template-columns: minmax(230px,1fr) minmax(200px,1.5fr) auto; gap: 24px; align-items: end; }
+.asistencia-semana { display: flex; gap: 8px; }
+.asistencia-semana button { flex: 0 0 44px; padding: 10px; }
+.asistencia-grid { display: grid; grid-template-columns: minmax(280px,.85fr) minmax(0,1.4fr); gap: 24px; align-items: start; }
+.asistencia-page .pagos-panel { margin-top: 20px; }
+.asistencia-page h2 { font-size: 32px; }
+.asistencia-camara { background: #050505; border: 1px solid #555; border-radius: 10px; padding: 10px; margin: 20px 0; text-align: center; }
+.asistencia-camara video { display: block; width: 100%; max-height: 330px; border-radius: 6px; }
+.asistencia-camara p { font-size: 12px; color: #ccc; }
+.asistencia-acciones { display: flex; gap: 10px; flex-wrap: wrap; margin: 18px 0; }
+.asistencia-resultado { margin:20px 0; padding:18px; border:1px solid #54a674; border-radius:10px; background:#122219; color:#a0e5ba; overflow-wrap:anywhere; }
+.asistencia-resultado p { margin:8px 0 0; font-size:12px; line-height:1.7; }
+.asistencia-resultado p:first-child { margin:0 0 10px; font-weight:800; letter-spacing:.06em; }
+.asistencia-resultado strong { display:block; font-size:19px; color:#fff; }
+.asistencia-resultado--repetido { border-color:#c49448; background:#292113; color:#f3cc8a; }
+.asistencia-totales { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin: 22px 0; }
+.asistencia-totales div { display: grid; gap: 4px; background: #222; padding: 14px; border-radius: 9px; }
+.asistencia-totales strong { font-size: 30px; color: #ff9b51; }
+.asistencia-totales span { font-size: 11px; color: #c0c0c0; }
+.asistencia-lista { display: grid; gap: 12px; margin-top: 20px; }
+.asistencia-alumno { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; border: 1px solid #3c3c3c; background: #202020; border-radius: 10px; padding: 17px; }
+.asistencia-alumno h3 { font-size: 21px; margin: 0 0 8px; overflow-wrap: anywhere; }
+.asistencia-alumno p { margin: 5px 0 0; font-size: 11px; color: #bbb; }
+.asistencia-presente { border-color: #54a674; }
+.asistencia-estado { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: .04em; color: #ffbb73; }
+.asistencia-presente .asistencia-estado { color: #8be3ae; }
+.asistencia-page .pagos-aviso--exito { border-color: #54b780; color: #8be3ae; }
+@media(max-width: 850px) { .asistencia-filtros { grid-template-columns: 1fr 1fr; } .asistencia-filtros > button { grid-column: 1/-1; justify-self: start; } .asistencia-grid { grid-template-columns: 1fr; gap: 0; } }
+@media(max-width: 520px) { .asistencia-filtros { grid-template-columns: 1fr; gap: 16px; } .asistencia-totales { gap: 6px; } .asistencia-totales div { padding: 10px; } }

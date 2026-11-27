@@ -22,6 +22,9 @@ from PIL import Image
 from playwright.sync_api import sync_playwright, expect
 import zxingcpp
 from recuperacion_password import ServidorCorreoPruebas, probar_recuperacion
+from seguridad_registro import probar_seguridad_registro
+from pagos_semanales import ServidorMercadoPagoPruebas, probar_pagos
+from perfiles_administracion import probar_perfiles
 
 ARTIFACTS = ROOT / ".artifacts"
 ARTIFACTS.mkdir(exist_ok=True)
@@ -63,8 +66,11 @@ def main():
     database = None
     log = None
     smtp = None
+    mercado = None
     try:
         master.execute("CREATE DATABASE [" + DB + "]")
+        # Azure SQL utiliza RCSI: probar también los bloqueos de la cola de correo con esa configuración.
+        master.execute("ALTER DATABASE [" + DB + "] SET READ_COMMITTED_SNAPSHOT ON")
         database = pyodbc.connect(CS + "DATABASE=" + DB + ";", autocommit=True)
         aplicar(database, ROOT / "tests/fixtures/base_adjunta.sql")
         aplicar(database, ROOT / "database/005_usuarios_canchas_cronograma.sql")
@@ -78,11 +84,39 @@ def main():
         check("Procedimientos de eliminación instalados y repetibles")
         aplicar(database, ROOT / "database/008_eliminar_deportes_clases_roles.sql")
         aplicar(database, ROOT / "database/009_recuperacion_password.sql")
+        try:
+            aplicar(database, ROOT / "database/011_pagos_semanales_mercadopago.sql")
+            aplicar(database, ROOT / "database/012_iva_accesos_asistencia.sql")
+            aplicar(database, ROOT / "database/013_perfiles_administracion.sql")
+        except RuntimeError as error:
+            check("Pagos exige la migración 010 antes de modificar el esquema", "Instala primero las migraciones 005 a 010" in str(error)
+                and database.execute("SELECT OBJECT_ID('dbo.PAGO_MERCADOPAGO')").fetchone()[0] is None)
+        else:
+            raise AssertionError("La migración de pagos debe rechazar una base anterior a 010")
+        aplicar(database, ROOT / "database/010_registro_sesiones_roles.sql")
+        aplicar(database, ROOT / "database/011_pagos_semanales_mercadopago.sql")
+        aplicar(database, ROOT / "database/012_iva_accesos_asistencia.sql")
+        aplicar(database, ROOT / "database/013_perfiles_administracion.sql")
         aplicar(database, ROOT / "database/008_eliminar_deportes_clases_roles.sql")
         aplicar(database, ROOT / "database/009_recuperacion_password.sql")
+        aplicar(database, ROOT / "database/010_registro_sesiones_roles.sql")
+        aplicar(database, ROOT / "database/011_pagos_semanales_mercadopago.sql")
+        aplicar(database, ROOT / "database/012_iva_accesos_asistencia.sql")
+        aplicar(database, ROOT / "database/013_perfiles_administracion.sql")
         check("Eliminación de deportes, clases y roles instalada de forma repetible")
         check("Recuperación de contraseña instalada dos veces con la tabla de códigos existente")
+        # Cuenta ficticia SQL; el login administrativo no utiliza DemoLogin.
+        admin_hash = "$2a$12$1PxPWkqo5CyMUnokFw0JFOtL270rt1Ju4jRZCN4jLmZi2MUC2DOtC"
+        database.execute("""
+            DECLARE @rol bigint=(SELECT TOP(1) ID_ROL FROM dbo.ROL WHERE NOMBRE_ROL='ADMINISTRADOR');
+            DECLARE @id bigint,@qr varchar(128),@error int,@respuesta varchar(1000);
+            EXEC dbo.USUARIO_AGREGA @id_rol=@rol,@nombre='Administración',@apellido_paterno='de prueba',
+                @apellido_materno='',@correo='admin.integration@example.test',@telefono='',@estatus='ACTIVO',
+                @password_hash=?,@id_usuario=@id OUTPUT,@codigo_generado=@qr OUTPUT,@numeroError=@error OUTPUT,@respuesta=@respuesta OUTPUT;
+            IF @error<>0 THROW 51000,@respuesta,1;
+            """,admin_hash).close()
         smtp = ServidorCorreoPruebas()
+        mercado = ServidorMercadoPagoPruebas()
         clave_verificacion = os.urandom(32)
         with socket.socket() as reserva:
             reserva.bind(("127.0.0.1", 0))
@@ -106,9 +140,15 @@ def main():
             "Smtp__PermitirSinTlsLocal": "true",
             "Smtp__Usuario": "",
             "Smtp__Password": "",
+            "MercadoPago__ModoPrueba": "true",
+            "MercadoPago__AccessToken": mercado.token,
+            "MercadoPago__WebhookSecret": mercado.secreto,
+            "MercadoPago__VendedorId": mercado.vendedor,
+            "MercadoPago__ApiLocalPruebas": mercado.url,
+            "MercadoPago__UrlPublica": base,
         })
         log = (ARTIFACTS / "integration-server.log").open("w", encoding="utf-8")
-        app = subprocess.Popen(["dotnet", str(ARTIFACTS / "build/ADSPORT.dll")],
+        app = subprocess.Popen(["dotnet", str(Path(os.environ.get("ADSPORT_TEST_BUILD", str(ARTIFACTS / "build"))) / "ADSPORT.dll")],
             cwd=ROOT / "MiWebAPI", env=env, stdout=log, stderr=subprocess.STDOUT,
             creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
         for _ in range(100):
@@ -124,8 +164,8 @@ def main():
 
         with sync_playwright() as pw:
             browser = pw.chromium.launch(channel="msedge", headless=True)
-            admin = browser.new_context(viewport={"width": 1440, "height": 1050})
-            anon = browser.new_context()
+            admin = browser.new_context(reduced_motion="reduce",viewport={"width": 1440, "height": 1050})
+            anon = browser.new_context(reduced_motion="reduce")
             page = admin.new_page()
             page.on("pageerror", lambda error: PAGE_ERRORS.append(str(error)))
 
@@ -138,7 +178,34 @@ def main():
                 assert respuesta.status == esperado, (ruta, respuesta.status, respuesta.text()[:1000])
                 return respuesta.json() if respuesta.headers.get("content-type", "").startswith("application/json") else respuesta
 
+            def verificar_registro(correo, ctx=anon):
+                desde = len(smtp.mensajes)
+                solicitud = api(ctx,"POST","/api/Verificacion/agregar",{"correo":correo},csrf=False)
+                assert solicitud["numeroError"] == 200, solicitud
+                codigo = smtp.codigo(correo,desde,asunto="Verifica tu cuenta | ADSPORT")
+                validacion = api(ctx,"POST","/api/Verificacion/validar",{"correo":correo,"codigo":codigo},csrf=False)
+                assert validacion["numeroError"] == 200, validacion
+                return codigo
+
             api(admin, "POST", "/api/Auth/login", {"correo": "admin.integration@example.test", "password": PASSWORD})
+            if "--solo-perfiles" in sys.argv:
+                probar_perfiles(database,browser,admin,anon,api,base,check,PASSWORD,ARTIFACTS,PAGE_ERRORS)
+                check("Perfiles sin errores JavaScript",not PAGE_ERRORS,PAGE_ERRORS)
+                browser.close()
+                print("RESULTADO:",len(CHECKS),"comprobaciones correctas.",flush=True)
+                return
+            if "--solo-pagos" in sys.argv:
+                probar_pagos(database,browser,admin,anon,api,base,check,mercado,PASSWORD,ARTIFACTS,PAGE_ERRORS,smtp)
+                check("Sin errores JavaScript en pagos",not PAGE_ERRORS,PAGE_ERRORS)
+                browser.close()
+                (ARTIFACTS/"pagos-results.json").write_text(json.dumps({"passed":len(CHECKS),"checks":CHECKS},ensure_ascii=False,indent=2),encoding="utf-8")
+                print("RESULTADO:",len(CHECKS),"comprobaciones correctas.",flush=True)
+                return
+            page.goto(base + "/index.html", wait_until="domcontentloaded")
+            for modulo in ("usuarios.html","canchas.html","cronograma.html"):
+                expect(page.locator('main a[href="'+modulo+'"]')).to_be_visible()
+            expect(page.locator("#nombreUsuario")).to_have_text("Administración de prueba")
+            check("Inicio conserva accesos a Usuarios, Canchas y Cronograma")
             api(anon, "GET", "/api/Usuario", esperado=401)
             api(admin, "POST", "/api/Usuario", {}, esperado=400, csrf=False)
             roles = api(admin, "GET", "/api/Rol")
@@ -275,7 +342,7 @@ def main():
             futbol_cancha = api(admin, "POST", "/api/Cancha", {"nombre": "Cancha fútbol", "idDeporte": futbol, "activo": True, "horarios": apertura}, esperado=201)["idCancha"]
 
             def login_profesor(correo):
-                ctx = browser.new_context(viewport={"width": 1440, "height": 1050})
+                ctx = browser.new_context(reduced_motion="reduce",viewport={"width": 1440, "height": 1050})
                 token = ctx.request.get(base + "/api/Entrenador/csrf").json()["token"]
                 respuesta = ctx.request.post(base + "/api/Entrenador/login", data={"correo": correo, "password": PASSWORD}, headers={"X-CSRF-TOKEN": token})
                 assert respuesta.status == 200, respuesta.text()
@@ -316,7 +383,7 @@ def main():
             expect(trainer_page.locator("#listaClasesEntrenador")).to_contain_text("Cancha central")
             clase1 = api(profe1, "GET", "/api/Entrenador/clases")[0]
             check("Profesor crea clase con cancha y horario libre desde su formulario")
-            expect(trainer_page.locator("#nombreUsuarioHeader")).to_have_text("Ana")
+            expect(trainer_page.locator("#nombreUsuarioHeader")).to_have_text(re.compile("^Ana$", re.IGNORECASE))
             check("Header y perfil cargan sin referencias JavaScript inválidas")
 
             def datos_clase(nombre, cancha, inicio, fin, disponible=True, dia=1):
@@ -403,7 +470,7 @@ def main():
             expect(page.locator("#semanaAgenda .admin-day")).to_have_count(7)
             expect(page.locator("#semanaAgenda")).to_contain_text("Tenis inicial")
             check("Los siete días quedan en una fila en escritorio",
-                len({round(b["y"]) for b in page.locator("#semanaAgenda .admin-day").evaluate_all("items => items.map(e => ({y:e.getBoundingClientRect().y}))")}) == 1)
+                len({b["y"] for b in page.locator("#semanaAgenda .admin-day").evaluate_all("items => items.map(e => ({y:e.offsetTop}))")}) == 1)
             page.screenshot(path=str(ARTIFACTS / "cronograma.png"), full_page=True)
             page.set_viewport_size({"width":390,"height":844})
             page.screenshot(path=str(ARTIFACTS / "cronograma-movil.png"), full_page=True)
@@ -441,9 +508,7 @@ def main():
             check("Galería pública adaptable a móvil", public_page.evaluate("document.documentElement.scrollWidth <= innerWidth"))
 
             # El registro público también debe generar QR, conservando su validación por correo.
-            database.execute("""INSERT dbo.CODIGO_VERIFICACION(CORREO,CODIGO_HASH,FECHA_CREACION,FECHA_EXPIRACION,
-                UTILIZADO,INTENTOS,FECHA_UTIMA_MODIFICACION,VERIFICADO)
-                VALUES(?,?,GETDATE(),DATEADD(minute,10,GETDATE()),1,0,GETDATE(),1)""","registro@example.test","A"*64)
+            verificar_registro("registro@example.test")
             registro = api(anon, "POST", "/api/Verificacion/registrar",
                 {"nombre":"Registro","apellidoPaterno":"Web","correo":"registro@example.test","password":PASSWORD},csrf=False)
             check("Registro público conserva verificación y genera QR",
@@ -454,12 +519,16 @@ def main():
             aplicar(database, ROOT / "database/006_imagenes_instalaciones.sql")
             aplicar(database, ROOT / "database/008_eliminar_deportes_clases_roles.sql")
             aplicar(database, ROOT / "database/009_recuperacion_password.sql")
+            aplicar(database, ROOT / "database/010_registro_sesiones_roles.sql")
+            aplicar(database, ROOT / "database/011_pagos_semanales_mercadopago.sql")
+            aplicar(database, ROOT / "database/012_iva_accesos_asistencia.sql")
+            aplicar(database, ROOT / "database/013_perfiles_administracion.sql")
             qr_despues = database.execute("SELECT CODIGO_QR FROM dbo.USUARIO WHERE ID_USUARIO=?",ana["idUsuario"]).fetchone()[0]
             check("Reejecutar la migración conserva datos y códigos QR", qr_antes == qr_despues and database.execute("SELECT COUNT(*) FROM dbo.CANCHA").fetchone()[0] == 3)
             check("Reejecutar las migraciones también conserva las fotografías",
                 anon.request.get(base+"/api/Cancha/"+str(central["idCancha"])+"/imagen").body() == foto_png)
             api(admin,"POST","/api/Usuario/"+str(luis["idUsuario"])+"/desactivar")
-            api(profe2,"GET","/api/Entrenador/perfil",esperado=403)
+            api(profe2,"GET","/api/Entrenador/perfil",esperado=401)
             check("Desactivar un profesor revoca su acceso y libera sus clases",
                 database.execute("SELECT COUNT(*) FROM dbo.CLASE WHERE ID_ENTRENADOR=? AND DISPONIBLE=1",luis["idUsuario"]).fetchone()[0] == 0)
             # Borrado físico con relaciones reales: conserva reservas, pagos y accesos.
@@ -525,7 +594,7 @@ def main():
             page.locator("#listaUsuarios tr").filter(has_text="ana@example.test").get_by_role("button",name="Eliminar",exact=True).click()
             expect(page.locator("#avisoUsuarios")).to_contain_text("Usuario eliminado definitivamente")
             expect(page.locator("#listaUsuarios")).not_to_contain_text("ana@example.test")
-            api(profe1,"GET","/api/Entrenador/perfil",esperado=403)
+            api(profe1,"GET","/api/Entrenador/perfil",esperado=401)
             check("Eliminar entrenador desde Profesores borra la cuenta y revoca su acceso",
                 database.execute("SELECT COUNT(*) FROM dbo.USUARIO WHERE ID_USUARIO=?",ana["idUsuario"]).fetchone()[0] == 0)
             check("Las clases y accesos del entrenador eliminado conservan su historial",
@@ -666,22 +735,34 @@ def main():
             check("Incluso al eliminar el rol básico, los usuarios mantienen un rol válido",
                 database.execute("SELECT COUNT(*) FROM dbo.ROL WHERE ID_ROL=?",usuario_rol).fetchone()[0] == 0
                 and database.execute("SELECT COUNT(*) FROM dbo.USUARIO u LEFT JOIN dbo.ROL r ON r.ID_ROL=u.ID_ROL WHERE r.ID_ROL IS NULL").fetchone()[0] == 0)
-            database.execute("""INSERT dbo.CODIGO_VERIFICACION(CORREO,CODIGO_HASH,FECHA_CREACION,FECHA_EXPIRACION,
-                UTILIZADO,INTENTOS,FECHA_UTIMA_MODIFICACION,VERIFICADO)
-                VALUES('registro.basico@example.test',?,GETUTCDATE(),DATEADD(minute,10,GETUTCDATE()),1,0,GETUTCDATE(),1)""","C"*64)
+            verificar_registro("registro.basico@example.test")
             resultado_basico = api(anon,"POST","/api/Verificacion/registrar",
                 {"nombre":"Registro básico","apellidoPaterno":"Prueba","correo":"registro.basico@example.test","password":PASSWORD},csrf=False)
             check("El registro público continúa funcionando después de eliminar el rol USUARIO",resultado_basico["numeroError"] == 201)
             aplicar(database,ROOT/"database/008_eliminar_deportes_clases_roles.sql")
             aplicar(database, ROOT / "database/009_recuperacion_password.sql")
+            aplicar(database, ROOT / "database/010_registro_sesiones_roles.sql")
+            aplicar(database, ROOT / "database/011_pagos_semanales_mercadopago.sql")
+            aplicar(database, ROOT / "database/012_iva_accesos_asistencia.sql")
+            aplicar(database, ROOT / "database/013_perfiles_administracion.sql")
             check("Repetir la actualización no restaura deportes ni roles eliminados",
                 database.execute("SELECT COUNT(*) FROM dbo.DEPORTE WHERE ID_DEPORTE=?",futbol).fetchone()[0] == 0
                 and database.execute("SELECT COUNT(*) FROM dbo.ROL WHERE ID_ROL=?",profesor_rol).fetchone()[0] == 0)
 
             probar_recuperacion(database,browser,admin,anon,api,base,check,smtp,clave_verificacion,PASSWORD,ARTIFACTS,PAGE_ERRORS)
             aplicar(database, ROOT / "database/009_recuperacion_password.sql")
+            aplicar(database, ROOT / "database/010_registro_sesiones_roles.sql")
+            aplicar(database, ROOT / "database/011_pagos_semanales_mercadopago.sql")
+            aplicar(database, ROOT / "database/012_iva_accesos_asistencia.sql")
+            aplicar(database, ROOT / "database/013_perfiles_administracion.sql")
             check("Repetir la migración conserva las contraseñas recuperadas y sus códigos consumidos",
                 database.execute("SELECT COUNT(*) FROM dbo.CODIGO_VERIFICACION WHERE PROPOSITO='RECUPERACION' AND VERIFICADO=1 AND UTILIZADO=1").fetchone()[0] >= 2)
+            probar_seguridad_registro(database,browser,admin,anon,api,base,check,smtp,verificar_registro,PASSWORD,ARTIFACTS,PAGE_ERRORS)
+            aplicar(database, ROOT / "database/011_pagos_semanales_mercadopago.sql")
+            aplicar(database, ROOT / "database/012_iva_accesos_asistencia.sql")
+            aplicar(database, ROOT / "database/013_perfiles_administracion.sql")
+            probar_pagos(database,browser,admin,anon,api,base,check,mercado,PASSWORD,ARTIFACTS,PAGE_ERRORS,smtp)
+            probar_perfiles(database,browser,admin,anon,api,base,check,PASSWORD,ARTIFACTS,PAGE_ERRORS)
             check("Sin errores JavaScript en las pantallas recorridas", not PAGE_ERRORS, PAGE_ERRORS)
             browser.close()
         (ARTIFACTS / "integration-results.json").write_text(json.dumps({"passed":len(CHECKS),"checks":CHECKS},ensure_ascii=False,indent=2),encoding="utf-8")
@@ -698,6 +779,8 @@ def main():
             log.close()
         if smtp:
             smtp.cerrar()
+        if mercado:
+            mercado.cerrar()
         if database:
             database.close()
         try:

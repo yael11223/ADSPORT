@@ -1,6 +1,7 @@
 "use strict";
 
 document.addEventListener("DOMContentLoaded", () => {
+    window.addEventListener("adsport:perfil-actualizado",evento=>mostrarPerfil(evento.detail));
     const porId = (id) => document.getElementById(id);
     const dias = ["", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
     const moneda = new Intl.NumberFormat("es-MX", { style: "currency", currency: "MXN" });
@@ -117,7 +118,7 @@ document.addEventListener("DOMContentLoaded", () => {
             tarjeta.append(superior, elemento("h3", "", clase.nombreClase || "Clase sin nombre"),
                 elemento("p", "trainer-class__description", clase.descripcion || "Agrega una descripción al editar esta clase."));
             const detalles = elemento("div", "trainer-class__details");
-            detalles.append(elemento("span", "", clase.precio === null || clase.precio === undefined ? "Precio por completar" : moneda.format(clase.precio) + " / clase"),
+            detalles.append(elemento("span", "", clase.precio === null || clase.precio === undefined ? "Precio por completar" : moneda.format(clase.precio) + " / semana"),
                 elemento("span", "", (Number(clase.alumnosInscritos) || 0) + " alumnos inscritos"),
                 elemento("span", "", clase.cupoMaximo ? "Capacidad: " + clase.cupoMaximo : "Capacidad por completar"));
             if (clase.cuposDisponibles !== null && clase.cuposDisponibles !== undefined) detalles.append(elemento("span", "", clase.cuposDisponibles + " cupos disponibles"));
@@ -167,6 +168,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             });
             acciones.append(editar, disponibilidad, eliminar);
+            const asistencia = elemento("a", "trainer-button", "Alumnos y asistencia");
+            asistencia.href = "/asistencia.html?idClase=" + encodeURIComponent(clase.idClase);
+            acciones.append(asistencia);
             tarjeta.append(acciones);
             lista.append(tarjeta);
         });

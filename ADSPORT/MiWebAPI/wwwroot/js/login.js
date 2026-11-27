@@ -5,7 +5,10 @@ const password = document.getElementById("password");
 const btnLogin = document.getElementById("btnLogin");
 const mensajeLogin = document.getElementById("mensajeLogin");
 
-if (sessionStorage.getItem(SESSION_KEY)) window.location.replace("index.html");
+fetch("/api/Auth/sesion",{cache:"no-store",credentials:"same-origin"}).then(r=>r.ok?r.json():null).then(sesion=>{
+  if(sesion?.autenticado===true)window.location.replace("index.html");
+  else sessionStorage.removeItem(SESSION_KEY);
+}).catch(()=>sessionStorage.removeItem(SESSION_KEY));
 
 formLogin.addEventListener("submit", async (evento) => {
   evento.preventDefault();
